@@ -1,0 +1,676 @@
+basePath: '{{.BasePath}}'
+definitions:
+  api.DeviceExpire:
+    properties:
+      expiredtime:
+        description: 过期时间
+        type: integer
+      id:
+        description: 设备ID
+        type: integer
+    type: object
+  api.DeviceInfos:
+    properties:
+      devEUI:
+        description: 设备UID
+        type: string
+      info:
+        description: '展示在地图上的信息 json : {speend: 100, azimuth:20...} --'
+        type: object
+      latitude:
+        description: 纬度
+        type: number
+      longitude:
+        description: 经度
+        type: number
+      name:
+        description: 设备名称 -- 第一次有效
+        type: string
+      state:
+        description: 状态 --自定义
+        type: integer
+      times:
+        description: 时间 时间戳(秒)
+        type: integer
+    type: object
+  api.DeviceStatus:
+    properties:
+      ids:
+        description: 设备ID
+        items:
+          type: integer
+        type: array
+      status:
+        description: 状态
+        type: integer
+    type: object
+  api.DevicesID:
+    properties:
+      id:
+        description: 设备ID
+        type: integer
+    type: object
+  api.DevicesUser:
+    properties:
+      ids:
+        description: 设备ID
+        items:
+          type: integer
+        type: array
+      uid:
+        description: 子用户ID
+        type: integer
+    type: object
+  api.LoginInfos:
+    properties:
+      code:
+        description: 验证码
+        type: string
+      name:
+        description: 登陆名
+        type: string
+      password:
+        description: 密码 MD5加密(小写)
+        type: string
+    type: object
+  api.Registerinfo:
+    properties:
+      code:
+        description: 验证码
+        type: string
+      codeJWT:
+        description: 验证码标记
+        type: string
+      email:
+        description: 邮箱
+        type: string
+      mobile:
+        description: 手机号码
+        type: string
+      name:
+        description: 账号
+        type: string
+      password:
+        description: 密码 MD5加密(小写)
+        type: string
+    type: object
+  api.UserDelID:
+    properties:
+      id:
+        description: 用户ID
+        type: integer
+    type: object
+  api.UserExpire:
+    properties:
+      expiredtime:
+        description: 过期时间
+        type: integer
+      id:
+        description: 用户ID
+        type: integer
+    type: object
+  api.UserStatus:
+    properties:
+      ids:
+        description: 用户ID
+        items:
+          type: integer
+        type: array
+      status:
+        description: 状态
+        type: integer
+    type: object
+host: '{{.Host}}'
+info:
+  contact: {}
+  description: '{{.Description}}'
+  license: {}
+  title: '{{.Title}}'
+  version: '{{.Version}}'
+paths:
+  /devicedata:
+    get:
+      consumes:
+      - application/json
+      description: 获取数据列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 起始数
+        in: query
+        name: offset
+        type: string
+      - description: 获取数
+        in: query
+        name: limit
+        type: string
+      - description: 数据状态(自定义状态)
+        in: query
+        name: status
+        type: string
+      - description: 数据创建起始时间
+        in: query
+        name: starttime
+        type: string
+      - description: 数据创建终止时间
+        in: query
+        name: endtime
+        type: string
+      - description: 数据id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取数据列表
+      tags:
+      - devicedata
+    post:
+      consumes:
+      - application/json
+      description: 设备数据推送 -- 只接受管理员账号数据推送
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备数据信息
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.DeviceInfos'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Result": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Result": null}'
+          schema:
+            type: string
+      summary: 设备数据推送
+      tags:
+      - devicedata
+  /devices:
+    delete:
+      consumes:
+      - application/json
+      description: .删除设备
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备ID
+        in: body
+        name: devicesID
+        required: true
+        schema:
+          $ref: '#/definitions/api.DevicesID'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .删除设备(仅管理员以上)
+      tags:
+      - devices
+    get:
+      consumes:
+      - application/json
+      description: 获取设备列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 起始数
+        in: query
+        name: offset
+        type: string
+      - description: 获取数
+        in: query
+        name: limit
+        type: string
+      - description: 设备状态 1启用 2禁用 3已过期
+        in: query
+        name: status
+        type: string
+      - description: 设备创建起始时间
+        in: query
+        name: starttime
+        type: string
+      - description: 设备创建终止时间
+        in: query
+        name: endtime
+        type: string
+      - description: 设备名
+        in: query
+        name: name
+        type: string
+      - description: 群组id
+        in: query
+        name: classid
+        type: integer
+      - description: 用户id
+        in: query
+        name: uid
+        type: integer
+      - description: 设备id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取设备列表
+      tags:
+      - devices
+  /devices/expire:
+    put:
+      consumes:
+      - application/json
+      description: .更改设备过期时间
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备过期时间信息
+        in: body
+        name: deviceExpire
+        required: true
+        schema:
+          $ref: '#/definitions/api.DeviceExpire'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改设备过期时间(仅管理员以上)
+      tags:
+      - devices
+  /devices/status:
+    put:
+      consumes:
+      - application/json
+      description: 更改设备状态
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备状态信息
+        in: body
+        name: deviceStatus
+        required: true
+        schema:
+          $ref: '#/definitions/api.DeviceStatus'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 更改设备状态(仅管理员以上)
+      tags:
+      - devices
+  /devices/user:
+    put:
+      consumes:
+      - application/json
+      description: .更改设备所属权
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 设备所属权信息
+        in: body
+        name: devicesUser
+        required: true
+        schema:
+          $ref: '#/definitions/api.DevicesUser'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改设备所属权(仅管理员以上)
+      tags:
+      - devices
+  /login:
+    get:
+      consumes:
+      - application/json
+      description: 检测账号是否存在
+      parameters:
+      - description: 用户名
+        in: query
+        name: name
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 检测账号是否存在
+      tags:
+      - login
+    post:
+      consumes:
+      - application/json
+      description: 账号登陆
+      parameters:
+      - description: 登陆信息
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.LoginInfos'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 账号登陆
+      tags:
+      - login
+    put:
+      consumes:
+      - application/json
+      description: 账号申请
+      parameters:
+      - description: 申请的用户信息
+        in: body
+        name: userInfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.Registerinfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Result": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Result": null}'
+          schema:
+            type: string
+      summary: 账号申请
+      tags:
+      - login
+  /upload:
+    post:
+      consumes:
+      - application/json
+      description: 图片上传
+      parameters:
+      - description: JWT
+        in: query
+        name: Authorization
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 图片上传
+      tags:
+      - upload
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 起始数
+        in: query
+        name: offset
+        type: string
+      - description: 获取数
+        in: query
+        name: limit
+        type: string
+      - description: 用户状态 1启用 2禁用 3已过期
+        in: query
+        name: status
+        type: string
+      - description: 用户创建起始时间
+        in: query
+        name: starttime
+        type: string
+      - description: 用户创建终止时间
+        in: query
+        name: endtime
+        type: string
+      - description: 用户名
+        in: query
+        name: name
+        type: string
+      - description: 群组id
+        in: query
+        name: ownid
+        type: integer
+      - description: 用户id
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取用户列表
+      tags:
+      - user
+  /users/expire:
+    put:
+      consumes:
+      - application/json
+      description: .更改用户过期时间
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户过期时间信息
+        in: body
+        name: userExpire
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserExpire'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改用户过期时间(仅管理员以上)
+      tags:
+      - user
+  /users/status:
+    put:
+      consumes:
+      - application/json
+      description: 更改用户状态
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户状态信息
+        in: body
+        name: userStatus
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserStatus'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 更改用户状态(仅管理员以上)
+      tags:
+      - user
+swagger: "2.0"
