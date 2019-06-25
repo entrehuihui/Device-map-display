@@ -17,18 +17,14 @@ func Verification() gin.HandlerFunc {
 		JWT := c.GetHeader("Authorization")
 		if JWT == "" {
 			LogError("token contains an invalid number of segments")
-			c.JSON(301, Resqonse{
-				Error: 19,
-			})
+			c.JSON(301, 19)
 			c.Abort()
 			return
 		}
 		mapClaims, err := service.ParseJWT(JWT)
 		if err != nil {
 			LogError(err.Error())
-			c.JSON(301, Resqonse{
-				Error: 19,
-			})
+			c.JSON(301, 19)
 			c.Abort()
 			return
 		}

@@ -38,8 +38,8 @@ func Run() {
 	r.Use(middleware.DataLogs())
 
 	// 开放图片
-	r.Static("/static/", "./static/static/")
-	r.Static("/image/", "./static/image/")
+	r.Static("/static/", "./static/static")
+	r.Static("/images/", "./static/images")
 
 	// 设置浏览器不缓存
 	// r.Use(middleware.Corstoo())
@@ -48,10 +48,14 @@ func Run() {
 	r.PUT("/login", api.Register)
 	r.POST("/login", api.Login)
 	r.GET("/login", api.CheckUserName)
+	r.GET("/login/logo", api.GetLogin)
+	api.SetCode()
+	r.GET("/login/code", api.GetCode)
 
 	//  登陆检测中间件
 	r.Use(middleware.Verification())
-
+	// 登陆信息
+	r.GET("/login/info", api.GetLoginInfo)
 	// 设备数据
 	r.POST("/devicedata", api.SaveDeviceInfos) //数据接收
 	r.GET("/devicedata", api.GetDevicesDatas)  //获取数据

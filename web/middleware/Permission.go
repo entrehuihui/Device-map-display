@@ -13,9 +13,7 @@ func SuperAdministrator() gin.HandlerFunc {
 		if permission != 3 {
 			userID := c.GetInt("id")
 			LogError(fmt.Sprintf("Insufficient permissions SuperAdministrator: userID:%d", userID))
-			c.JSON(301, Resqonse{
-				Error: 20,
-			})
+			c.JSON(301, 20)
 			c.Abort()
 			return
 		}
@@ -30,9 +28,7 @@ func Administrator() gin.HandlerFunc {
 		if permission < 2 {
 			userID := c.GetInt("id")
 			LogError(fmt.Sprintf("Insufficient permissions Administrator: userID:%d", userID))
-			c.JSON(301, Resqonse{
-				Error: 20,
-			})
+			c.JSON(301, 20)
 			c.Abort()
 			return
 		}

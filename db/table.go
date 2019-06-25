@@ -56,3 +56,12 @@ type Devicedata struct {
 	Uptime     int64   `gorm:"not null"`
 	Infos      string
 }
+
+// Logoinfo logo商标
+type Logoinfo struct {
+	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
+	Types      int    `gorm:"not null"` //种类 1背景 2登陆logo 3商标
+	URL        string `gorm:"not null;size:200"`
+	Createtime int64  `gorm:"not null;default:0"`
+	Del        int    `gorm:"not null;default:0"`
+}

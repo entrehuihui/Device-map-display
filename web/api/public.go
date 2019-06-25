@@ -32,15 +32,11 @@ func retError(c *gin.Context, errs int, e interface{}) {
 	} else {
 		log.Printf("[error] web fail  [Msg]: %v", errs)
 	}
-	c.JSON(http.StatusInternalServerError, Resqonse{
-		Result: errs,
-	})
+	c.JSON(http.StatusInternalServerError, errs)
 }
 
 func retSuccess(c *gin.Context, data interface{}) {
-	c.JSON(http.StatusOK, Resqonse{
-		Result: data,
-	})
+	c.JSON(http.StatusOK, data)
 }
 
 func getOffset(c *gin.Context) (int, error) {

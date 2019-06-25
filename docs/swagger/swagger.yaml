@@ -220,19 +220,19 @@ paths:
     delete:
       consumes:
       - application/json
-      description: .删除设备
+      description: .删除用户
       parameters:
       - description: With the bearer started JWT
         in: header
         name: Authorization
         required: true
         type: string
-      - description: 设备ID
+      - description: 用户ID
         in: body
-        name: devicesID
+        name: userDelID
         required: true
         schema:
-          $ref: '#/definitions/api.DevicesID'
+          $ref: '#/definitions/api.UserDelID'
           type: object
       produces:
       - application/json
@@ -249,7 +249,7 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .删除设备(仅管理员以上)
+      summary: .删除用户(仅管理员以上)
       tags:
       - devices
     get:
@@ -510,6 +510,81 @@ paths:
           schema:
             type: string
       summary: 账号申请
+      tags:
+      - login
+  /login/code:
+    get:
+      consumes:
+      - application/json
+      description: 获取错误代码
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取错误代码
+      tags:
+      - login
+  /login/info:
+    get:
+      consumes:
+      - application/json
+      description: 获取登陆信息
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取登陆信息
+      tags:
+      - login
+  /login/logo:
+    get:
+      consumes:
+      - application/json
+      description: 获取背景图列表
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取背景图列表
       tags:
       - login
   /upload:

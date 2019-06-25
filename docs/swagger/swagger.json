@@ -240,7 +240,7 @@
                 }
             },
             "delete": {
-                "description": ".删除设备",
+                "description": ".删除用户",
                 "consumes": [
                     "application/json"
                 ],
@@ -250,7 +250,7 @@
                 "tags": [
                     "devices"
                 ],
-                "summary": ".删除设备(仅管理员以上)",
+                "summary": ".删除用户(仅管理员以上)",
                 "parameters": [
                     {
                         "type": "string",
@@ -260,13 +260,13 @@
                         "required": true
                     },
                     {
-                        "description": "设备ID",
-                        "name": "devicesID",
+                        "description": "用户ID",
+                        "name": "userDelID",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/api.DevicesID"
+                            "$ref": "#/definitions/api.UserDelID"
                         }
                     }
                 ],
@@ -565,6 +565,120 @@
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/code": {
+            "get": {
+                "description": "获取错误代码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "获取错误代码",
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/info": {
+            "get": {
+                "description": "获取登陆信息",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "获取登陆信息",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/logo": {
+            "get": {
+                "description": "获取背景图列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "login"
+                ],
+                "summary": "获取背景图列表",
                 "responses": {
                     "200": {
                         "description": "{\"Error\":\"Success\",\"Data\": object}",
