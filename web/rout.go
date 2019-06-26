@@ -56,6 +56,8 @@ func Run() {
 	r.Use(middleware.Verification())
 	// 登陆信息
 	r.GET("/login/info", api.GetLoginInfo)
+	r.GET("/config", api.GetConfiguration)    // 获取用户配置
+	r.PUT("/config", api.UpdateConfiguration) // 更改用户配置
 	// 设备数据
 	r.POST("/devicedata", api.SaveDeviceInfos) //数据接收
 	r.GET("/devicedata", api.GetDevicesDatas)  //获取数据

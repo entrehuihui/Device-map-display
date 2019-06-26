@@ -3,13 +3,22 @@
     <div id="top_div">
       <LMap
         :zoom="zoom"
+        :maxZoom="18"
         :center="center"
         style="z-index: 0;"
         @click="addMarket"
         :options="{zoomControl: false}"
+        ref="lmapmy"
       >
         <!-- 默认地图 如果不用地图选择器则不注释 -->
-        <!-- <LTileLayer :url="url" :attribution="attribution"></LTileLayer> -->
+        <LTileLayer
+          :key="tileProviders[mapindex].name"
+          :name="tileProviders[mapindex].name"
+          :visible="tileProviders[mapindex].visible"
+          :url="tileProviders[mapindex].url"
+          :attribution="tileProviders[mapindex].attribution"
+          layer-type="base"
+        ></LTileLayer>
         <!-- 画圆 -->
         <LCircle
           v-for="(v, i) in circle"
@@ -112,7 +121,7 @@
         <!-- <LControlLayers position="topright"></LControlLayers> -->
         <!-- 放大按钮 -->
         <!-- <LControlZoom></LControlZoom> -->
-        <LTileLayer
+        <!-- <LTileLayer
           v-for="tileProvider in tileProviders"
           :key="tileProvider.name"
           :name="tileProvider.name"
@@ -120,7 +129,7 @@
           :url="tileProvider.url"
           :attribution="tileProvider.attribution"
           layer-type="base"
-        />
+        />-->
       </LMap>
     </div>
   </div>
@@ -171,6 +180,12 @@ export default {
     },
     markers: {
       default: ""
+    },
+    changeZoom: {
+      default: 0
+    },
+    mapindex: {
+      default: 0
     }
   },
   data() {
@@ -201,20 +216,6 @@ export default {
       }),
       tileProviders: [
         {
-          name: "街道地图",
-          visible: false,
-          attribution:
-            '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        },
-        {
-          name: "平面地图",
-          visible: false,
-          url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-          attribution:
-            'Map data: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)'
-        },
-        {
           name: "谷歌街道图",
           visible: true,
           attribution:
@@ -223,14 +224,14 @@ export default {
         },
         {
           name: "谷歌影像图",
-          visible: false,
+          visible: true,
           attribution:
             '&copy; <a target="_blank" href="http://www.google.cn/maps">谷歌地图</a> contributors',
           url: "http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"
         },
         {
           name: "离线地图",
-          visible: false,
+          visible: true,
           attribution:
             '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
           url: "http://120.78.76.139:8998/1818940751/{z}/{x}/{y}"
@@ -278,6 +279,19 @@ export default {
   },
   mounted() {},
   watch: {
+    mapindex: function(v) {
+      console.log(v, "=====");
+    },
+    changeZoom: function(v, o) {
+      // console.log(this.$refs.lmapmy.mapObject.getCenter());
+      // console.log(this.$refs.lmapmy.mapObject.getZoom(), "+++++22");
+      // console.log(this.$refs.lmapmy.mapObject.getBounds());
+      if (v > o) {
+        this.zoom = this.$refs.lmapmy.mapObject.getZoom() + 1;
+      } else {
+        this.zoom = this.$refs.lmapmy.mapObject.getZoom() - 1;
+      }
+    },
     routline: function(v) {
       var maxx = 0;
       var maxy = 0;

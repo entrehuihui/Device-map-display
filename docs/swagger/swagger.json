@@ -10,6 +10,102 @@
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/config": {
+            "get": {
+                "description": "获取用户配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": "获取用户配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": ".更改用户配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": ".更改用户配置(仅管理员以上)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户配置信息",
+                        "name": "configuration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.Configuration"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/devicedata": {
             "get": {
                 "description": "获取数据列表",
@@ -946,6 +1042,27 @@
         }
     },
     "definitions": {
+        "api.Configuration": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "用户ID --不填",
+                    "type": "integer"
+                },
+                "language": {
+                    "description": "语言选择 1简体中文 2繁体中文 3英文 不更改不填或填0",
+                    "type": "integer"
+                },
+                "message": {
+                    "description": "消息推送开关 1开2关 不更改不填或填0",
+                    "type": "integer"
+                },
+                "sound": {
+                    "description": "声音开关 1开2关 不更改不填或填0",
+                    "type": "integer"
+                }
+            }
+        },
         "api.DeviceExpire": {
             "type": "object",
             "properties": {

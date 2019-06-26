@@ -32,7 +32,8 @@ func SetSQL(f io.Writer) (err error) {
 		&Logininfo{},
 		&Deviceinfo{},
 		&Devicedata{},
-		&Logoinfo{}).Error
+		&Logoinfo{},
+		&Configuration{}).Error
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -65,3 +65,11 @@ type Logoinfo struct {
 	Createtime int64  `gorm:"not null;default:0"`
 	Del        int    `gorm:"not null;default:0"`
 }
+
+// Configuration 用户配置
+type Configuration struct {
+	ID       int `gorm:"primary_key;AUTO_INCREMENT;unique_index"` //用户ID
+	Message  int `gorm:"not null;default:1"`                      //消息推送开关
+	Sound    int `gorm:"not null;default:1"`                      //声音开关
+	Language int `gorm:"not null;default:1"`                      //语言选择 1简体中文 2繁体中文 3英文
+}

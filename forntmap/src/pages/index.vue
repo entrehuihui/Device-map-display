@@ -54,7 +54,7 @@ import md5 from "js-md5";
 export default {
   data() {
     return {
-      remember: false,
+      remember: true,
       account: "",
       password: "",
       cookieName: "openMap"
@@ -134,10 +134,10 @@ export default {
       });
     },
     // 获取用户登陆信息
-    getUserInfo: function() {
-      this.req.get("/login/info").then(response => {
+    getUserInfo: async function() {
+      await this.req.get("/login/info").then(response => {
         if (response.status != 200) {
-          alert(response.msg);
+          // alert(response.msg);
           // 删除cookie
           this.setCookie(this.global.userinfo.jwt, -1);
           return;
@@ -178,8 +178,12 @@ export default {
   watch: {},
   async mounted() {
     await this.getCode();
+    if (this.$route.params.logout) {
+      this.setCookie(this.global.userinfo.jwt, -1);
+    } else {
+      this.getCookie();
+    }
     this.getLogo();
-    this.getCookie();
   }
 };
 </script>

@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"time"
 
 	"../../db"
@@ -277,7 +276,6 @@ func UserDel(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
-	fmt.Println(user)
 	if c.GetInt("permisson") != 3 {
 		if user.Ownid != c.GetInt("id") {
 			retError(c, 18, err)
