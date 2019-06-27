@@ -20,10 +20,11 @@ import (
 // @Param	limit	query	string	flase	"获取数"
 // @Param	status	query	string	flase	"用户状态 1启用 2禁用 3已过期"
 // @Param	starttime	query	string	flase	"用户创建起始时间"
-// @Param	endtime	query	string	flase	"用户创建终止时间"
-// @Param	name	query	string	flase	"用户名"
-// @Param	ownid	query	int	flase	"群组id"
-// @Param	id		query	int	flase	"用户id"
+// @Param	endtime		query	string	flase	"用户创建终止时间"
+// @Param	name		query	string	flase	"用户名"
+// @Param	ownid		query	int	flase	"群组id"
+// @Param	id			query	int	flase	"用户id"
+// @Param	permisson 	query	int	flase	"用户级别"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
@@ -37,9 +38,9 @@ func GetUsers(c *gin.Context) {
 	limit := 30
 	offset := 0
 	if permisson == 3 {
-		result = s.Where("id != ?", uid)
+		result = s.Where(" id != ?", uid)
 	} else {
-		result = s.Where("id != ? and ownid = ?", uid, uid)
+		result = s.Where(" ownid = ?", uid)
 	}
 
 	id, err := getID(c)
@@ -86,6 +87,14 @@ func GetUsers(c *gin.Context) {
 		}
 		if status != 0 {
 			result = result.Where("status = ?", status)
+		}
+		permissonquery, err := getPermisson(c)
+		if err != nil {
+			retError(c, 18, err)
+			return
+		}
+		if permissonquery != 0 {
+			result = result.Where("permisson = ?", permissonquery)
 		}
 		//
 		name := getName(c)

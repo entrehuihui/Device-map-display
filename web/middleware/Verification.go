@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -15,6 +16,7 @@ import (
 func Verification() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		JWT := c.GetHeader("Authorization")
+		fmt.Print(JWT, "++++++++++++++++++++++++++", c.Request.Method)
 		if JWT == "" {
 			LogError("token contains an invalid number of segments")
 			c.JSON(301, 19)

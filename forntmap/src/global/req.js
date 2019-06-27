@@ -35,6 +35,11 @@ export default {
                     return error.response
                 }
             });
+        if (response == undefined) {
+            return {
+                status: 500
+            }
+        }
         if (response.status == 200) {
         } else if (response.status == 301) {
             router.push('/');
@@ -59,6 +64,11 @@ export default {
                     return error.response
                 }
             });
+        if (response == undefined) {
+            return {
+                status: 500
+            }
+        }
         if (response.status == 200) {
         } else if (response.status == 301) {
             router.push('/');
@@ -83,6 +93,11 @@ export default {
                     return error.response
                 }
             });
+        if (response == undefined) {
+            return {
+                status: 500
+            }
+        }
         if (response.status == 200) {
         } else if (response.status == 301) {
             router.push('/');
@@ -110,6 +125,11 @@ export default {
                     return error.response
                 }
             });
+        if (response == undefined) {
+            return {
+                status: 500
+            }
+        }
         if (response.status == 200) {
         } else if (response.status == 301) {
             router.push('/');
@@ -138,6 +158,11 @@ export default {
                     return error.response
                 }
             });
+        if (response == undefined) {
+            return {
+                status: 500
+            }
+        }
         if (response.status == 200) {
         } else if (response.status == 301) {
             router.push('/');

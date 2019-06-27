@@ -204,7 +204,7 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .更改用户配置(仅管理员以上)
+      summary: .更改用户配置
       tags:
       - config
   /devicedata:
@@ -238,7 +238,7 @@ paths:
         in: query
         name: endtime
         type: string
-      - description: 数据id
+      - description: 设备id
         in: query
         name: id
         type: integer
@@ -299,19 +299,19 @@ paths:
     delete:
       consumes:
       - application/json
-      description: .删除用户
+      description: .删除设备
       parameters:
       - description: With the bearer started JWT
         in: header
         name: Authorization
         required: true
         type: string
-      - description: 用户ID
+      - description: 设备ID
         in: body
-        name: userDelID
+        name: devicesID
         required: true
         schema:
-          $ref: '#/definitions/api.UserDelID'
+          $ref: '#/definitions/api.DevicesID'
           type: object
       produces:
       - application/json
@@ -328,7 +328,7 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .删除用户(仅管理员以上)
+      summary: .删除设备(仅管理员以上)
       tags:
       - devices
     get:
@@ -736,6 +736,10 @@ paths:
       - description: 用户id
         in: query
         name: id
+        type: integer
+      - description: 用户级别
+        in: query
+        name: permisson
         type: integer
       produces:
       - application/json

@@ -42,7 +42,7 @@ func Run() {
 	r.Static("/images/", "./static/images")
 
 	// 设置浏览器不缓存
-	// r.Use(middleware.Corstoo())
+	r.Use(middleware.Corstoo())
 
 	// login
 	r.PUT("/login", api.Register)

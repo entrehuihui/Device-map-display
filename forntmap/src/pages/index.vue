@@ -116,12 +116,12 @@ export default {
     },
     // 获取错误代码
     getCode: async function() {
-      await this.req.get("/login/code").then(response => {
-        if (response.status != 200) {
-          return;
-        }
-        this.global.code = response.data;
-      });
+      var response = await this.req.get("/login/code");
+      if (response.status != 200) {
+        console.log("++++++++++++++++++++拉取不到错误代码");
+        return;
+      }
+      this.global.code = response.data;
     },
     // 获取logo图标
     getLogo: function() {
@@ -143,6 +143,8 @@ export default {
           return;
         }
         this.global.userinfo = response.data;
+        console.log(response.data);
+
         this.jump();
       });
     },
@@ -162,6 +164,10 @@ export default {
       this.global.userinfo.jwt = unescape(
         document.cookie.substring(start, end)
       );
+      if (this.global.userinfo.jwt.length < 30) {
+        this.setCookie("", -1);
+        return;
+      }
       this.getUserInfo();
     },
     // expiredays 正数为设置, 负数为删除

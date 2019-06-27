@@ -2,7 +2,7 @@ package db
 
 // Userinfo 用户列表
 type Userinfo struct {
-	ID          int    `gorm:"primary_key;AUTO_INCREMENT;unique_index" json:"id"`
+	ID          int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
 	Ownid       int    `gorm:"not null;index"`
 	Name        string `gorm:"not null;size:100;unique_index"`
 	Password    string `gorm:"size:32"`
@@ -49,12 +49,13 @@ type Deviceinfo struct {
 type Devicedata struct {
 	ID         int     `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
 	UID        int     `gorm:"not null;index"`
-	Classid    int     `gorm:"not null;index"`
+	Did        int     `gorm:"not null;index"`
 	Longitude  float64 `gorm:"not null"`
 	Latitude   float64 `gorm:"not null"`
+	State      int     `gorm:"not null;default:1"`
 	Createtime int64   `gorm:"not null"`
 	Uptime     int64   `gorm:"not null"`
-	Infos      string
+	Infos      string  `gorm:"not null;default:{}"`
 }
 
 // Logoinfo logo商标

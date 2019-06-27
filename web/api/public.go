@@ -66,6 +66,18 @@ func getStatus(c *gin.Context) (int, error) {
 	return status, err
 }
 
+func getPermisson(c *gin.Context) (int, error) {
+	permissons := c.Query("permisson")
+	if permissons == "" {
+		return 0, nil
+	}
+	permisson, err := strconv.Atoi(permissons)
+	if permisson < 1 || permisson > 3 {
+		return 0, nil
+	}
+	return permisson, err
+}
+
 func getStarttime(c *gin.Context) (int, error) {
 	starttimes := c.Query("starttime")
 	if starttimes == "" {

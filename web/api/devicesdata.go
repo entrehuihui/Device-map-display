@@ -95,7 +95,7 @@ func SaveDeviceInfos(c *gin.Context) {
 	}
 	fmt.Println(infos)
 	// 保存信息
-	// 1----- 判断状态是否改名
+	// 1----- 判断状态是否改变
 	if infos[1] != deviceInfos.State {
 		//改变设备状态 --不在乎结果
 		s.UpdateDevice(infos[0], map[string]interface{}{
@@ -110,12 +110,15 @@ func SaveDeviceInfos(c *gin.Context) {
 		return
 	}
 	if jsons == nil {
-		jsons = []byte("")
+		jsons = []byte("{}")
 	}
 	devicedata := &db.Devicedata{
+		UID:        infos[2],
+		Did:        infos[0],
 		Longitude:  deviceInfos.Longitude,
 		Latitude:   deviceInfos.Latitude,
 		Createtime: time.Now().Unix(),
+		State:      infos[1],
 		Uptime:     deviceInfos.times,
 		Infos:      string(jsons),
 	}
@@ -141,7 +144,7 @@ func SaveDeviceInfos(c *gin.Context) {
 // @Param	status	query	string	flase	"数据状态(自定义状态)"
 // @Param	starttime	query	string	flase	"数据创建起始时间"
 // @Param	endtime	query	string	flase	"数据创建终止时间"
-// @Param	id		query	int	flase	"数据id"
+// @Param	id		query	int	flase	"设备id"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
@@ -168,46 +171,44 @@ func GetDevicesDatas(c *gin.Context) {
 		return
 	}
 	if id != 0 {
-		result = result.Where("id = ?", id)
-		limit = 1
-	} else {
-		endtime, err := getEndtime(c)
-		if err != nil {
-			retError(c, 15, err)
-			return
-		}
-		if endtime != 0 {
-			result = result.Where("createtime < ?", endtime)
-		}
-		//
-		starttime, err := getStarttime(c)
-		if err != nil {
-			retError(c, 14, err)
-			return
-		}
-		if starttime != 0 {
-			result = result.Where("createtime > ?", starttime)
-		}
-		//
-		status, err := getStatus(c)
-		if err != nil {
-			retError(c, 13, err)
-			return
-		}
-		if status != 0 {
-			result = result.Where("status = ?", status)
-		}
-		//
-		limit, err = getLimit(c)
-		if err != nil {
-			retError(c, 17, err)
-			return
-		}
-		offset, err = getOffset(c)
-		if err != nil {
-			retError(c, 17, err)
-			return
-		}
+		result = result.Where("did  = ?", id)
+	}
+	endtime, err := getEndtime(c)
+	if err != nil {
+		retError(c, 15, err)
+		return
+	}
+	if endtime != 0 {
+		result = result.Where("createtime < ?", endtime)
+	}
+	//
+	starttime, err := getStarttime(c)
+	if err != nil {
+		retError(c, 14, err)
+		return
+	}
+	if starttime != 0 {
+		result = result.Where("createtime > ?", starttime)
+	}
+	//
+	status, err := getStatus(c)
+	if err != nil {
+		retError(c, 13, err)
+		return
+	}
+	if status != 0 {
+		result = result.Where("status = ?", status)
+	}
+	//
+	limit, err = getLimit(c)
+	if err != nil {
+		retError(c, 17, err)
+		return
+	}
+	offset, err = getOffset(c)
+	if err != nil {
+		retError(c, 17, err)
+		return
 	}
 	// 查数量
 	devicedata := make([]db.Devicedata, 0)

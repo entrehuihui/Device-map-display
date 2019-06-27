@@ -38,6 +38,9 @@ export default {
 }
 
 function getcode(id) {
+    if (id == undefined) {
+        return "失败!"
+    }
     if (id > this.code.length) {
         return "失败!"
     }
