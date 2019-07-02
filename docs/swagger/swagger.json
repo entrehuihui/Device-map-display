@@ -893,6 +893,160 @@
                 }
             }
         },
+        "/orbit": {
+            "get": {
+                "description": "获取用户围栏",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orbit"
+                ],
+                "summary": "获取用户围栏",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": ".设置用户围栏",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orbit"
+                ],
+                "summary": ".设置用户围栏",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户围栏信息",
+                        "name": "configuration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.Orbitinfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": ".删除用户围栏",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "orbit"
+                ],
+                "summary": ".删除用户围栏",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户围栏信息",
+                        "name": "configuration",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.Orbitinfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/upload": {
             "post": {
                 "description": "图片上传",
@@ -1277,6 +1431,19 @@
                 "password": {
                     "description": "密码 MD5加密(小写)",
                     "type": "string"
+                }
+            }
+        },
+        "api.Orbitinfo": {
+            "type": "object",
+            "properties": {
+                "info": {
+                    "description": "围栏信息json  1: {Lat:21.32, lng:113.21, radius: 123}  2:[{Lat:21.32, lng:113.21}, {Lat:21.32, lng:113.21}....]",
+                    "type": "object"
+                },
+                "types": {
+                    "description": "1 圆 2方",
+                    "type": "integer"
                 }
             }
         },

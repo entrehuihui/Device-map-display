@@ -66,6 +66,10 @@ func Run() {
 	r.GET("/devicedata", api.GetDevicesDatas)  //获取数据
 	// 设备
 	r.GET("/devices", api.GetDevices) // 获取设备列表
+	// 围栏
+	r.GET("/orbit", api.GetOrbit)    // 获取围栏
+	r.POST("/orbit", api.PostOrbit)  // 设置围栏
+	r.DELETE("/orbit", api.DelOrbit) // 删除围栏
 
 	// 管理员权限中间件
 	r.Use(middleware.Administrator())

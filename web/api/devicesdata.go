@@ -56,6 +56,15 @@ func SaveDeviceInfos(c *gin.Context) {
 		retError(c, 22, nil)
 		return
 	}
+	// 判断经纬度
+	if deviceInfos.Latitude > 90 || deviceInfos.Latitude < -90 {
+		retError(c, 36, nil)
+		return
+	}
+	if deviceInfos.Longitude > 180 || deviceInfos.Longitude < -180 {
+		retError(c, 37, nil)
+		return
+	}
 	uid := c.GetInt("id")
 	s := service.GetServer()
 	// 查询设备是否保存

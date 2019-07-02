@@ -20,6 +20,26 @@
           :attribution="tileProviders[mapindex].attribution"
           layer-type="base"
         ></LTileLayer>
+        <!-- 围栏点 -->
+        <LMarker
+          v-for="(mark, marki) in execMark"
+          :key="marki + 'exec'"
+          :lat-lng="mark"
+          :icon="execicon"
+        >
+          <LPopup>
+            <table>
+              <tr>
+                <th>纬度:</th>
+                <th>{{mark[0]}}</th>
+              </tr>
+              <tr>
+                <th>经度:</th>
+                <th>{{mark[1]}}</th>
+              </tr>
+            </table>
+          </LPopup>
+        </LMarker>
         <!-- 画点 -->
         <div v-for="(user, userindex) in devicesMarks" :key="userindex+'devicesMarks'">
           <LMarker
@@ -47,6 +67,26 @@
             </LPopup>
           </LMarker>
         </div>
+        <!-- 画围栏 -->
+        <div v-for="(orbit, orbiti) in orbitLists" :key="orbiti+'mark'">
+          <!-- 画圆 -->
+          <LCircle
+            v-if="orbit.Types==1 && parseInt(orbit.Radius)"
+            :lat-lng="[orbit.Lat, orbit.Lng]"
+            :radius="parseInt(orbit.Radius)"
+            :color="global.color[9]"
+            :fillColor="global.color[9]"
+            :fillOpacity="0.05"
+          ></LCircle>
+          <!-- 画矩形 -->
+          <LPolygon
+            v-if="orbit.Types==2 && orbit.Polygon.length > 2"
+            :lat-lngs="orbit.Polygon"
+            :color="global.color[9]"
+            :fillColor="global.color[9]"
+            :fillOpacity="0.05"
+          ></LPolygon>
+        </div>
       </LMap>
     </div>
   </div>
@@ -60,6 +100,7 @@ import {
   LTileLayer,
   LMarker,
   LPolyline,
+  LPolygon,
   LPopup,
   LTooltip,
   LCircle,
@@ -81,6 +122,7 @@ export default {
     LTileLayer,
     LMarker,
     LPolyline,
+    LPolygon,
     LPopup,
     LTooltip,
     LCircle,
@@ -100,6 +142,7 @@ export default {
     },
     addMarket: function(event) {
       console.log(event.latlng);
+      this.$emit("LatLng", event.latlng.lat, event.latlng.lng);
     }
   },
   props: {
@@ -118,6 +161,16 @@ export default {
   },
   data() {
     return {
+      orbitLists: {},
+      execMark: [],
+      execicon: icon({
+        iconUrl: "/static/execmark.png",
+        iconSize: [24, 34],
+        shadowSize: [24, 34],
+        iconAnchor: [12, 34],
+        shadowAnchor: [24, 34],
+        popupAnchor: [0, -34]
+      }),
       zoom: 15,
       center: [22.593262, 113.925971],
       url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png",

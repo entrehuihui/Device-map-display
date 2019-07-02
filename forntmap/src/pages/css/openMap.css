@@ -295,13 +295,14 @@
 .openMapdevicesDevicesOperatFrame{
     position: relative;
     width: 125px;
-    height: 200px;
+    min-height: 200px;
     left: 35px;
     background: rgb(255, 255, 255);
     border: 2px solid rgba(145, 145, 145, 0.5);
     border-radius: 10px;
     padding-top: 10px;
     padding-bottom: 10px;
+    display: table;
 }
 .openMapdevicesDevicesOperatFrame:before { 
     content:""; 
@@ -314,7 +315,15 @@
     border-right: 18px solid rgb(255, 255, 255); 
     border-bottom: 17px solid transparent; 
 } 
-
+.openMapdevicesDevicesOperatFrameC{
+    position: relative;
+    float: left;
+    width: 110px;
+    height: 30px;
+    margin-left: 10px;
+    color: black;
+    overflow: hidden;
+}
 
 .openmaplogo{
     position: absolute;
@@ -729,4 +738,143 @@
     border-top: 7px solid transparent; 
     border-left: 4px solid rgb(207, 207, 207, 0.5); 
     border-bottom: 7px solid transparent; 
-} 
+}
+
+.openmapOrbit{
+    position: absolute;
+    height: 200px;
+    width: 200px;
+    top: 320px;
+    right: 1030px;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgb(112, 112, 112);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.openmapOrbitTitle{
+    position: relative;
+    height: 40px;
+    width: 200px;
+    line-height: 40px;
+    text-align: center;
+    cursor: move;
+}
+.openmapOrbitClose{
+    position: relative;
+    float: right;
+    height: 25px;
+    width: 25px;
+    line-height: 20px;
+    cursor: pointer;
+    margin-top: 5px;
+}
+.openmapOrbitClose:hover{
+    color: red;
+}
+.openmapOrbitTypes{
+    position: relative;
+    height: 150px;
+    width: 160px;
+    margin-left: 20px;
+}
+.openmapOrbitTypesSelect{
+    position: relative;
+    width: 160px;
+    height: 50px;
+    margin-top: 10px;
+    border: 1px solid rgb(102, 102, 102);
+    border-radius: 10px;
+}
+.openmapOrbitTypesSelect:hover {
+    background: rgb(223, 222, 222);
+}
+.openmapOrbitTypesName{
+    position: relative;
+    float: left;
+    width: 120px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    cursor: pointer;
+}
+.openmapOrbitTypesMark{
+    position: relative;
+    float: left;
+    height: 10px;
+    width: 10px;
+    border-radius: 10px;
+    border: 1px solid rgba(0,0,0);
+    margin-top: 20px;
+    margin-left: 10px;
+}
+.openmapOrbitTypesMarkInside{
+    height: 10px;
+    width: 10px;
+    background: #000;
+    border-radius: 10px;
+}
+/* #circle{
+    background: rgb(204, 204, 204);
+} */
+.openmapOrbitCircle{
+    position: relative;
+    height: 30px;
+    width: 160px;
+    line-height: 30px;
+    text-align: center;
+    margin-top: 5px;
+}
+.openmapOrbitCircleName{
+    position: relative;
+    float: left;
+    width: 40px;
+    height: 30px;
+}
+.openmapOrbitCircleInput{
+    position: relative;
+    float: left;
+    width: 90px;
+    height: 20px;
+    margin-left: 5px;
+    margin-top: 2px;
+    /* outline: none; */
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.openmapOrbitCircleInput::-webkit-outer-spin-button,
+.openmapOrbitCircleInput::-webkit-inner-spin-button{
+    -webkit-appearance: none !important;
+    margin: 0;
+}
+.openmapOrbitCircleTrue{
+    position: relative;
+    float: left;
+    margin-left: 20px;
+    width: 50px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid rgb(153, 153, 153);
+    cursor: pointer;
+}
+.openmapOrbitCircleTrue:hover{
+    background: rgb(145, 145, 145);
+    color: white;
+}
+.openmapOrbitPolygon{
+    position: relative;
+    float: left;
+    width: 100px;
+}
+.openmapOrbitPolygonNext{
+    position: relative;
+    float: left;
+    width: 55px;
+    height: 30xp;
+    border: 1px solid rgb(153, 153, 153);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.openmapOrbitPolygonNext:hover{
+    background: rgb(145, 145, 145);
+    color: white;
+}

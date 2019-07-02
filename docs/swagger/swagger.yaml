@@ -95,6 +95,16 @@ definitions:
         description: 密码 MD5加密(小写)
         type: string
     type: object
+  api.Orbitinfo:
+    properties:
+      info:
+        description: '围栏信息json  1: {Lat:21.32, lng:113.21, radius: 123}  2:[{Lat:21.32,
+          lng:113.21}, {Lat:21.32, lng:113.21}....]'
+        type: object
+      types:
+        description: 1 圆 2方
+        type: integer
+    type: object
   api.Registerinfo:
     properties:
       code:
@@ -737,6 +747,109 @@ paths:
       summary: 获取背景图列表
       tags:
       - login
+  /orbit:
+    delete:
+      consumes:
+      - application/json
+      description: .删除用户围栏
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户围栏信息
+        in: body
+        name: configuration
+        required: true
+        schema:
+          $ref: '#/definitions/api.Orbitinfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .删除用户围栏
+      tags:
+      - orbit
+    get:
+      consumes:
+      - application/json
+      description: 获取用户围栏
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取用户围栏
+      tags:
+      - orbit
+    post:
+      consumes:
+      - application/json
+      description: .设置用户围栏
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户围栏信息
+        in: body
+        name: configuration
+        required: true
+        schema:
+          $ref: '#/definitions/api.Orbitinfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .设置用户围栏
+      tags:
+      - orbit
   /upload:
     post:
       consumes:

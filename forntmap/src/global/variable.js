@@ -28,7 +28,8 @@ var color = [
     "blue",
     "chartreuse",
     "yellow",
-    "violet"
+    "violet",
+    "rgb(214, 7, 255)"
 ]
 export default {
     logo,
@@ -37,7 +38,17 @@ export default {
     userinfo,
     color,
     state,
-    sleep
+    sleep,
+    getState
+}
+
+function getState(index) {
+    if (index > this.state.length) {
+        return {
+            States:"未知"
+        }
+    }
+    return this.state[index -1]
 }
 
 function getcode(id) {

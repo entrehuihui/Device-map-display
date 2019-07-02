@@ -7,6 +7,7 @@
         :changeZoom="changeZoom"
         :mapindex="mapIndex.index"
         :devicesMarks="devicesMarks"
+        v-on:LatLng="LatLng"
       ></lmap>
     </div>
     <!-- 展开设备菜单 -->
@@ -14,7 +15,7 @@
       <!-- 收起 -->
       <div class="openMapDevicesListclose" @click="devicesList = false">
         <div class="openMapDevicesright">
-          <img class="imgMax" src="/static/left.png">
+          <img class="imgMax" src="/static/left.png" />
         </div>
       </div>
       <!-- 设备列表 -->
@@ -66,15 +67,15 @@
               class="openMapdevicessearchinside"
               placeholder="请输入关键字搜索"
               v-model="devicesQuery"
-            >
+            />
             <div class="openMapdevicessearchinbotton" @click="getDevicesQuery()">搜索</div>
           </div>
           <!-- 设备分组 -->
           <div class="openMapdevicesGroup">
             <div class="openMapdevicesGroupName" v-for="(v, i) in groundUser" :key="i+v.Name">
               <div class="openMapdevicesGroupNameimg">
-                <img src="/static/right.png" class="imgMax" v-show="!v.Show">
-                <img src="/static/bottom.png" class="imgMax" v-show="v.Show">
+                <img src="/static/right.png" class="imgMax" v-show="!v.Show" />
+                <img src="/static/bottom.png" class="imgMax" v-show="v.Show" />
               </div>
               <div
                 class="openMapdevicesGroupNameExplain"
@@ -96,20 +97,26 @@
                       ></div>
                       <div
                         class="openMapdevicesGroupDevicesStateExplain"
-                      >{{global.state[v1.DeviceData.State-1].States}}</div>
+                      >{{global.getState(v1.DeviceData.State).States}}</div>
                       <div
                         class="openMapdevicesGroupDevicesStateTime"
                       >{{new Date(v1.DeviceData.Uptime * 1000).toLocaleString()}}</div>
                     </div>
                   </div>
                   <!-- 子菜单 -->
-                  <div class="openMapdevicesGroupDevicesNameOption">
+                  <div class="openMapdevicesGroupDevicesNameOption" v-if="v1.DeviceData">
                     <div class="openMapdevicesGroupDevicesNameOptions"></div>
                     <div class="openMapdevicesGroupDevicesNameOptions"></div>
                     <div class="openMapdevicesGroupDevicesNameOptions"></div>
                     <div class="openMapdevicesDevicesOperat">
                       <div class="openMapdevicesDevicesOperatInside">
-                        <div class="openMapdevicesDevicesOperatFrame"></div>
+                        <div class="openMapdevicesDevicesOperatFrame">
+                          <div
+                            class="openMapdevicesDevicesOperatFrameC"
+                            v-for="(v2, v2index) in v1.DeviceData.Infos"
+                            :key="v2 + i1"
+                          >{{v2}} : {{v2index}}</div>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -123,13 +130,13 @@
     <div v-show="!fullscreen.full">
       <!-- logo图标 -->
       <div class="openmaplogo">
-        <img class="imgMax" :src="req.localhost + global.logo[3]">
+        <img class="imgMax" :src="req.localhost + global.logo[3]" />
       </div>
       <!-- 设备菜单 -->
       <div class="openMapDevices" v-show="!devicesList" @click="devicesList = true">
         <div class="openMapDevicesOpen">设备列表</div>
         <div class="openMapDevicesleft">
-          <img class="imgMax" src="/static/right.png">
+          <img class="imgMax" src="/static/right.png" />
         </div>
       </div>
       <!-- 用户头像信息 -->
@@ -140,17 +147,17 @@
           <div class="openMapUserPush" @mouseleave="push=false">
             <div @click="push=!push">
               <div class="openMapUserPushimg">
-                <img class="imgMax" src="/static/push.png">
+                <img class="imgMax" src="/static/push.png" />
               </div>
               <div class="openMapUserPushExplain">推送</div>
               <div class="openMapUserPushopenimg">
-                <img v-show="!push" class="imgMax" src="/static/pushopen.png">
+                <img v-show="!push" class="imgMax" src="/static/pushopen.png" />
                 <img
                   v-show="push"
                   class="imgMax"
                   src="/static/pushopen.png"
                   id="openMapUserPushopenmg"
-                >
+                />
               </div>
             </div>
             <div class="openMapUserPushbutton" v-show="push">
@@ -200,17 +207,17 @@
           <div class="openMapUserPush" @mouseleave="language=false">
             <div @click="language=!language">
               <div class="openMapUserPushimg">
-                <img class="imgMax" src="/static/language.png">
+                <img class="imgMax" src="/static/language.png" />
               </div>
               <div class="openMapUserPushExplain">语言</div>
               <div class="openMapUserPushopenimg">
-                <img v-show="!language" class="imgMax" src="/static/pushopen.png">
+                <img v-show="!language" class="imgMax" src="/static/pushopen.png" />
                 <img
                   v-show="language"
                   class="imgMax"
                   src="/static/pushopen.png"
                   id="openMapUserPushopenmg"
-                >
+                />
               </div>
             </div>
             <div class="openMapUserPushbutton" id="openMapUserPushbuttonlanguage" v-show="language">
@@ -250,7 +257,7 @@
             id="openMapUserphoto"
             :src="req.localhost + global.userinfo.photo"
             @click="userInfo = !userInfo"
-          >
+          />
         </div>
       </div>
       <!-- 用户信息下部分张开 -->
@@ -265,7 +272,7 @@
         </div>
         <div class="openMapUserInfoExplan" @click="logout()">
           <div class="openMapUserInfoExplanLogout">
-            <img src="/static/logout.png" class="imgMax">
+            <img src="/static/logout.png" class="imgMax" />
           </div>
           <div class="openMapUserInfoExplanLeft">注销登陆</div>
         </div>
@@ -283,7 +290,7 @@
           @mouseleave="fullscreen.explain = false"
         >
           <div class="openMapZoomOut">
-            <img src="/static/fullscreen.png" class="imgMax">
+            <img src="/static/fullscreen.png" class="imgMax" />
           </div>
           <em class="openMapFullem"></em>
           <div class="openMapZoomOutLeft" v-show="fullscreen.explain">全屏显示</div>
@@ -291,7 +298,7 @@
         <!-- 地图选择按钮 -->
         <div class="openMapMap" @mouseover="mapIndex.show=true" @mouseleave="mapIndex.show=false">
           <div class="openMapZoomOut">
-            <img src="/static/map.png" class="imgMax">
+            <img src="/static/map.png" class="imgMax" />
             <div class="openMapMapSelect" v-show="mapIndex.show">
               <div class="openMapMapSelectC">
                 <div class="openMapMapSelectCc" @click="mapIndex.index = 0">
@@ -336,12 +343,12 @@
         >
           <div class="openMapDeviceSelected" v-show="deviceShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/device.png" class="imgMax">
+              <img src="/static/device.png" class="imgMax" />
             </div>
           </div>
           <div class="openMapDeviceNotSelected" v-show="!deviceShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/device.png" class="imgMax">
+              <img src="/static/device.png" class="imgMax" />
             </div>
           </div>
           <em
@@ -361,12 +368,12 @@
         >
           <div class="openMapDeviceSelected" v-show="fenceShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/fence.png" class="imgMax">
+              <img src="/static/fence.png" class="imgMax" />
             </div>
           </div>
           <div class="openMapDeviceNotSelected" v-show="!fenceShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/fence.png" class="imgMax">
+              <img src="/static/fence.png" class="imgMax" />
             </div>
           </div>
           <em class="openMapFullem" @click="fenceShow.select=!fenceShow.select"></em>
@@ -383,12 +390,12 @@
         >
           <div class="openMapDeviceSelected" v-show="orbitShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/orbit.png" class="imgMax">
+              <img src="/static/orbit.png" class="imgMax" />
             </div>
           </div>
           <div class="openMapDeviceNotSelected" v-show="!orbitShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/orbit.png" class="imgMax">
+              <img src="/static/orbit.png" class="imgMax" />
             </div>
           </div>
           <em class="openMapFullem" @click="orbitShow.select=!orbitShow.select"></em>
@@ -405,12 +412,12 @@
         >
           <div class="openMapDeviceSelected" v-show="statusShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/status.png" class="imgMax">
+              <img src="/static/status.png" class="imgMax" />
             </div>
           </div>
           <div class="openMapDeviceNotSelected" v-show="!statusShow.select">
             <div class="openMapZoomOut">
-              <img src="/static/status.png" class="imgMax">
+              <img src="/static/status.png" class="imgMax" />
             </div>
           </div>
           <em class="openMapFullem" @click="statusShow.select=!statusShow.select"></em>
@@ -418,6 +425,112 @@
             class="openMapZoomOutLeft"
             v-show="statusShow.explain"
           >{{statusShow.select?'显示数据':'隐藏数据' }}</div>
+        </div>
+      </div>
+    </div>
+    <div class="openmapOrbit" id="openmapOrbitID" v-show="orbitList.Show">
+      <div
+        class="openmapOrbitTitle"
+        @mousedown="mouseDownHandleelse($event,'openmapOrbitID')"
+        @mouseup="mouseUpHandleelse($event,'openmapOrbitID')"
+      >
+        <strong>添加电子围栏</strong>
+        <div class="openmapOrbitClose" @click="orbitList.Show =0">X</div>
+      </div>
+      <div class="openmapOrbitTypes" v-show="orbitList.Show == 1">
+        <div
+          class="openmapOrbitTypesSelect"
+          @click="orbitList.Types=1"
+          @dblclick="orbitList.Types=1;orbitList.Show++"
+        >
+          <div class="openmapOrbitTypesName">添加圆形围栏</div>
+          <div class="openmapOrbitTypesMark">
+            <div class="openmapOrbitTypesMarkInside" v-show="orbitList.Types == 1"></div>
+          </div>
+        </div>
+        <div
+          class="openmapOrbitTypesSelect"
+          @click="orbitList.Types=2"
+          @dblclick="orbitList.Types=2; orbitList.Show++"
+        >
+          <div class="openmapOrbitTypesName">添加多边形围栏</div>
+          <div class="openmapOrbitTypesMark">
+            <div class="openmapOrbitTypesMarkInside" v-show="orbitList.Types == 2"></div>
+          </div>
+        </div>
+      </div>
+      <!-- 画圆形围栏 -->
+      <div class="openmapOrbitTypes" v-show="orbitList.Show==2 && orbitList.Types ==1">
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitCircleName">纬度:</div>
+          <input
+            type="number"
+            class="openmapOrbitCircleInput"
+            oninput="if(value>90)value=90;if(value<-90)value=-90"
+            placeholder="点击地图获取"
+            v-model="orbitList.Lat"
+          />
+        </div>
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitCircleName">经度:</div>
+          <input
+            type="number"
+            class="openmapOrbitCircleInput"
+            oninput="if(value>180)value=180;if(value<-180)value=-180"
+            placeholder="或手动输入"
+            v-model="orbitList.Lng"
+          />
+        </div>
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitCircleName">半径:</div>
+          <input
+            type="number"
+            class="openmapOrbitCircleInput"
+            placeholder="单位:米"
+            v-model="orbitList.Radius"
+          />
+        </div>
+        <div class="openmapOrbitCircle" v-show="orbitList.Radius&&orbitList.Lng&&orbitList.Lat">
+          <div class="openmapOrbitCircleTrue" @click="setOrbit('exec', orbitList)">预览</div>
+          <div class="openmapOrbitCircleTrue" @click="postOrbit('exec', orbitList)">确定</div>
+        </div>
+      </div>
+      <!-- 画多边形围栏 -->
+      <div class="openmapOrbitTypes" v-show="orbitList.Show==2 && orbitList.Types ==2">
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitCircleName">纬度:</div>
+          <input
+            type="number"
+            class="openmapOrbitCircleInput"
+            oninput="if(value>90)value=90;if(value<-90)value=-90"
+            placeholder="点击地图获取"
+            v-model="orbitList.Lat"
+          />
+        </div>
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitCircleName">经度:</div>
+          <input
+            type="number"
+            class="openmapOrbitCircleInput"
+            oninput="if(value>180)value=180;if(value<-180)value=-180"
+            placeholder="或手动输入"
+            v-model="orbitList.Lng"
+          />
+        </div>
+        <div class="openmapOrbitCircle">
+          <div class="openmapOrbitPolygon">第{{orbitList.Polygon.length + 1}}个点</div>
+          <div
+            class="openmapOrbitPolygonNext"
+            v-show="orbitList.Lng&&orbitList.Lat"
+            @click="orbitList.Number++; orbitList.Lng='';orbitList.Lat=''"
+          >NEXT</div>
+        </div>
+        <div
+          class="openmapOrbitCircle"
+          v-show="orbitList.Polygon.length > 1 &&orbitList.Lng&&orbitList.Lat"
+        >
+          <div class="openmapOrbitCircleTrue" @click="setOrbit('exec', orbitList)">预览</div>
+          <div class="openmapOrbitCircleTrue" @click="postOrbit('exec', orbitList)">确定</div>
         </div>
       </div>
     </div>
@@ -432,6 +545,20 @@ export default {
   },
   data() {
     return {
+      orbitList: {
+        Show: 1,
+        Types: 2,
+        Lat: "",
+        Lng: "",
+        Radius: 100,
+        Number: 0,
+        Polygon: []
+      },
+      moveDataelse: {
+        x: null,
+        y: null
+      },
+      // --//
       maxMinCenter: [22.593262, 113.925971, 22.593262, 113.925971],
       // ---//
       devicesMarks: {},
@@ -478,6 +605,18 @@ export default {
     };
   },
   methods: {
+    LatLng: function(lat, lng) {
+      if (this.orbitList.Show == 2 && this.orbitList.Types) {
+        this.orbitList.Lat = lat;
+        this.orbitList.Lng = lng;
+        this.$set(this.orbitList.Polygon, this.orbitList.Number, [lat, lng]);
+        this.$refs.lmap.execMark = this.orbitList.Polygon;
+      }
+    },
+    // 设置围栏
+    setOrbit: function(name, orbitList) {
+      this.$set(this.$refs.lmap.orbitLists, name, orbitList);
+    },
     // 计算放大等级
     countZoom: function() {
       var y = getMaxArea(this.maxMinCenter[0], this.maxMinCenter[1], 0);
@@ -574,6 +713,7 @@ export default {
         for (const v1 of v.Devices.data) {
           this.getDeviceData(v1, v.ID);
         }
+        // 展示围栏
       } else {
         this.pullDevicesMark(v);
       }
@@ -621,6 +761,7 @@ export default {
         var url = "/users?permisson=" + permisson;
         var response = await this.req.get(url);
         if (response.status != 200) {
+          // this.getOrbit();
           return;
         }
         for (const v of response.data.data) {
@@ -632,6 +773,7 @@ export default {
           });
         }
       }
+      // this.getOrbit();
     },
     // ----------//
     fullscreenShow: function(metheds) {
@@ -688,9 +830,9 @@ export default {
       });
     },
     getState: function() {
-      if (this.global.userinfo.permisson == 3) {
-        return;
-      }
+      // if (this.global.userinfo.permisson == 3) {
+      //   return;
+      // }
       this.req.get("/configState").then(response => {
         if (response.status != 200) {
           return;
@@ -708,12 +850,84 @@ export default {
         this.$refs.opeMapAllRight.style.width = "100%";
       }
       this.$forceUpdate();
+    },
+    getOrbit: function() {
+      for (const user of this.groundUser) {
+        console.log(this.global.userinfo.id, user);
+        this.req.get("/orbit?id=" + user.ID).then(response => {
+          if (response.status != 200) {
+            return;
+          }
+          if (response.data.ID == 0) {
+            return;
+          }
+          // v.Orbit = response.data;
+          if (response.data.Types == 1) {
+            v.Orbit = {};
+            var data = JSON.stringify(response.data.Info);
+            v.Orbit.Types = 1;
+            v.Orbit.Lang = [data.Lat, data.Lng];
+            v.Orbit.Radius = data.Radius;
+          } else if (response.data.Types == 2) {
+            v.Orbit = {};
+            var data = JSON.stringify(response.data.Info);
+            v.Orbit.Types = 1;
+            v.Orbit.Lang = new Array();
+            for (const v of data) {
+              v.Orbit.Lang.push(v.Lat, v.Lng);
+            }
+          }
+        });
+      }
+    },
+    postOrbit: function(name, v) {
+      var data = {};
+      // 圆形
+      if (v.Types == 1) {
+        data = {
+          Lat: parseFloat(v.Lat),
+          Lng: parseFloat(v.Lng),
+          Radius: parseInt(v.Radius)
+        };
+      } else if (v.Types == 2) {
+      } else {
+        return;
+      }
+      this.req
+        .post("/orbit", {
+          Types: v.Types,
+          Info: data
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+            return;
+          }
+          alert("success");
+          this.$delete(this.$refs.lmap.orbitLists, name);
+          this.$refs.lmap.execMark = new Array();
+          v.Show = 0;
+        });
+    },
+    mouseDownHandleelse(event, ID) {
+      this.moveDataelse.x =
+        event.pageX - document.getElementById(ID).offsetLeft;
+      this.moveDataelse.y = event.pageY - document.getElementById(ID).offsetTop;
+      window.onmousemove = event => {
+        let moveLeft = event.pageX - this.moveDataelse.x + "px";
+        let moveTop = event.pageY - this.moveDataelse.y + "px";
+        document.getElementById(ID).style.left = moveLeft;
+        document.getElementById(ID).style.top = moveTop;
+      };
+    },
+    mouseUpHandleelse(event) {
+      window.onmousemove = null;
     }
   },
   mounted() {
+    this.getState();
     this.getUserGround();
     this.getConfig();
-    this.getState();
     this.screenWidth = document.body.clientWidth;
     window.onresize = () => {
       return (() => {
@@ -731,7 +945,6 @@ export default {
     }
   }
 };
-
 function getMaxArea(max, min, refer = 0) {
   var y = 90;
   var ym = 0.02;

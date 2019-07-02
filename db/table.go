@@ -86,15 +86,10 @@ type Configstates struct {
 
 // Orbitlists 轨迹列表
 type Orbitlists struct {
-	ID         int   `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
-	UID        int   `gorm:"not null;index"`
-	Types      int   `gorm:"not null"` // 1 圆 2方
-	Createtime int64 `gorm:"not null;default:0"`
-}
-
-// Orbitinfos 轨迹信息
-type Orbitinfos struct {
-	OID       int     `gorm:"not null;index"`
-	Longitude float64 `gorm:"not null"`
-	Latitude  float64 `gorm:"not null"`
+	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
+	UID        int    `gorm:"not null;index"`
+	Types      int    `gorm:"not null"` // 1 圆 2方
+	Createtime int64  `gorm:"not null;default:0"`
+	Info       string `gorm:"not null;default:''"`
+	Del        int    `gorm:"not null;default:0"`
 }

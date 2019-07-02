@@ -138,5 +138,17 @@
 	{
 		"id": 35,
 		"error": "States错误"
+	},
+	{
+		"id": 36,
+		"error": "Latitude超出范围"
+	},
+	{
+		"id": 37,
+		"error": "Longitude超出范围"
+	},
+	{
+		"id": 38,
+		"error": "Radius超出范围"
 	}
 ]

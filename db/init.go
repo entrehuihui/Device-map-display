@@ -36,7 +36,7 @@ func SetSQL(f io.Writer) (err error) {
 		&Configuration{},
 		&Configstates{},
 		&Orbitlists{},
-		&Orbitinfos{}).Error
+	).Error
 	if err != nil {
 		log.Fatal(err)
 	}
