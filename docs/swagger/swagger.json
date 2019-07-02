@@ -106,6 +106,102 @@
                 }
             }
         },
+        "/configState": {
+            "get": {
+                "description": ".获取状态配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": ".获取状态配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": ".更改状态配置",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "config"
+                ],
+                "summary": ".更改状态配置",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "状态配置信息",
+                        "name": "configState",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.ConfigState"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/devicedata": {
             "get": {
                 "description": "获取数据列表",
@@ -336,7 +432,7 @@
                 }
             },
             "delete": {
-                "description": ".删除设备",
+                "description": ".删除用户",
                 "consumes": [
                     "application/json"
                 ],
@@ -346,7 +442,7 @@
                 "tags": [
                     "devices"
                 ],
-                "summary": ".删除设备(仅管理员以上)",
+                "summary": ".删除用户(仅管理员以上)",
                 "parameters": [
                     {
                         "type": "string",
@@ -356,13 +452,13 @@
                         "required": true
                     },
                     {
-                        "description": "设备ID",
-                        "name": "devicesID",
+                        "description": "用户ID",
+                        "name": "userDelID",
                         "in": "body",
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "$ref": "#/definitions/api.DevicesID"
+                            "$ref": "#/definitions/api.UserDelID"
                         }
                     }
                 ],
@@ -1048,6 +1144,17 @@
         }
     },
     "definitions": {
+        "api.ConfigState": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "states": {
+                    "type": "string"
+                }
+            }
+        },
         "api.Configuration": {
             "type": "object",
             "properties": {

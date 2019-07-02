@@ -17,6 +17,7 @@ var code = []
 var logo = {}
 var userinfo = {
 }
+var state  = []
 
 var color = [
     "blueviolet",
@@ -34,7 +35,9 @@ export default {
     code,
     getcode,
     userinfo,
-    color
+    color,
+    state,
+    sleep
 }
 
 function getcode(id) {
@@ -45,4 +48,8 @@ function getcode(id) {
         return "失败!"
     }
     return this.code[id - 1].error
+}
+
+function sleep(ms){
+  return new Promise((resolve)=>setTimeout(resolve,ms));
 }

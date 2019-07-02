@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"fmt"
 	"time"
 
 	"../../db"
@@ -22,7 +21,7 @@ type DeviceInfos struct {
 	// 纬度
 	Latitude float64
 	// 时间 时间戳(秒)
-	times int64
+	Times int64
 	// 状态 --自定义
 	State int
 	// 展示在地图上的信息 json : {speend: 100, azimuth:20...} --
@@ -81,9 +80,8 @@ func SaveDeviceInfos(c *gin.Context) {
 			Calssname:  userInfo.Name,
 			DevEUI:     deviceInfos.DevEUI,
 			Status:     1,
-			State:      deviceInfos.State,
 			Createtime: now,
-			Uptime:     deviceInfos.times,
+			Updatetime: 0,
 			Expiretime: 0,
 		}
 		err = s.CreateDevice(&deviceinfo)
@@ -91,18 +89,17 @@ func SaveDeviceInfos(c *gin.Context) {
 			retError(c, 7, err)
 			return
 		}
-		infos = [3]int{deviceinfo.ID, deviceinfo.State, uid}
+		infos = [2]int{deviceinfo.ID, uid}
 	}
-	fmt.Println(infos)
 	// 保存信息
 	// 1----- 判断状态是否改变
-	if infos[1] != deviceInfos.State {
-		//改变设备状态 --不在乎结果
-		s.UpdateDevice(infos[0], map[string]interface{}{
-			"state":  deviceInfos.State,
-			"uptime": deviceInfos.times,
-		})
-	}
+	// if infos[1] != deviceInfos.State {
+	// 	//改变设备状态 --不在乎结果
+	// 	s.UpdateDevice(infos[0], map[string]interface{}{
+	// 		"state":  deviceInfos.State,
+	// 		"uptime": deviceInfos.Times,
+	// 	})
+	// }
 	// 保存数据
 	jsons, err := json.Marshal(deviceInfos.Info)
 	if err != nil {
@@ -113,13 +110,14 @@ func SaveDeviceInfos(c *gin.Context) {
 		jsons = []byte("{}")
 	}
 	devicedata := &db.Devicedata{
-		UID:        infos[2],
 		Did:        infos[0],
+		UID:        infos[1],
+		Classid:    uid,
 		Longitude:  deviceInfos.Longitude,
 		Latitude:   deviceInfos.Latitude,
 		Createtime: time.Now().Unix(),
-		State:      infos[1],
-		Uptime:     deviceInfos.times,
+		State:      deviceInfos.State,
+		Uptime:     deviceInfos.Times,
 		Infos:      string(jsons),
 	}
 	err = s.SaveDeviceData(devicedata)
@@ -220,7 +218,7 @@ func GetDevicesDatas(c *gin.Context) {
 	}
 	if all != 0 {
 		//查数据
-		err = result.Limit(limit).Offset(offset).Find(&devicedata).Error
+		err = result.Limit(limit).Offset(offset).Order("id desc").Find(&devicedata).Error
 		if err != nil {
 			retError(c, 7, err)
 			return

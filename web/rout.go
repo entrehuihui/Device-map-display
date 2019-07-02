@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"./api"
+	"./api/service"
 	"./middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -58,7 +59,9 @@ func Run() {
 	r.GET("/login/info", api.GetLoginInfo)
 	r.GET("/config", api.GetConfiguration)    // 获取用户配置
 	r.PUT("/config", api.UpdateConfiguration) // 更改用户配置
+	r.GET("/configState", api.GetConfigState) // 获取状态配置
 	// 设备数据
+	service.InitDevices()
 	r.POST("/devicedata", api.SaveDeviceInfos) //数据接收
 	r.GET("/devicedata", api.GetDevicesDatas)  //获取数据
 	// 设备
@@ -75,6 +78,8 @@ func Run() {
 	r.GET("/users", api.GetUsers)                   // 获取用户列表
 	r.PUT("/users/expire", api.UpdateDevicesExpire) // 更改用户过期时间
 	r.PUT("/users/status", api.UpdateUserStatus)    // 更改用户状态
+	// 配置
+	r.PUT("/configState", api.UpdateConfigState) // 更改状态配置
 
 	// 超级管理员权限
 	r.Use(middleware.SuperAdministrator())

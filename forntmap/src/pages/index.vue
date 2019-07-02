@@ -74,6 +74,7 @@ export default {
         .then(response => {
           if (response.status != 200) {
             this.$refs.prompt.innerHTML = response.msg;
+            return;
           }
           this.global.userinfo = response.data;
           // 判断是否记住登陆

@@ -38,9 +38,8 @@ type Deviceinfo struct {
 	Calssname  string `gorm:"not null"`
 	DevEUI     string `gorm:"size:16"`  //设备UID
 	Status     int    `gorm:"not null"` // 1启用 2禁用 3过期
-	State      int    `gorm:"not null"`
 	Createtime int64  `gorm:"not null"`
-	Uptime     int64  `gorm:"not null;default:0"`
+	Updatetime int64  `gorm:"not null;default:0"`
 	Expiretime int64  `gorm:"not null;default:0"`
 	Del        int    `gorm:"not null;default:0"`
 }
@@ -48,14 +47,15 @@ type Deviceinfo struct {
 // Devicedata 设备数据
 type Devicedata struct {
 	ID         int     `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
-	UID        int     `gorm:"not null;index"`
 	Did        int     `gorm:"not null;index"`
+	UID        int     `gorm:"not null;index"`
+	Classid    int     `gorm:"not null;index"`
 	Longitude  float64 `gorm:"not null"`
 	Latitude   float64 `gorm:"not null"`
 	State      int     `gorm:"not null;default:1"`
 	Createtime int64   `gorm:"not null"`
 	Uptime     int64   `gorm:"not null"`
-	Infos      string  `gorm:"not null;default:{}"`
+	Infos      string  `gorm:"not null;default:''"`
 }
 
 // Logoinfo logo商标
@@ -73,4 +73,28 @@ type Configuration struct {
 	Message  int `gorm:"not null;default:1"`                      //消息推送开关
 	Sound    int `gorm:"not null;default:1"`                      //声音开关
 	Language int `gorm:"not null;default:1"`                      //语言选择 1简体中文 2繁体中文 3英文
+}
+
+// Configstates 状态配置
+type Configstates struct {
+	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
+	UID        int    `gorm:"not null;index"`
+	Types      int    `gorm:"not null"`
+	States     string `gorm:"not null;size:20"`
+	Updatetime int64  `gorm:"not null;default:0"`
+}
+
+// Orbitlists 轨迹列表
+type Orbitlists struct {
+	ID         int   `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
+	UID        int   `gorm:"not null;index"`
+	Types      int   `gorm:"not null"` // 1 圆 2方
+	Createtime int64 `gorm:"not null;default:0"`
+}
+
+// Orbitinfos 轨迹信息
+type Orbitinfos struct {
+	OID       int     `gorm:"not null;index"`
+	Longitude float64 `gorm:"not null"`
+	Latitude  float64 `gorm:"not null"`
 }

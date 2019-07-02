@@ -46,7 +46,7 @@
     margin-left: 10px;
     width: 340px;
     height: calc(100% - 100px);
-    overflow: hidden;
+    /* overflow: hidden; */
 }
 .openMapDevicesListTitle{
     position: relative;
@@ -126,14 +126,28 @@
     margin-top: 10px;
     height: calc(100% - 63px);
     /* background: rgb(214, 214, 214); */
-    overflow: auto;
+    overflow-x: auto;
     border-top:  2px solid rgba(219, 219, 219, 0.5);
+}
+.openMapdevicesGroup::-webkit-scrollbar{
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+.openMapdevicesGroup::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #ececec;
+}
+.openMapdevicesGroup::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: rgb(187, 187, 187);
 }
 .openMapdevicesGroupName{
     position: relative;
     float: left;
      min-height: 40px;
-    width: 330px;
+    width: 320px;
     line-height: 40px;
     border-bottom: 2px solid rgba(151, 151, 151, 0.5);
     color: rgb(80, 82, 83);
@@ -151,18 +165,21 @@
 .openMapdevicesGroupNameExplain{
     position: relative;
     float: left;
-    width: 280px;
+    width: 270px;
     height: 40px;
     margin-left: 10px;
     font-size: 15px;
 }
+
 .openMapdevicesGroupDevices{
     position: relative;
     float: left;
-    width: 328px;
+    width: 318px;
     height: 45px;
     border-top: 1px solid rgb(182, 181, 181);
-    overflow: hidden;
+}
+.openMapdevicesGroupDevices:hover{
+    background: rgb(241, 241, 241);
 }
 .openMapdevicesGroupDevicesName{
     position: relative;
@@ -195,9 +212,108 @@
     position: relative;
     float: left;
     height: 20px;
-    width: 40px;
+    width: 80px;
+    overflow: hidden;
+}
+#openMapdevicesGroupDevicesStateExplain1{
+    background: rgb(0, 255, 0);
+}
+#openMapdevicesGroupDevicesStateExplain2{
+    background: rgb(252, 1, 1);
+}
+#openMapdevicesGroupDevicesStateExplain3{
+    background: rgb(255, 187, 0);
+}
+#openMapdevicesGroupDevicesStateExplain4{
+    background: rgb(255, 251, 0);
+}
+#openMapdevicesGroupDevicesStateExplain5{
+    background: rgb(0, 47, 255);
+}
+#openMapdevicesGroupDevicesStateExplain6{
+    background: rgb(195, 0, 255);
+}
+#openMapdevicesGroupDevicesStateExplain7{
+    background: rgb(0, 247, 255);
+}
+#openMapdevicesGroupDevicesStateExplain8{
+    background: rgb(156, 156, 156);
+}
+#openMapdevicesGroupDevicesStateExplain9{
+    background: rgb(44, 44, 44);
 }
 
+.openMapdevicesGroupDevicesStateTime{
+    position: relative;
+    float: right;
+    width: 150px;
+    height: 20px;
+    text-align: center;
+    overflow: hidden;
+}
+.openMapdevicesGroupDevicesNameOption{
+    position: absolute;
+    right: 5px;
+    top: 7px;
+    width: 17px;
+    height: 30px;
+    border-radius: 8px;
+    border: 1px solid rgb(163, 163, 163);
+    display: none;
+}
+.openMapdevicesGroupDevicesNameOptions{
+    position: relative;
+    float: left;
+    width: 6px;
+    height: 6px;
+    background: rgb(163, 163, 163);
+    border-radius: 10px;
+    margin-left: 5px;
+    margin-top: 2.5px;
+}
+.openMapdevicesGroupDevices:hover .openMapdevicesGroupDevicesNameOption{
+    display: block;
+}
+.openMapdevicesDevicesOperat{
+    position: fixed;
+    height: 30px;
+    width: 100px;
+    left: 320px;
+    /* background: rgb(117, 117, 117); */
+    padding-left: 10px;
+    display: none;
+}
+.openMapdevicesDevicesOperatInside{
+    position: relative;
+    width: 160px;
+    height: 200px;
+    top: -90px;
+}
+.openMapdevicesGroupDevicesNameOption:hover .openMapdevicesDevicesOperat{
+    display: block;
+}
+.openMapdevicesDevicesOperatFrame{
+    position: relative;
+    width: 125px;
+    height: 200px;
+    left: 35px;
+    background: rgb(255, 255, 255);
+    border: 2px solid rgba(145, 145, 145, 0.5);
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.openMapdevicesDevicesOperatFrame:before { 
+    content:""; 
+    position: absolute; 
+    right: 100%; 
+    top: 45%; 
+    width: 0; 
+    height: 0; 
+    border-top: 17px solid transparent; 
+    border-right: 18px solid rgb(255, 255, 255); 
+    border-bottom: 17px solid transparent; 
+} 
 
 
 .openmaplogo{
@@ -383,9 +499,11 @@
     height: 30px;
 }
 .openMapUserLanguageSelectInside{
+    position: relative;
     height: 15px;
     width: 15px;
-    margin-top: 8px;
+    /* margin-top: 10px; */
+    top: 9px;
     background: rgb(44, 255, 44);
     border-radius: 10px;
 }
@@ -490,9 +608,9 @@
 }
 .openMapMapSelect{
     position: absolute;
-    right: 95px;
-    width: 110px;
-    right: 25px;
+    height: 100px;
+    width: 133px;
+    right: 0px;
     top: -30px;
     cursor: pointer;
 }
@@ -588,18 +706,18 @@
 
 .openMapZoomOutLeft{
     position: absolute;
-    width: 50px; 
+    width: 60px; 
     height: 25px; 
     right: 30px;
     top: 0px;
-    background: rgb(207, 207, 207, 0.5); 
+    background: rgba(143, 143, 143, 0.5); 
     -moz-border-radius: 5px; 
     -webkit-border-radius: 5px; 
     border-radius: 5px; 
     font-size: 10px;
     line-height: 25px;
     text-align: center;
-    color: rgb(82, 82, 82);
+    color: rgb(255, 255, 255);
 }
 .openMapZoomOutLeft:before { 
     content:""; 

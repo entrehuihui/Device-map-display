@@ -9,33 +9,34 @@ import (
 )
 
 // 设备ID 设备State
-var devices map[int]map[string][3]int
+var devices map[int]map[string][2]int
 
 // InitDevices 初始化设备列表
-func (s *Server) InitDevices() {
-	now := time.Now().AddDate(0, 0, 2)
+func InitDevices() {
+	s := db.GetDB()
+	now := time.Now().AddDate(0, 0, -2).Unix()
 	deviceinfo := make([]db.Deviceinfo, 0)
-	err := s.Where("updatetime > ? and del != 1", now).Find(&deviceinfo).Error
+	err := s.Raw("SELECT * FROM deviceinfos WHERE id IN ( SELECT id FROM devicedata WHERE uptime > ? ) AND del = 0", now).Scan(&deviceinfo).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Fatal(err)
 	}
 
-	devices = make(map[int]map[string][3]int, 0)
+	devices = make(map[int]map[string][2]int, 0)
 	for _, v := range deviceinfo {
 		if devices[v.Classid] == nil {
-			devices[v.Classid] = make(map[string][3]int, 0)
+			devices[v.Classid] = make(map[string][2]int, 0)
 		}
-		devices[v.Classid][v.DevEUI] = [3]int{v.ID, v.State, v.UID}
+		devices[v.Classid][v.DevEUI] = [2]int{v.ID, v.UID}
 	}
 }
 
 // CheckDevicesInfo .
-func (s *Server) CheckDevicesInfo(classid int, deveui string) ([3]int, error) {
+func (s *Server) CheckDevicesInfo(classid int, deveui string) ([2]int, error) {
 	if devices[classid][deveui][0] != 0 {
 		return devices[classid][deveui], nil
 	}
 	deviceinfo, err := s.GetDeviceinfos(classid, deveui)
-	return [3]int{deviceinfo.ID, deviceinfo.State, deviceinfo.UID}, err
+	return [2]int{deviceinfo.ID, deviceinfo.UID}, err
 }
 
 // DelDevicesInfo .
@@ -44,9 +45,9 @@ func DelDevicesInfo(classid int, deveui string) {
 }
 
 // AddDevicesInfo .
-func AddDevicesInfo(deveui string, infos [3]int) {
+func AddDevicesInfo(deveui string, infos [2]int) {
 	if devices[infos[0]] == nil {
-		devices[infos[0]] = make(map[string][3]int, 0)
+		devices[infos[0]] = make(map[string][2]int, 0)
 	}
 	devices[infos[0]][deveui] = infos
 }
@@ -63,7 +64,7 @@ func (s *Server) CreateDevice(deviceinfo *db.Deviceinfo) error {
 	var err error
 	err = s.Create(deviceinfo).Error
 	if err == nil {
-		AddDevicesInfo(deviceinfo.DevEUI, [3]int{deviceinfo.ID, deviceinfo.State, deviceinfo.UID})
+		AddDevicesInfo(deviceinfo.DevEUI, [2]int{deviceinfo.ID, deviceinfo.UID})
 	}
 	return err
 }

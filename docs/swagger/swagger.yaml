@@ -1,5 +1,12 @@
 basePath: '{{.BasePath}}'
 definitions:
+  api.ConfigState:
+    properties:
+      id:
+        type: integer
+      states:
+        type: string
+    type: object
   api.Configuration:
     properties:
       id:
@@ -207,6 +214,70 @@ paths:
       summary: .更改用户配置
       tags:
       - config
+  /configState:
+    get:
+      consumes:
+      - application/json
+      description: .获取状态配置
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .获取状态配置
+      tags:
+      - config
+    put:
+      consumes:
+      - application/json
+      description: .更改状态配置
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 状态配置信息
+        in: body
+        name: configState
+        required: true
+        schema:
+          $ref: '#/definitions/api.ConfigState'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改状态配置
+      tags:
+      - config
   /devicedata:
     get:
       consumes:
@@ -299,19 +370,19 @@ paths:
     delete:
       consumes:
       - application/json
-      description: .删除设备
+      description: .删除用户
       parameters:
       - description: With the bearer started JWT
         in: header
         name: Authorization
         required: true
         type: string
-      - description: 设备ID
+      - description: 用户ID
         in: body
-        name: devicesID
+        name: userDelID
         required: true
         schema:
-          $ref: '#/definitions/api.DevicesID'
+          $ref: '#/definitions/api.UserDelID'
           type: object
       produces:
       - application/json
@@ -328,7 +399,7 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .删除设备(仅管理员以上)
+      summary: .删除用户(仅管理员以上)
       tags:
       - devices
     get:

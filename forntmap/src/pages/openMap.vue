@@ -2,7 +2,12 @@
   <div id="openmap" @keydown.esc="fullscreenShow(false)">
     <!-- 地图页 -->
     <div class="opeMapAllRight" ref="opeMapAllRight">
-      <lmap :changeZoom="changeZoom" :mapindex="mapIndex.index"></lmap>
+      <lmap
+        ref="lmap"
+        :changeZoom="changeZoom"
+        :mapindex="mapIndex.index"
+        :devicesMarks="devicesMarks"
+      ></lmap>
     </div>
     <!-- 展开设备菜单 -->
     <div class="openMapDevicesList" v-show="devicesList">
@@ -56,8 +61,13 @@
         <div class="openMapdevicesinfo">
           <!-- 搜索栏 -->
           <div class="openMapdevicessearch">
-            <input type="text" class="openMapdevicessearchinside" placeholder="请输入关键字搜索">
-            <div class="openMapdevicessearchinbotton">搜索</div>
+            <input
+              type="text"
+              class="openMapdevicessearchinside"
+              placeholder="请输入关键字搜索"
+              v-model="devicesQuery"
+            >
+            <div class="openMapdevicessearchinbotton" @click="getDevicesQuery()">搜索</div>
           </div>
           <!-- 设备分组 -->
           <div class="openMapdevicesGroup">
@@ -68,7 +78,7 @@
               </div>
               <div
                 class="openMapdevicesGroupNameExplain"
-                @click="v.Show = !v.Show"
+                @click="v.Show = !v.Show; getDevicesState(v)"
               >{{v.Name}} ( {{v.Devices.all}} )</div>
               <div v-show="v.Show">
                 <div
@@ -76,10 +86,32 @@
                   v-for="(v1, i1) in v.Devices.data"
                   :key="i1+'-'+v1.UID"
                 >
-                  <div class="openMapdevicesGroupDevicesName">{{v1.Name}}</div>
-                  <div class="openMapdevicesGroupDevicesState">
-                    <div class="openMapdevicesGroupDevicesStateColor"></div>
-                    <div class="openMapdevicesGroupDevicesStateExplain">离线</div>
+                  <div @click="changeLampZoom(v1.DeviceData.Latitude, v1.DeviceData.Longitude)">
+                    <div class="openMapdevicesGroupDevicesName">{{v1.Name}}</div>
+                    <!-- 显示状态 -->
+                    <div class="openMapdevicesGroupDevicesState" v-if="v1.DeviceData">
+                      <div
+                        class="openMapdevicesGroupDevicesStateColor"
+                        :id="'openMapdevicesGroupDevicesStateExplain'+v1.DeviceData.State"
+                      ></div>
+                      <div
+                        class="openMapdevicesGroupDevicesStateExplain"
+                      >{{global.state[v1.DeviceData.State-1].States}}</div>
+                      <div
+                        class="openMapdevicesGroupDevicesStateTime"
+                      >{{new Date(v1.DeviceData.Uptime * 1000).toLocaleString()}}</div>
+                    </div>
+                  </div>
+                  <!-- 子菜单 -->
+                  <div class="openMapdevicesGroupDevicesNameOption">
+                    <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                    <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                    <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                    <div class="openMapdevicesDevicesOperat">
+                      <div class="openMapdevicesDevicesOperatInside">
+                        <div class="openMapdevicesDevicesOperatFrame"></div>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -312,8 +344,14 @@
               <img src="/static/device.png" class="imgMax">
             </div>
           </div>
-          <em class="openMapFullem" @click="deviceShow.select=!deviceShow.select"></em>
-          <div class="openMapZoomOutLeft" v-show="deviceShow.explain">设备</div>
+          <em
+            class="openMapFullem"
+            @click="deviceShow.select=!deviceShow.select; deviceShow.select ? devicesMarks={}: getDevicesQuery()"
+          ></em>
+          <div
+            class="openMapZoomOutLeft"
+            v-show="deviceShow.explain"
+          >{{deviceShow.select?'显示设备':'隐藏设备' }}</div>
         </div>
         <!-- 围栏显示 -->
         <div
@@ -332,7 +370,10 @@
             </div>
           </div>
           <em class="openMapFullem" @click="fenceShow.select=!fenceShow.select"></em>
-          <div class="openMapZoomOutLeft" v-show="fenceShow.explain">围栏</div>
+          <div
+            class="openMapZoomOutLeft"
+            v-show="fenceShow.explain"
+          >{{fenceShow.select?'显示围栏':'隐藏围栏' }}</div>
         </div>
         <!-- 轨迹显示 -->
         <div
@@ -351,7 +392,10 @@
             </div>
           </div>
           <em class="openMapFullem" @click="orbitShow.select=!orbitShow.select"></em>
-          <div class="openMapZoomOutLeft" v-show="orbitShow.explain">轨迹</div>
+          <div
+            class="openMapZoomOutLeft"
+            v-show="orbitShow.explain"
+          >{{orbitShow.select?'显示轨迹':'隐藏轨迹' }}</div>
         </div>
         <!-- 设备状态 -->
         <div
@@ -370,7 +414,10 @@
             </div>
           </div>
           <em class="openMapFullem" @click="statusShow.select=!statusShow.select"></em>
-          <div class="openMapZoomOutLeft" v-show="statusShow.explain">设备状态</div>
+          <div
+            class="openMapZoomOutLeft"
+            v-show="statusShow.explain"
+          >{{statusShow.select?'显示数据':'隐藏数据' }}</div>
         </div>
       </div>
     </div>
@@ -378,13 +425,16 @@
 </template>
 
 <script>
-import lmap from "@/components/map.vue";
+import lmap from "@/components/lmap.vue";
 export default {
   components: {
     lmap
   },
   data() {
     return {
+      maxMinCenter: [22.593262, 113.925971, 22.593262, 113.925971],
+      // ---//
+      devicesMarks: {},
       devicesQuery: "",
       groundUser: [],
       titleselect: 1,
@@ -422,13 +472,132 @@ export default {
       statusShow: {
         select: false,
         explain: false
-      }
+      },
+      // ---//
+      screenWidth: ""
     };
   },
   methods: {
-    getDevicesNumber: async function(id) {
+    // 计算放大等级
+    countZoom: function() {
+      var y = getMaxArea(this.maxMinCenter[0], this.maxMinCenter[1], 0);
+      var x = getMaxArea(this.maxMinCenter[2], this.maxMinCenter[3], 1);
+      this.setZoom(x > y ? y : x);
+    },
+    // 设置放大等级
+    setZoom: function(v) {
+      this.$refs.lmap.zoom = v;
+    },
+    // 计算经纬度最大最小值
+    countMaxMinCenter: function(lat, long) {
+      if (lat > this.maxMinCenter[0]) {
+        this.maxMinCenter[0] = lat;
+      } else if (lat < this.maxMinCenter[1]) {
+        this.maxMinCenter[1] = lat;
+      }
+      if (long > this.maxMinCenter[2]) {
+        this.maxMinCenter[2] = long;
+      } else if (long < this.maxMinCenter[3]) {
+        this.maxMinCenter[3] = long;
+      }
+    },
+    // 改变中心点
+    setCenter: function() {
+      if (this.maxMinCenter.length != 4) {
+        return;
+      }
+      this.$refs.lmap.center = [
+        (this.maxMinCenter[0] + this.maxMinCenter[1]) / 2,
+        (this.maxMinCenter[2] + this.maxMinCenter[3]) / 2,
+        1
+      ];
+      this.countZoom();
+    },
+    // 改变视野到单个标记
+    changeLampZoom: function(lat, long) {
+      this.$refs.lmap.center = [lat, long];
+      // this.$set(this.$refs.lmap.center, "time", new Date().getTime());
+      this.$refs.lmap.zoom = 16;
+    },
+    // 计算中心点
+    countCenter: function() {
+      this.maxMinCenter = new Array();
+      for (const userid in this.devicesMarks) {
+        for (const data of this.devicesMarks[userid]) {
+          if (this.maxMinCenter.length) {
+            this.countMaxMinCenter(
+              data.DeviceData.Latitude,
+              data.DeviceData.Longitude
+            );
+          } else {
+            this.maxMinCenter = [
+              data.DeviceData.Latitude,
+              data.DeviceData.Latitude,
+              data.DeviceData.Longitude,
+              data.DeviceData.Longitude
+            ];
+          }
+        }
+      }
+      this.setCenter();
+    },
+    // 添加标记
+    pushDevicesMark: function(v, id) {
+      // 判断是否隐藏标记
+      if (this.deviceShow.select) {
+        return;
+      }
+      var data = this.devicesMarks[id];
+      if (!data) {
+        data = new Array();
+      }
+      v.DeviceData.Infos = JSON.parse(v.DeviceData.Infos);
+      data.push(v);
+      this.$set(this.devicesMarks, id, data);
+      this.countCenter();
+    },
+    pullDevicesMark: function(v) {
+      // 删除标记
+      this.$delete(this.devicesMarks, v.ID);
+      this.countCenter();
+    },
+    getDevicesQuery: async function() {
+      this.devicesMarks = {};
+      for (var user of this.groundUser) {
+        user.Devices = await this.getDevices(user.ID, this.devicesQuery);
+        this.getDevicesState(user);
+      }
+      this.$forceUpdate();
+    },
+    getDevicesState: function(v) {
+      if (v.Show) {
+        for (const v1 of v.Devices.data) {
+          this.getDeviceData(v1, v.ID);
+        }
+      } else {
+        this.pullDevicesMark(v);
+      }
+    },
+    getDeviceData: function(v, id) {
+      this.req.get("/devicedata?limit=1&id=" + v.ID).then(response => {
+        if (response.status != 200) {
+          return;
+        }
+        if (response.data.all == 0) {
+          return;
+        }
+        v.DeviceData = response.data.data[0];
+        this.pushDevicesMark(v, id);
+        this.$forceUpdate();
+      });
+    },
+    getDevices: async function(id, query = "") {
+      var methed = "uid=" + id;
+      if (this.global.userinfo.permisson == 3) {
+        methed = "classid" + id;
+      }
       var response = await this.req.get(
-        "/devices?uid=" + id + this.devicesQuery
+        "/devices?" + methed + "&name=" + query
       );
       if (response.status != 200) {
         return {
@@ -439,25 +608,29 @@ export default {
       return response.data;
     },
     getUserGround: async function() {
-      this.groundUser.push({
-        ID: this.global.userinfo.id,
-        Name: this.global.userinfo.name,
-        Devices: await this.getDevicesNumber(this.global.userinfo.id),
-        Show: false
-      });
-      var permisson = this.global.userinfo.permisson - 1;
-      var url = "/users?permisson=" + permisson;
-      var response = await this.req.get(url);
-      if (response.status != 200) {
-        return;
-      }
-      for (const v of response.data.data) {
+      if (this.global.userinfo.permisson != 3) {
         this.groundUser.push({
-          ID: v.ID,
-          Name: v.Name,
-          Devices: await this.getDevicesNumber(v.ID),
+          ID: this.global.userinfo.id,
+          Name: this.global.userinfo.name,
+          Devices: await this.getDevices(this.global.userinfo.id),
           Show: false
         });
+      }
+      if (this.global.userinfo.permisson != 1) {
+        var permisson = this.global.userinfo.permisson - 1;
+        var url = "/users?permisson=" + permisson;
+        var response = await this.req.get(url);
+        if (response.status != 200) {
+          return;
+        }
+        for (const v of response.data.data) {
+          this.groundUser.push({
+            ID: v.ID,
+            Name: v.Name,
+            Devices: await this.getDevices(v.ID),
+            Show: false
+          });
+        }
       }
     },
     // ----------//
@@ -466,6 +639,10 @@ export default {
         return;
       }
       this.fullscreen.full = metheds;
+      if (!metheds) {
+        return;
+      }
+      this.devicesList = false;
       if (
         !(
           document.mozFullScreenEnabled ||
@@ -476,23 +653,7 @@ export default {
       ) {
         return;
       }
-
-      if (this.fullscreen.full) {
-        document.getElementById("openmap").requestFullscreen();
-      } else {
-        // if (!IsFull) {
-        //   return;
-        // }
-        // if (document.exitFullscreen) {
-        //   document.exitFullscreen();
-        // } else if (document.webkitExitFullscreen) {
-        //   document.webkitExitFullscreen();
-        // } else if (document.msExitFullscreen) {
-        //   document.msExitFullscreen();
-        // } else if (document.mozCancelFullScreen) {
-        //   document.mozCancelFullScreen();
-        // }
-      }
+      document.getElementById("openmap").requestFullscreen();
     },
     logout: function() {
       this.global.userinfo = {};
@@ -525,25 +686,78 @@ export default {
         this.userConfig = response.data;
         this.$forceUpdate();
       });
+    },
+    getState: function() {
+      if (this.global.userinfo.permisson == 3) {
+        return;
+      }
+      this.req.get("/configState").then(response => {
+        if (response.status != 200) {
+          return;
+        }
+        this.global.state = response.data;
+      });
+    },
+    updateSreen: function() {
+      var width = document.body.clientWidth;
+      var v = this.devicesList;
+      if (v) {
+        width -= 360;
+        this.$refs.opeMapAllRight.style.width = width + "px";
+      } else {
+        this.$refs.opeMapAllRight.style.width = "100%";
+      }
+      this.$forceUpdate();
     }
   },
   mounted() {
     this.getUserGround();
     this.getConfig();
+    this.getState();
+    this.screenWidth = document.body.clientWidth;
+    window.onresize = () => {
+      return (() => {
+        this.screenWidth = document.body.clientWidth;
+      })();
+    };
   },
   watch: {
-    devicesList: function(v) {
-      var width = document.body.clientWidth;
-      if (v) {
-        width -= 360;
-        this.$refs.opeMapAllRight.style = "width:" + width + "px";
-      } else {
-        this.$refs.opeMapAllRight.style = "width:" + width + "px";
-      }
-      this.$forceUpdate();
+    // 浏览器尺寸改变
+    screenWidth: function() {
+      this.updateSreen();
+    },
+    devicesList: async function() {
+      this.updateSreen();
     }
   }
 };
+
+function getMaxArea(max, min, refer = 0) {
+  var y = 90;
+  var ym = 0.02;
+  if (refer) {
+    y = 180;
+    ym = 0.009;
+  }
+  var ly = (max - min).toFixed(4);
+  var zy = 1;
+  if (ly != 0) {
+    while (1) {
+      if (ly > y) {
+        break;
+      }
+      if (y < ym) {
+        zy = 15;
+        break;
+      }
+      y = y / 2;
+      zy++;
+    }
+  } else {
+    zy = 16;
+  }
+  return zy;
+}
 </script>
 
 <style scoped>
