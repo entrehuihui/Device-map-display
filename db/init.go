@@ -35,7 +35,7 @@ func SetSQL(f io.Writer) (err error) {
 		&Logoinfo{},
 		&Configuration{},
 		&Configstates{},
-		&Orbitlists{},
+		&Fencelists{},
 	).Error
 	if err != nil {
 		log.Fatal(err)

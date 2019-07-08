@@ -41,14 +41,16 @@ func Run() {
 	// 开放图片
 	r.Static("/static/", "./static/static")
 	r.Static("/images/", "./static/images")
+	r.Static("/map/", "./static/map")
 
 	// 设置浏览器不缓存
 	r.Use(middleware.Corstoo())
-
+	r.StaticFile("/", "./static/index.html")
+	r.StaticFile("/login", "./static/index.html")
 	// login
-	r.PUT("/login", api.Register)
 	r.POST("/login", api.Login)
-	r.GET("/login", api.CheckUserName)
+	r.PUT("/login/register", api.Register)
+	r.GET("/login/register/name", api.CheckUserName)
 	r.GET("/login/logo", api.GetLogin)
 	api.SetCode()
 	r.GET("/login/code", api.GetCode)
@@ -67,9 +69,9 @@ func Run() {
 	// 设备
 	r.GET("/devices", api.GetDevices) // 获取设备列表
 	// 围栏
-	r.GET("/orbit", api.GetOrbit)    // 获取围栏
-	r.POST("/orbit", api.PostOrbit)  // 设置围栏
-	r.DELETE("/orbit", api.DelOrbit) // 删除围栏
+	r.GET("/fence", api.GetFence)    // 获取围栏
+	r.POST("/fence", api.PostFence)  // 设置围栏
+	r.DELETE("/fence", api.DelFence) // 删除围栏
 
 	// 管理员权限中间件
 	r.Use(middleware.Administrator())

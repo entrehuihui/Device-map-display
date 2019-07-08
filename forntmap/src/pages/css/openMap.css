@@ -387,7 +387,7 @@
     position: absolute;
     right: 0px;
     top: 5px;
-    width: 260px;
+    width: 350px;
     height: 40px;
     background: rgb(255, 255, 255);
     border-radius: 24px;
@@ -404,6 +404,9 @@
     cursor: pointer;
     background: rgba(255, 255, 255);
     padding-left: 10px;
+}
+.openMapUserPushOrbit:hover{
+    background: rgb(240, 240, 240);
 }
 .openMapUserPushimg{
     position: relative;
@@ -620,13 +623,13 @@
     height: 100px;
     width: 133px;
     right: 0px;
-    top: -30px;
+    top: -20px;
     cursor: pointer;
 }
 .openMapMapSelectC{
     position: absolute;
     width: 100px; 
-    height: 85px; 
+    min-height: 60px; 
     background: rgb(255, 255, 255);
     -moz-border-radius: 10px; 
     -webkit-border-radius: 10px; 
@@ -744,8 +747,8 @@
     position: absolute;
     height: 200px;
     width: 200px;
-    top: 320px;
-    right: 1030px;
+    top: 60px;
+    right: 60px;
     background: rgb(255, 255, 255);
     border: 2px solid rgb(112, 112, 112);
     border-radius: 10px;
@@ -863,18 +866,24 @@
 .openmapOrbitPolygon{
     position: relative;
     float: left;
-    width: 100px;
+    width: 70px;
+    font-size: 15px;
 }
 .openmapOrbitPolygonNext{
     position: relative;
     float: left;
-    width: 55px;
+    width: 40px;
     height: 30xp;
+    font-size: 12px;
     border: 1px solid rgb(153, 153, 153);
     border-radius: 5px;
     cursor: pointer;
+    margin-left: 3px;
 }
 .openmapOrbitPolygonNext:hover{
     background: rgb(145, 145, 145);
     color: white;
+}
+#openmapOrbitPolygonNextRight{
+    float: right;
 }

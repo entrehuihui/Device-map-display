@@ -1,10 +1,10 @@
 <template>
   <div id="index">
     <div class="indexbackgroud">
-      <img class="indexbackgroud" :src="req.localhost + global.logo[1]">
+      <img class="indexbackgroud" :src="req.localhost + global.logo[1]" />
     </div>
     <div class="indexlogin">
-      <img class="indexbackgroud" :src="req.localhost + global.logo[2]">
+      <img class="indexbackgroud" :src="req.localhost + global.logo[2]" />
       <div class="indexloginone">
         <div class="indexloginonetwo">
           <div class="indexloginprompt" ref="prompt"></div>
@@ -15,7 +15,7 @@
             v-model="account"
             ref="account"
             @keyup.enter="checkAccount()"
-          >
+          />
         </div>
         <div class="indexloginonetwo">
           <div class="indexloginprompt"></div>
@@ -26,7 +26,7 @@
             v-model="password"
             ref="password"
             @keyup.enter="checkPassword()"
-          >
+          />
         </div>
         <div class="indexloginonethree">
           <div class="indexloginremember" @click="selectRemember()">
@@ -79,9 +79,9 @@ export default {
           this.global.userinfo = response.data;
           // 判断是否记住登陆
           if (this.remember) {
-            this.setCookie(response.data.jwt);
+            this.global.setCookie(response.data.jwt);
           } else {
-            this.setCookie(response.data.jwt, -1);
+            this.global.setCookie(response.data.jwt, -1);
           }
           // 跳转地图页面
           this.jump();
@@ -119,57 +119,19 @@ export default {
     getCode: async function() {
       var response = await this.req.get("/login/code");
       if (response.status != 200) {
-        console.log("++++++++++++++++++++拉取不到错误代码");
         return;
       }
       this.global.code = response.data;
     },
     // 获取logo图标
-    getLogo: function() {
-      this.req.get("/login/logo").then(response => {
+    getLogo: async function() {
+      await this.req.get("/login/logo").then(response => {
         if (response.status != 200) {
           return;
         }
         this.global.logo = response.data;
         this.$forceUpdate();
       });
-    },
-    // 获取用户登陆信息
-    getUserInfo: async function() {
-      await this.req.get("/login/info").then(response => {
-        if (response.status != 200) {
-          // alert(response.msg);
-          // 删除cookie
-          this.setCookie(this.global.userinfo.jwt, -1);
-          return;
-        }
-        this.global.userinfo = response.data;
-        console.log(response.data);
-
-        this.jump();
-      });
-    },
-    // 获取登陆cookie
-    getCookie: function() {
-      var key = this.cookieName;
-      if (document.cookie.length == 0) {
-        return;
-      }
-      var start = document.cookie.indexOf(key + "=");
-      if (start == -1) {
-        return;
-      }
-      start = start + key.length + 1;
-      var end = document.cookie.indexOf(";", start);
-      if (end === -1) end = document.cookie.length;
-      this.global.userinfo.jwt = unescape(
-        document.cookie.substring(start, end)
-      );
-      if (this.global.userinfo.jwt.length < 30) {
-        this.setCookie("", -1);
-        return;
-      }
-      this.getUserInfo();
     },
     // expiredays 正数为设置, 负数为删除
     setCookie: function(value, expiredays = 30) {
@@ -185,12 +147,14 @@ export default {
   watch: {},
   async mounted() {
     await this.getCode();
+    await this.getLogo();
     if (this.$route.params.logout) {
-      this.setCookie(this.global.userinfo.jwt, -1);
+      this.global.setCookie(this.global.userinfo.jwt, -1);
     } else {
-      this.getCookie();
+      if (this.global.getCookie()) {
+        this.jump();
+      }
     }
-    this.getLogo();
   }
 };
 </script>

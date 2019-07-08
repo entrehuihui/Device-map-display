@@ -84,8 +84,8 @@ type Configstates struct {
 	Updatetime int64  `gorm:"not null;default:0"`
 }
 
-// Orbitlists 轨迹列表
-type Orbitlists struct {
+// Fencelists 轨迹列表
+type Fencelists struct {
 	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
 	UID        int    `gorm:"not null;index"`
 	Types      int    `gorm:"not null"` // 1 圆 2方

@@ -12,8 +12,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// GetOrbit 获取用户围栏
-// @Tags orbit
+// GetFence 获取用户围栏
+// @Tags fence
 // @Summary 获取用户围栏
 // @Description 获取用户围栏
 // @Accept  json
@@ -23,8 +23,8 @@ import (
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /orbit [get]
-func GetOrbit(c *gin.Context) {
+// @Router /fence [get]
+func GetFence(c *gin.Context) {
 	ids := c.Query("id")
 	id := 0
 	uid := c.GetInt("id")
@@ -56,104 +56,104 @@ func GetOrbit(c *gin.Context) {
 			return
 		}
 	}
-	orbitlists := db.Orbitlists{}
-	err = s.Where("uid = ? and del = 0", id).Last(&orbitlists).Error
+	fencelists := db.Fencelists{}
+	err = s.Where("uid = ? and del = 0", id).Last(&fencelists).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		retError(c, 7, err)
 		return
 	}
-	retSuccess(c, orbitlists)
+	retSuccess(c, fencelists)
 }
 
-// Orbitinfo 用户围栏信息
-type Orbitinfo struct {
+// Fenceinfo 用户围栏信息
+type Fenceinfo struct {
 	// 1 圆 2方
 	Types int
 	// 围栏信息json  1: {Lat:21.32, Lng:113.21, radius: 123}  2:[{Lat:21.32, Lng:113.21}, {Lat:21.32, Lng:113.21}....]
 	Info interface{}
 }
 
-// Orbitinfo1 圆围栏
-type Orbitinfo1 struct {
+// Fenceinfo1 圆围栏
+type Fenceinfo1 struct {
 	Lat    float64
 	Lng    float64
 	Radius int
 }
 
-// Orbitinfo2 方围栏
-type Orbitinfo2 struct {
+// Fenceinfo2 方围栏
+type Fenceinfo2 struct {
 	Lat float64
 	Lng float64
 }
 
-// PostOrbit .设置用户围栏
-// @Tags orbit
+// PostFence .设置用户围栏
+// @Tags fence
 // @Summary .设置用户围栏
 // @Description .设置用户围栏
 // @Accept  json
 // @Produce  json
 // @Param 	Authorization 	header 	string 	true "With the bearer started JWT"
-// @param configuration body api.Orbitinfo  true "用户围栏信息"
+// @param 	fenceinfo body api.Fenceinfo  true "用户围栏信息"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /orbit [post]
-func PostOrbit(c *gin.Context) {
-	orbitinfo := Orbitinfo{}
-	err := c.ShouldBind(&orbitinfo)
+// @Router /fence [post]
+func PostFence(c *gin.Context) {
+	fenceinfo := Fenceinfo{}
+	err := c.ShouldBind(&fenceinfo)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
-	buf, err := json.Marshal(orbitinfo.Info)
+	buf, err := json.Marshal(fenceinfo.Info)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
 	uid := c.GetInt("id")
-	orbitlists := db.Orbitlists{
+	fencelists := db.Fencelists{
 		UID:        uid,
-		Types:      orbitinfo.Types,
+		Types:      fenceinfo.Types,
 		Createtime: time.Now().Unix(),
 		Del:        0,
 	}
-	if orbitinfo.Types == 1 {
-		orbitinfo1 := Orbitinfo1{}
-		err = json.Unmarshal(buf, &orbitinfo1)
+	if fenceinfo.Types == 1 {
+		fenceinfo1 := Fenceinfo1{}
+		err = json.Unmarshal(buf, &fenceinfo1)
 		if err != nil {
 			retError(c, 7, err)
 			return
 		}
-		if orbitinfo1.Radius <= 0 {
+		if fenceinfo1.Radius <= 0 {
 			retError(c, 1, nil)
 			return
 		}
-		if orbitinfo1.Lat > 90 || orbitinfo1.Lat < -90 {
+		if fenceinfo1.Lat > 90 || fenceinfo1.Lat < -90 {
 			retError(c, 36, nil)
 			return
 		}
-		if orbitinfo1.Lng > 180 || orbitinfo1.Lng < -180 {
+		if fenceinfo1.Lng > 180 || fenceinfo1.Lng < -180 {
 			retError(c, 37, nil)
 			return
 		}
-		buf, err = json.Marshal(orbitinfo1)
+		buf, err = json.Marshal(fenceinfo1)
 		if err != nil {
 			retError(c, 7, err)
 			return
 		}
-		orbitlists.Info = string(buf)
-	} else if orbitinfo.Types == 2 {
-		orbitinfo2 := make([]Orbitinfo2, 0)
-		err = json.Unmarshal(buf, &orbitinfo2)
+		fencelists.Info = string(buf)
+	} else if fenceinfo.Types == 2 {
+		fenceinfo2 := make([]Fenceinfo2, 0)
+		err = json.Unmarshal(buf, &fenceinfo2)
 		if err != nil {
 			retError(c, 7, err)
 			return
 		}
-		if len(orbitinfo2) < 3 {
+		if len(fenceinfo2) < 3 {
 			retError(c, 1, nil)
 			return
 		}
-		for _, v := range orbitinfo2 {
+		for _, v := range fenceinfo2 {
 			if v.Lat > 90 || v.Lat < -90 {
 				retError(c, 36, nil)
 				return
@@ -163,65 +163,82 @@ func PostOrbit(c *gin.Context) {
 				return
 			}
 		}
-		buf, err = json.Marshal(orbitinfo2)
+		buf, err = json.Marshal(fenceinfo2)
 		if err != nil {
 			retError(c, 7, err)
 			return
 		}
-		orbitlists.Info = string(buf)
+		fencelists.Info = string(buf)
 	} else {
 		retError(c, 1, err)
 		return
 	}
 
 	tx := service.GetServer().Begin()
-	err = tx.Model(&db.Orbitlists{}).Where("uid = ? and del = 0", uid).Update("del", 1).Error
+	err = tx.Model(&db.Fencelists{}).Where("uid = ? and del = 0", uid).Update("del", 1).Error
 	if err != nil {
 		tx.Rollback()
 		retError(c, 7, err)
 		return
 	}
-	err = tx.Create(&orbitlists).Error
+	err = tx.Create(&fencelists).Error
 	if err != nil {
 		tx.Rollback()
 		retError(c, 7, err)
 		return
 	}
 	tx.Commit()
-	retSuccess(c, orbitlists)
+	retSuccess(c, fencelists)
 }
 
-// OrbitID 围栏ID
-type OrbitID struct {
-	// 围栏ID
+// FencetID 围栏ID
+type FencetID struct {
+	// 围栏ID  --传0则为删除自己的围栏
 	ID int
 }
 
-// DelOrbit .删除用户围栏
-// @Tags orbit
+// DelFence .删除用户围栏
+// @Tags fence
 // @Summary .删除用户围栏
 // @Description .删除用户围栏
 // @Accept  json
 // @Produce  json
 // @Param 	Authorization 	header 	string 	true "With the bearer started JWT"
-// @param configuration body api.Orbitinfo  true "用户围栏信息"
+// @param fencetID body api.FencetID  true "用户围栏信息"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /orbit [delete]
-func DelOrbit(c *gin.Context) {
-	orbitID := OrbitID{}
-	err := c.ShouldBind(&orbitID)
+// @Router /fence [delete]
+func DelFence(c *gin.Context) {
+	fenceID := FencetID{}
+	err := c.ShouldBind(&fenceID)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
-	if orbitID.ID == 0 {
-		retError(c, 12, nil)
+	s := service.GetServer()
+	uid := c.GetInt("id")
+	if fenceID.ID == 0 {
+		err = s.Exec("update fencelists set del = 1 where uid = ? and del = 0", uid).Error
+		if err != nil {
+			retError(c, 7, err)
+			return
+		}
+		retSuccess(c, "Success")
 		return
 	}
-	s := service.GetServer()
-	err = s.Exec("update orbitlists set del = 1 where id = ? and uid = ?", orbitID.ID, c.GetInt("id")).Error
+	if c.GetInt("permisson") != 3 {
+		user, err := s.CheckUserID(fenceID.ID)
+		if err != nil {
+			retError(c, 7, nil)
+			return
+		}
+		if user.Ownid != uid {
+			retError(c, 17, nil)
+			return
+		}
+	}
+	err = s.Exec("update fencelists set del = 1 where id = ? ", fenceID.ID).Error
 	if err != nil {
 		retError(c, 7, err)
 		return

@@ -12,7 +12,7 @@ const localhost = "http://localhost:8800"; //调试地址
 function getAuthorization() {
     return {
         headers: {
-            'Authorization': global.userinfo.jwt,
+            'Authorization': global.jwt(),
         }
     }
 }

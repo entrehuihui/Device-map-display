@@ -83,6 +83,22 @@ definitions:
         description: 子用户ID
         type: integer
     type: object
+  api.Fenceinfo:
+    properties:
+      info:
+        description: '围栏信息json  1: {Lat:21.32, Lng:113.21, radius: 123}  2:[{Lat:21.32,
+          Lng:113.21}, {Lat:21.32, Lng:113.21}....]'
+        type: object
+      types:
+        description: 1 圆 2方
+        type: integer
+    type: object
+  api.FencetID:
+    properties:
+      id:
+        description: 围栏ID  --传0则为删除自己的围栏
+        type: integer
+    type: object
   api.LoginInfos:
     properties:
       code:
@@ -94,16 +110,6 @@ definitions:
       password:
         description: 密码 MD5加密(小写)
         type: string
-    type: object
-  api.Orbitinfo:
-    properties:
-      info:
-        description: '围栏信息json  1: {Lat:21.32, lng:113.21, radius: 123}  2:[{Lat:21.32,
-          lng:113.21}, {Lat:21.32, lng:113.21}....]'
-        type: object
-      types:
-        description: 1 圆 2方
-        type: integer
     type: object
   api.Registerinfo:
     properties:
@@ -380,19 +386,19 @@ paths:
     delete:
       consumes:
       - application/json
-      description: .删除用户
+      description: .删除设备
       parameters:
       - description: With the bearer started JWT
         in: header
         name: Authorization
         required: true
         type: string
-      - description: 用户ID
+      - description: 设备ID
         in: body
-        name: userDelID
+        name: devicesID
         required: true
         schema:
-          $ref: '#/definitions/api.UserDelID'
+          $ref: '#/definitions/api.DevicesID'
           type: object
       produces:
       - application/json
@@ -409,7 +415,7 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .删除用户(仅管理员以上)
+      summary: .删除设备(仅管理员以上)
       tags:
       - devices
     get:
@@ -584,16 +590,24 @@ paths:
       summary: .更改设备所属权(仅管理员以上)
       tags:
       - devices
-  /login:
-    get:
+  /fence:
+    delete:
       consumes:
       - application/json
-      description: 检测账号是否存在
+      description: .删除用户围栏
       parameters:
-      - description: 用户名
-        in: query
-        name: name
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
         type: string
+      - description: 用户围栏信息
+        in: body
+        name: fencetID
+        required: true
+        schema:
+          $ref: '#/definitions/api.FencetID'
+          type: object
       produces:
       - application/json
       responses:
@@ -609,9 +623,77 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: 检测账号是否存在
+      summary: .删除用户围栏
       tags:
-      - login
+      - fence
+    get:
+      consumes:
+      - application/json
+      description: 获取用户围栏
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: query
+        name: id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取用户围栏
+      tags:
+      - fence
+    post:
+      consumes:
+      - application/json
+      description: .设置用户围栏
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户围栏信息
+        in: body
+        name: fenceinfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.Fenceinfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .设置用户围栏
+      tags:
+      - fence
+  /login:
     post:
       consumes:
       - application/json
@@ -640,36 +722,6 @@ paths:
           schema:
             type: string
       summary: 账号登陆
-      tags:
-      - login
-    put:
-      consumes:
-      - application/json
-      description: 账号申请
-      parameters:
-      - description: 申请的用户信息
-        in: body
-        name: userInfo
-        required: true
-        schema:
-          $ref: '#/definitions/api.Registerinfo'
-          type: object
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"Result": object}'
-          schema:
-            type: string
-        "301":
-          description: '{"Error":"Re-login","Data": object}'
-          schema:
-            type: string
-        "500":
-          description: '{"Result": null}'
-          schema:
-            type: string
-      summary: 账号申请
       tags:
       - login
   /login/code:
@@ -747,29 +799,24 @@ paths:
       summary: 获取背景图列表
       tags:
       - login
-  /orbit:
-    delete:
+  /login/register:
+    put:
       consumes:
       - application/json
-      description: .删除用户围栏
+      description: 账号申请
       parameters:
-      - description: With the bearer started JWT
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: 用户围栏信息
+      - description: 申请的用户信息
         in: body
-        name: configuration
+        name: userInfo
         required: true
         schema:
-          $ref: '#/definitions/api.Orbitinfo'
+          $ref: '#/definitions/api.Registerinfo'
           type: object
       produces:
       - application/json
       responses:
         "200":
-          description: '{"Error":"Success","Data": object}'
+          description: '{"Result": object}'
           schema:
             type: string
         "301":
@@ -777,61 +824,22 @@ paths:
           schema:
             type: string
         "500":
-          description: '{"Error":"error","Data": null}'
+          description: '{"Result": null}'
           schema:
             type: string
-      summary: .删除用户围栏
+      summary: 账号申请
       tags:
-      - orbit
+      - login
+  /login/register/name:
     get:
       consumes:
       - application/json
-      description: 获取用户围栏
+      description: 检测账号是否存在
       parameters:
-      - description: With the bearer started JWT
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: 用户ID
+      - description: 用户名
         in: query
-        name: id
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: '{"Error":"Success","Data": object}'
-          schema:
-            type: string
-        "301":
-          description: '{"Error":"Re-login","Data": object}'
-          schema:
-            type: string
-        "500":
-          description: '{"Error":"error","Data": null}'
-          schema:
-            type: string
-      summary: 获取用户围栏
-      tags:
-      - orbit
-    post:
-      consumes:
-      - application/json
-      description: .设置用户围栏
-      parameters:
-      - description: With the bearer started JWT
-        in: header
-        name: Authorization
-        required: true
+        name: name
         type: string
-      - description: 用户围栏信息
-        in: body
-        name: configuration
-        required: true
-        schema:
-          $ref: '#/definitions/api.Orbitinfo'
-          type: object
       produces:
       - application/json
       responses:
@@ -847,9 +855,9 @@ paths:
           description: '{"Error":"error","Data": null}'
           schema:
             type: string
-      summary: .设置用户围栏
+      summary: 检测账号是否存在
       tags:
-      - orbit
+      - login
   /upload:
     post:
       consumes:

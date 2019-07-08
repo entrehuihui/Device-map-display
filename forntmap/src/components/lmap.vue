@@ -180,25 +180,18 @@ export default {
       icons: [],
       tileProviders: [
         {
-          name: "谷歌街道图",
+          name: "OSM街道图",
           visible: true,
           attribution:
-            '&copy; <a target="_blank" href="http://www.google.cn/maps">谷歌地图</a> contributors',
-          url: "http://www.google.cn/maps/vt?lyrs=m@189&gl=cn&x={x}&y={y}&z={z}"
-        },
-        {
-          name: "谷歌影像图",
-          visible: true,
-          attribution:
-            '&copy; <a target="_blank" href="http://www.google.cn/maps">谷歌地图</a> contributors',
-          url: "http://www.google.cn/maps/vt?lyrs=s@189&gl=cn&x={x}&y={y}&z={z}"
+            '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          url: "http://{s}.tile.osm.org/{z}/{x}/{y}.png"
         },
         {
           name: "离线地图",
           visible: true,
           attribution:
             '&copy; <a target="_blank" href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-          url: "http://120.78.76.139:8998/1818940751/{z}/{x}/{y}"
+          url: "/map/{z}/{x}/{y}.jpg"
         }
       ]
     };

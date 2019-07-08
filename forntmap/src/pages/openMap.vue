@@ -143,6 +143,32 @@
       <div class="openMapUser" @mouseover="useropen = true" @mouseleave="useropen = false">
         <!-- 左侧展开 -->
         <div class="openMapUserOpen" v-show="useropen" @click="userInfo = false">
+          <!-- 围栏增删 -->
+          <div class="openMapUserPush" @mouseleave="orbit=false">
+            <div @click="orbit=!orbit">
+              <div class="openMapUserPushimg">
+                <img class="imgMax" src="/static/fence.png" />
+              </div>
+              <div class="openMapUserPushExplain">围栏</div>
+              <div class="openMapUserPushopenimg">
+                <img v-show="!orbit" class="imgMax" src="/static/pushopen.png" />
+                <img
+                  v-show="orbit"
+                  class="imgMax"
+                  src="/static/pushopen.png"
+                  id="openMapUserPushopenmg"
+                />
+              </div>
+            </div>
+            <div class="openMapUserPushbutton" v-show="orbit" @click="orbit=false">
+              <div class="openMapUserPushbuttonExplain">
+                <div class="openMapUserPushOrbit" @click="orbitList.Show = 1">添加围栏</div>
+              </div>
+              <div class="openMapUserPushbuttonExplain">
+                <div class="openMapUserPushOrbit" @click="delFence(0)">删除</div>
+              </div>
+            </div>
+          </div>
           <!-- 推送开关 -->
           <div class="openMapUserPush" @mouseleave="push=false">
             <div @click="push=!push">
@@ -305,17 +331,11 @@
                   <div class="openMapMapSelectSe">
                     <div class="openMapMapSelectSeInside" v-show="mapIndex.index == 0"></div>
                   </div>
-                  <div class="openMapMapSelectIndex">谷歌地图</div>
+                  <div class="openMapMapSelectIndex">在线地图</div>
                 </div>
                 <div class="openMapMapSelectCc" @click="mapIndex.index = 1">
                   <div class="openMapMapSelectSe">
                     <div class="openMapMapSelectSeInside" v-show="mapIndex.index == 1"></div>
-                  </div>
-                  <div class="openMapMapSelectIndex">谷歌卫星</div>
-                </div>
-                <div class="openMapMapSelectCc" @click="mapIndex.index = 2">
-                  <div class="openMapMapSelectSe">
-                    <div class="openMapMapSelectSeInside" v-show="mapIndex.index == 2"></div>
                   </div>
                   <div class="openMapMapSelectIndex">离线地图</div>
                 </div>
@@ -376,7 +396,10 @@
               <img src="/static/fence.png" class="imgMax" />
             </div>
           </div>
-          <em class="openMapFullem" @click="fenceShow.select=!fenceShow.select"></em>
+          <em
+            class="openMapFullem"
+            @click="fenceShow.select=!fenceShow.select; showFence(fenceShow.select)"
+          ></em>
           <div
             class="openMapZoomOutLeft"
             v-show="fenceShow.explain"
@@ -435,7 +458,7 @@
         @mouseup="mouseUpHandleelse($event,'openmapOrbitID')"
       >
         <strong>添加电子围栏</strong>
-        <div class="openmapOrbitClose" @click="orbitList.Show =0">X</div>
+        <div class="openmapOrbitClose" @click="initFence()">X</div>
       </div>
       <div class="openmapOrbitTypes" v-show="orbitList.Show == 1">
         <div
@@ -451,7 +474,7 @@
         <div
           class="openmapOrbitTypesSelect"
           @click="orbitList.Types=2"
-          @dblclick="orbitList.Types=2; orbitList.Show++"
+          @dblclick="orbitList.Types=2; orbitList.Show++;setFence('exec', orbitList)"
         >
           <div class="openmapOrbitTypesName">添加多边形围栏</div>
           <div class="openmapOrbitTypesMark">
@@ -468,6 +491,7 @@
             class="openmapOrbitCircleInput"
             oninput="if(value>90)value=90;if(value<-90)value=-90"
             placeholder="点击地图获取"
+            @keydown="LatLng(orbitList.Lat,orbitList.Lng, true)"
             v-model="orbitList.Lat"
           />
         </div>
@@ -477,6 +501,7 @@
             type="number"
             class="openmapOrbitCircleInput"
             oninput="if(value>180)value=180;if(value<-180)value=-180"
+            @keydown="LatLng(orbitList.Lat,orbitList.Lng, true)"
             placeholder="或手动输入"
             v-model="orbitList.Lng"
           />
@@ -491,8 +516,8 @@
           />
         </div>
         <div class="openmapOrbitCircle" v-show="orbitList.Radius&&orbitList.Lng&&orbitList.Lat">
-          <div class="openmapOrbitCircleTrue" @click="setOrbit('exec', orbitList)">预览</div>
-          <div class="openmapOrbitCircleTrue" @click="postOrbit('exec', orbitList)">确定</div>
+          <div class="openmapOrbitCircleTrue" @click="setFence('exec', orbitList)">预览</div>
+          <div class="openmapOrbitCircleTrue" @click="postFence('exec', orbitList)">确定</div>
         </div>
       </div>
       <!-- 画多边形围栏 -->
@@ -504,6 +529,7 @@
             class="openmapOrbitCircleInput"
             oninput="if(value>90)value=90;if(value<-90)value=-90"
             placeholder="点击地图获取"
+            @keydown="LatLng(orbitList.Lat,orbitList.Lng, true)"
             v-model="orbitList.Lat"
           />
         </div>
@@ -513,24 +539,31 @@
             type="number"
             class="openmapOrbitCircleInput"
             oninput="if(value>180)value=180;if(value<-180)value=-180"
+            @keydown="LatLng(orbitList.Lat,orbitList.Lng, true)"
             placeholder="或手动输入"
             v-model="orbitList.Lng"
           />
         </div>
         <div class="openmapOrbitCircle">
-          <div class="openmapOrbitPolygon">第{{orbitList.Polygon.length + 1}}个点</div>
+          <div class="openmapOrbitPolygon">第{{orbitList.Polygon.length}}个点</div>
           <div
             class="openmapOrbitPolygonNext"
             v-show="orbitList.Lng&&orbitList.Lat"
             @click="orbitList.Number++; orbitList.Lng='';orbitList.Lat=''"
-          >NEXT</div>
+          >Next</div>
+          <div
+            class="openmapOrbitPolygonNext"
+            id="openmapOrbitPolygonNextRight"
+            v-show="orbitList.Number > 0"
+            @click="preFence()"
+          >Pre</div>
         </div>
         <div
           class="openmapOrbitCircle"
-          v-show="orbitList.Polygon.length > 1 &&orbitList.Lng&&orbitList.Lat"
+          v-show="orbitList.Number > 1 &&orbitList.Lng&&orbitList.Lat"
         >
-          <div class="openmapOrbitCircleTrue" @click="setOrbit('exec', orbitList)">预览</div>
-          <div class="openmapOrbitCircleTrue" @click="postOrbit('exec', orbitList)">确定</div>
+          <div class="openmapOrbitCircleTrue" @click="setFence('exec', orbitList)">取消</div>
+          <div class="openmapOrbitCircleTrue" @click="postFence('exec', orbitList)">确定</div>
         </div>
       </div>
     </div>
@@ -545,9 +578,10 @@ export default {
   },
   data() {
     return {
+      orbit: false,
       orbitList: {
-        Show: 1,
-        Types: 2,
+        Show: 0,
+        Types: 0,
         Lat: "",
         Lng: "",
         Radius: 100,
@@ -605,17 +639,52 @@ export default {
     };
   },
   methods: {
-    LatLng: function(lat, lng) {
+    LatLng: function(lat, lng, motheds = false) {
+      if (lat == "" || lng == "") {
+        return;
+      }
       if (this.orbitList.Show == 2 && this.orbitList.Types) {
         this.orbitList.Lat = lat;
         this.orbitList.Lng = lng;
         this.$set(this.orbitList.Polygon, this.orbitList.Number, [lat, lng]);
         this.$refs.lmap.execMark = this.orbitList.Polygon;
       }
+      if (motheds) {
+        this.$refs.lmap.center = [lat, lng];
+      }
+    },
+    preFence: function() {
+      this.$delete(this.orbitList.Polygon, this.orbitList.Number, 1);
+      this.orbitList.Number--;
+    },
+    initFence: function(name = "exec") {
+      this.orbitList = {
+        Show: 0,
+        Types: 0,
+        Lat: "",
+        Lng: "",
+        Radius: 100,
+        Number: 0,
+        Polygon: []
+      };
+      this.$delete(this.$refs.lmap.orbitLists, name);
+      this.$refs.lmap.execMark = new Array();
+    },
+    //显示隐藏围栏
+    showFence: function(methods = false) {
+      for (const key in this.groundUser) {
+        if (this.groundUser[key].Show) {
+          this.setFence(this.groundUser[key].ID, this.groundUser[key].Orbit);
+        }
+      }
     },
     // 设置围栏
-    setOrbit: function(name, orbitList) {
-      this.$set(this.$refs.lmap.orbitLists, name, orbitList);
+    setFence: function(name, orbitList) {
+      if (orbitList && !this.fenceShow.select) {
+        this.$set(this.$refs.lmap.orbitLists, name, orbitList);
+      } else {
+        this.$delete(this.$refs.lmap.orbitLists, name);
+      }
     },
     // 计算放大等级
     countZoom: function() {
@@ -714,8 +783,12 @@ export default {
           this.getDeviceData(v1, v.ID);
         }
         // 展示围栏
+        // 获取围栏
+        this.getFence(v);
       } else {
         this.pullDevicesMark(v);
+        // 取消围栏展示
+        this.setFence(v.ID);
       }
     },
     getDeviceData: function(v, id) {
@@ -761,7 +834,6 @@ export default {
         var url = "/users?permisson=" + permisson;
         var response = await this.req.get(url);
         if (response.status != 200) {
-          // this.getOrbit();
           return;
         }
         for (const v of response.data.data) {
@@ -773,7 +845,6 @@ export default {
           });
         }
       }
-      // this.getOrbit();
     },
     // ----------//
     fullscreenShow: function(metheds) {
@@ -830,9 +901,6 @@ export default {
       });
     },
     getState: function() {
-      // if (this.global.userinfo.permisson == 3) {
-      //   return;
-      // }
       this.req.get("/configState").then(response => {
         if (response.status != 200) {
           return;
@@ -851,36 +919,43 @@ export default {
       }
       this.$forceUpdate();
     },
-    getOrbit: function() {
-      for (const user of this.groundUser) {
-        console.log(this.global.userinfo.id, user);
-        this.req.get("/orbit?id=" + user.ID).then(response => {
-          if (response.status != 200) {
-            return;
+    getFence: function(v) {
+      this.req.get("/fence?id=" + v.ID).then(response => {
+        if (response.status != 200) {
+          return;
+        }
+        if (response.data.ID == 0) {
+          return;
+        }
+        console.log(response.data);
+        //       Show: 0,
+        //       Types: 0,
+        //       Lat: "",
+        //       Lng: "",
+        //       Radius: 100,
+        //       Number: 0,
+        //       Polygon: []
+        if (response.data.Types == 1) {
+          var data = JSON.parse(response.data.Info);
+          v.Orbit = {
+            Types: 1,
+            Lat: data.Lat,
+            Lng: data.Lng,
+            Radius: data.Radius
+          };
+        } else if (response.data.Types == 2) {
+          v.Orbit = { Types: 2 };
+          var data = JSON.parse(response.data.Info);
+          var Polygon = new Array();
+          for (const v of data) {
+            Polygon.push([v.Lat, v.Lng]);
           }
-          if (response.data.ID == 0) {
-            return;
-          }
-          // v.Orbit = response.data;
-          if (response.data.Types == 1) {
-            v.Orbit = {};
-            var data = JSON.stringify(response.data.Info);
-            v.Orbit.Types = 1;
-            v.Orbit.Lang = [data.Lat, data.Lng];
-            v.Orbit.Radius = data.Radius;
-          } else if (response.data.Types == 2) {
-            v.Orbit = {};
-            var data = JSON.stringify(response.data.Info);
-            v.Orbit.Types = 1;
-            v.Orbit.Lang = new Array();
-            for (const v of data) {
-              v.Orbit.Lang.push(v.Lat, v.Lng);
-            }
-          }
-        });
-      }
+          v.Orbit.Polygon = Polygon;
+        }
+        this.setFence(v.ID, v.Orbit);
+      });
     },
-    postOrbit: function(name, v) {
+    postFence: function(name, v) {
       var data = {};
       // 圆形
       if (v.Types == 1) {
@@ -890,23 +965,49 @@ export default {
           Radius: parseInt(v.Radius)
         };
       } else if (v.Types == 2) {
+        if (v.Polygon.length < 3) {
+          return;
+        }
+        data = new Array();
+        for (const lang of v.Polygon) {
+          data.push({
+            Lat: parseFloat(lang[0]),
+            Lng: parseFloat(lang[1])
+          });
+        }
       } else {
         return;
       }
       this.req
-        .post("/orbit", {
+        .post("/fence", {
           Types: v.Types,
           Info: data
         })
         .then(response => {
           if (response.status != 200) {
             alert(response.msg);
+            this.initFence();
             return;
           }
           alert("success");
-          this.$delete(this.$refs.lmap.orbitLists, name);
-          this.$refs.lmap.execMark = new Array();
-          v.Show = 0;
+          this.initFence();
+        });
+    },
+    delFence: function(id = 0) {
+      this.req
+        .del("/fence", {
+          id: id
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+            return;
+          }
+          alert("Success");
+          if (id == 0) {
+            this.setFence(this.groundUser[0].ID, false);
+            this.groundUser[0].Orbit = null;
+          }
         });
     },
     mouseDownHandleelse(event, ID) {
@@ -922,9 +1023,19 @@ export default {
     },
     mouseUpHandleelse(event) {
       window.onmousemove = null;
+    },
+    getUserinfo: async function() {
+      await this.req.get("/login/info").then(response => {
+        if (response.status != 200) {
+          this.global.setCookie("", -1);
+          return;
+        }
+        this.global.userinfo = response.data;
+      });
     }
   },
-  mounted() {
+  async mounted() {
+    await this.getUserinfo();
     this.getState();
     this.getUserGround();
     this.getConfig();
