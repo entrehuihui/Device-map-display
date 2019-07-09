@@ -1299,6 +1299,30 @@
                     }
                 }
             }
+        },
+        "/ws": {
+            "get": {
+                "description": "websocket连接 /ws?maxiiot_user=token\u0026roomID=roomID",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "websocket"
+                ],
+                "summary": "websocket连接 /ws?maxiiot_user=token\u0026roomID=roomID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "jwt",
+                        "name": "Authorization",
+                        "in": "query",
+                        "required": true
+                    }
+                ]
+            }
         }
     },
     "definitions": {

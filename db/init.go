@@ -40,6 +40,8 @@ func SetSQL(f io.Writer) (err error) {
 	if err != nil {
 		log.Fatal(err)
 	}
+	// 初始化redis
+	initPoll()
 	return
 }
 

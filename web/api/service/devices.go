@@ -2,54 +2,61 @@ package service
 
 import (
 	"log"
-	"time"
+	"strconv"
+	"strings"
+
+	"github.com/gomodule/redigo/redis"
 
 	"../../../db"
-	"github.com/jinzhu/gorm"
 )
-
-// 设备ID 设备State
-var devices map[int]map[string][2]int
-
-// InitDevices 初始化设备列表
-func InitDevices() {
-	s := db.GetDB()
-	now := time.Now().AddDate(0, 0, -2).Unix()
-	deviceinfo := make([]db.Deviceinfo, 0)
-	err := s.Raw("SELECT * FROM deviceinfos WHERE id IN ( SELECT id FROM devicedata WHERE uptime > ? ) AND del = 0", now).Scan(&deviceinfo).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
-		log.Fatal(err)
-	}
-
-	devices = make(map[int]map[string][2]int, 0)
-	for _, v := range deviceinfo {
-		if devices[v.Classid] == nil {
-			devices[v.Classid] = make(map[string][2]int, 0)
-		}
-		devices[v.Classid][v.DevEUI] = [2]int{v.ID, v.UID}
-	}
-}
 
 // CheckDevicesInfo .
 func (s *Server) CheckDevicesInfo(classid int, deveui string) ([2]int, error) {
-	if devices[classid][deveui][0] != 0 {
-		return devices[classid][deveui], nil
+	conn := db.GetRedis()
+	defer conn.Close()
+	valeus, err := redis.String(conn.Do("GET", deviceMarkKey(classid, deveui)))
+	if err != nil {
+		log.Println("CheckDevicesInfo Redis Error : ", err)
+	} else {
+		valueList := strings.Split(valeus, ":")
+		if len(valueList) == 2 {
+			id, _ := strconv.Atoi(valueList[0])
+			uid, _ := strconv.Atoi(valueList[1])
+			if id != 0 && uid != 0 {
+				return [2]int{id, uid}, nil
+			}
+		}
 	}
 	deviceinfo, err := s.GetDeviceinfos(classid, deveui)
+	if err == nil {
+		AddDevicesInfo(&deviceinfo)
+	}
 	return [2]int{deviceinfo.ID, deviceinfo.UID}, err
+}
+
+func deviceMarkKey(classid int, deveui string) string {
+	var deviceMark = "deviceMark:"
+	return deviceMark + strconv.Itoa(classid) + ":" + deveui
 }
 
 // DelDevicesInfo .
 func DelDevicesInfo(classid int, deveui string) {
-	delete(devices[classid], deveui)
+	conn := db.GetRedis()
+	defer conn.Close()
+	_, err := conn.Do("DEL", deviceMarkKey(classid, deveui))
+	if err != nil {
+		log.Println("DelDevicesInfo Error : ", err)
+	}
 }
 
 // AddDevicesInfo .
-func AddDevicesInfo(deveui string, infos [2]int) {
-	if devices[infos[0]] == nil {
-		devices[infos[0]] = make(map[string][2]int, 0)
+func AddDevicesInfo(deviceinfo *db.Deviceinfo) {
+	conn := db.GetRedis()
+	defer conn.Close()
+	_, err := conn.Do("SET", deviceMarkKey(deviceinfo.Classid, deviceinfo.DevEUI), strconv.Itoa(deviceinfo.ID)+":"+strconv.Itoa(deviceinfo.UID), "EX", 86400)
+	if err != nil {
+		log.Println("AddDevicesInfo Error : ", err)
 	}
-	devices[infos[0]][deveui] = infos
 }
 
 // GetDeviceinfos .按classid和deveui获取设备信息
@@ -64,7 +71,7 @@ func (s *Server) CreateDevice(deviceinfo *db.Deviceinfo) error {
 	var err error
 	err = s.Create(deviceinfo).Error
 	if err == nil {
-		AddDevicesInfo(deviceinfo.DevEUI, [2]int{deviceinfo.ID, deviceinfo.UID})
+		AddDevicesInfo(deviceinfo)
 	}
 	return err
 }

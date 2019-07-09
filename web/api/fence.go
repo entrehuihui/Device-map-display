@@ -187,6 +187,13 @@ func PostFence(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
+	err = service.DelFence(uid)
+	if err != nil {
+		tx.Rollback()
+		retError(c, 7, err)
+		return
+	}
+	service.AddFence(&fencelists)
 	tx.Commit()
 	retSuccess(c, fencelists)
 }
@@ -216,11 +223,12 @@ func DelFence(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
-	s := service.GetServer()
+	tx := service.GetServer().Begin()
 	uid := c.GetInt("id")
 	if fenceID.ID == 0 {
-		err = s.Exec("update fencelists set del = 1 where uid = ? and del = 0", uid).Error
+		err = tx.Exec("update fencelists set del = 1 where uid = ? and del = 0", uid).Error
 		if err != nil {
+			tx.Rollback()
 			retError(c, 7, err)
 			return
 		}
@@ -228,6 +236,7 @@ func DelFence(c *gin.Context) {
 		return
 	}
 	if c.GetInt("permisson") != 3 {
+		s := service.GetServer()
 		user, err := s.CheckUserID(fenceID.ID)
 		if err != nil {
 			retError(c, 7, nil)
@@ -238,10 +247,18 @@ func DelFence(c *gin.Context) {
 			return
 		}
 	}
-	err = s.Exec("update fencelists set del = 1 where id = ? ", fenceID.ID).Error
+	err = tx.Exec("update fencelists set del = 1 where id = ? ", fenceID.ID).Error
 	if err != nil {
+		tx.Rollback()
 		retError(c, 7, err)
 		return
 	}
+	err = service.DelFence(uid)
+	if err != nil {
+		tx.Rollback()
+		retError(c, 7, err)
+		return
+	}
+	tx.Commit()
 	retSuccess(c, "Success")
 }

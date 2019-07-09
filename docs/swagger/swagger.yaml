@@ -1023,4 +1023,20 @@ paths:
       summary: 更改用户状态(仅管理员以上)
       tags:
       - user
+  /ws:
+    get:
+      consumes:
+      - application/json
+      description: websocket连接 /ws?maxiiot_user=token&roomID=roomID
+      parameters:
+      - description: jwt
+        in: query
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      summary: websocket连接 /ws?maxiiot_user=token&roomID=roomID
+      tags:
+      - websocket
 swagger: "2.0"

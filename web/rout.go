@@ -4,7 +4,6 @@ import (
 	"log"
 
 	"./api"
-	"./api/service"
 	"./middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
@@ -32,6 +31,8 @@ func Run() {
 
 	//图片上传
 	r.POST("/upload", api.Upload)
+	// websocket
+	r.GET("/ws", api.WebsocketListen)
 
 	// swag
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
@@ -63,7 +64,6 @@ func Run() {
 	r.PUT("/config", api.UpdateConfiguration) // 更改用户配置
 	r.GET("/configState", api.GetConfigState) // 获取状态配置
 	// 设备数据
-	service.InitDevices()
 	r.POST("/devicedata", api.SaveDeviceInfos) //数据接收
 	r.GET("/devicedata", api.GetDevicesDatas)  //获取数据
 	// 设备

@@ -9,6 +9,7 @@
         @click="addMarket"
         @mouseleave="mapMove()"
         :options="{zoomControl: false}"
+        :noBlockingAnimations="false"
         ref="lmapmy"
       >
         <!-- 默认地图 如果不用地图选择器则不注释 -->
@@ -74,16 +75,16 @@
             v-if="orbit.Types==1 && parseInt(orbit.Radius)"
             :lat-lng="[orbit.Lat, orbit.Lng]"
             :radius="parseInt(orbit.Radius)"
-            :color="global.color[9]"
-            :fillColor="global.color[9]"
+            :color="global.color[getRand()]"
+            :fillColor="global.color[getRandT()]"
             :fillOpacity="0.05"
           ></LCircle>
           <!-- 画矩形 -->
           <LPolygon
             v-if="orbit.Types==2 && orbit.Polygon.length > 2"
             :lat-lngs="orbit.Polygon"
-            :color="global.color[9]"
-            :fillColor="global.color[9]"
+            :color="global.color[getRand()]"
+            :fillColor="global.color[getRandT()]"
             :fillOpacity="0.05"
           ></LPolygon>
         </div>
@@ -132,6 +133,15 @@ export default {
     LControl
   },
   methods: {
+    getRand: function() {
+      // this.rang++;
+      // return this.rang % 9;
+      return 9;
+    },
+    getRandT: function() {
+      // return this.rang % 9;
+      return 9;
+    },
     showMark: function(v) {
       this.center = v;
       // this.zoom = 18;
@@ -161,6 +171,7 @@ export default {
   },
   data() {
     return {
+      rang: 0,
       orbitLists: {},
       execMark: [],
       execicon: icon({
@@ -180,7 +191,7 @@ export default {
       icons: [],
       tileProviders: [
         {
-          name: "OSM街道图",
+          name: "街道地图",
           visible: true,
           attribution:
             '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
@@ -273,6 +284,9 @@ export default {
     ];
   },
   watch: {
+    center: function() {
+      // console.log(this.center, "+++");
+    },
     changeZoom: function(v, o) {
       if (v > o) {
         this.zoom = this.$refs.lmapmy.mapObject.getZoom() + 1;

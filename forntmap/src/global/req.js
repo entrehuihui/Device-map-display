@@ -5,8 +5,8 @@ import global from '@/global/variable.js'
 Vue.prototype.$axios = axios;
 
 // --------------- //
-// const localhost = "http://120.78.76.139:8800"; //调试地址/
-const localhost = "http://localhost:8800"; //调试地址
+const localhost = "http://120.78.76.139:8800"; //调试地址/
+// const localhost = "http://127.0.0.1:8800"; //调试地址
 // const localhost = ""; //正式
 
 function getAuthorization() {
@@ -16,128 +16,56 @@ function getAuthorization() {
         }
     }
 }
-
+function ret(response) {
+    if (response == undefined) {
+        return {
+            status: 500
+        }
+    }
+    if (response.status == 200) {
+    } else if (response.status == 301) {
+        router.push('/');
+        response.msg = global.getcode(response.data)
+    } else {
+        response.msg = global.getcode(response.data)
+    }
+    return response
+}
 
 export default {
     localhost,
     post: async function (url, postData) {
         var response = await Vue.prototype.$axios
-            .post(localhost + url, postData, getAuthorization())
-            .then(response => {
-                return response;
+            .post(localhost + url, postData, getAuthorization()).catch(error => {
+                return error.response
             })
-            .catch(error => {
-                if (error.response == undefined) {
-                    return {
-                        status: 500
-                    }
-                } else {
-                    return error.response
-                }
-            });
-        if (response == undefined) {
-            return {
-                status: 500
-            }
-        }
-        if (response.status == 200) {
-        } else if (response.status == 301) {
-            router.push('/');
-            response.msg = global.getcode(response.data)
-        } else {
-            response.msg = global.getcode(response.data)
-        }
-        return response
+        return ret(response)
     },
     get: async function (url) {
         var response = await Vue.prototype.$axios
-            .get(localhost + url, getAuthorization())
-            .then(response => {
-                return response;
+            .get(localhost + url, getAuthorization()).then(response => {
+                return response
+            }).catch(error => {
+                return error.response
             })
-            .catch(error => {
-                if (error.response == undefined) {
-                    return {
-                        status: 500
-                    }
-                } else {
-                    return error.response
-                }
-            });
-        if (response == undefined) {
-            return {
-                status: 500
-            }
-        }
-        if (response.status == 200) {
-        } else if (response.status == 301) {
-            router.push('/');
-            response.msg = global.getcode(response.data)
-        } else {
-            response.msg = global.getcode(response.data)
-        }
-        return response
+        return ret(response)
     },
     put: async function (url, putData) {
         var response = await Vue.prototype.$axios
-            .put(localhost + url, putData, getAuthorization())
-            .then(response => {
-                return response;
+            .put(localhost + url, putData, getAuthorization()).catch(error => {
+                return error.response
             })
-            .catch(error => {
-                if (error.response == undefined) {
-                    return {
-                        status: 500
-                    }
-                } else {
-                    return error.response
-                }
-            });
-        if (response == undefined) {
-            return {
-                status: 500
-            }
-        }
-        if (response.status == 200) {
-        } else if (response.status == 301) {
-            router.push('/');
-            response.msg = global.getcode(response.data)
-        } else {
-            response.msg = global.getcode(response.data)
-        }
-        return response
+        return ret(response)
     },
     del: async function (url, delData) {
         var response = await Vue.prototype.$axios
             .delete(localhost + url, {
                 data: delData,
                 headers: getAuthorization().headers
+            }).catch(error => {
+                return error.response
             })
-            .then(response => {
-                return response;
-            })
-            .catch(error => {
-                if (error.response == undefined) {
-                    return {
-                        status: 500
-                    }
-                } else {
-                    return error.response
-                }
-            });
-        if (response == undefined) {
-            return {
-                status: 500
-            }
-        }
-        if (response.status == 200) {
-        } else if (response.status == 301) {
-            router.push('/');
-            response.msg = global.getcode(response.data)
-        } else {
-            response.msg = global.getcode(response.data)
-        }
-        return response
+        return ret(response)
     },
     postfile: async function (url, postData, config = {
         headers: {
@@ -145,31 +73,9 @@ export default {
         }
     }) {
         var response = await Vue.prototype.$axios
-            .post(localhost + url + "?Authorization=" + global.userinfo.jwt, postData, config)
-            .then(response => {
-                return response;
+            .post(localhost + url + "?Authorization=" + global.userinfo.jwt, postData, config).catch(error => {
+                return error.response
             })
-            .catch(error => {
-                if (error.response == undefined) {
-                    return {
-                        status: 500
-                    }
-                } else {
-                    return error.response
-                }
-            });
-        if (response == undefined) {
-            return {
-                status: 500
-            }
-        }
-        if (response.status == 200) {
-        } else if (response.status == 301) {
-            router.push('/');
-            response.msg = global.getcode(response.data)
-        } else {
-            response.msg = global.getcode(response.data)
-        }
-        return response
+        return ret(response)
     },
 };

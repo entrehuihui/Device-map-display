@@ -2,12 +2,15 @@ package api
 
 import (
 	"encoding/json"
+	"log"
+	"net/http"
 	"time"
 
 	"../../db"
 	"./service"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"golang.org/x/net/websocket"
 )
 
 // DeviceInfos 设备信息
@@ -100,15 +103,11 @@ func SaveDeviceInfos(c *gin.Context) {
 		}
 		infos = [2]int{deviceinfo.ID, uid}
 	}
-	// 保存信息
-	// 1----- 判断状态是否改变
-	// if infos[1] != deviceInfos.State {
-	// 	//改变设备状态 --不在乎结果
-	// 	s.UpdateDevice(infos[0], map[string]interface{}{
-	// 		"state":  deviceInfos.State,
-	// 		"uptime": deviceInfos.Times,
-	// 	})
-	// }
+	// 检测是否超出围栏
+	if service.ChenckOutFence(infos[1], deviceInfos.Latitude, deviceInfos.Longitude) {
+		deviceInfos.Info["fence"] = "overstep"
+		deviceInfos.State = 7
+	}
 	// 保存数据
 	jsons, err := json.Marshal(deviceInfos.Info)
 	if err != nil {
@@ -133,6 +132,17 @@ func SaveDeviceInfos(c *gin.Context) {
 	if err != nil {
 		retError(c, 7, err)
 		return
+	}
+	datas, err := json.Marshal(devicedata)
+	if err != nil {
+		log.Printf("SaveDeviceInfos  Marshal error! [error]%s  [data]%v", err, devicedata)
+		retSuccess(c, "Success")
+		return
+	}
+	data := string(datas)
+	go service.GroupWrite(uid, data)
+	if uid != infos[1] {
+		go service.GroupWrite(infos[1], data)
 	}
 	retSuccess(c, "Success")
 }
@@ -171,7 +181,6 @@ func GetDevicesDatas(c *gin.Context) {
 	} else {
 		result = s.Where("uid = ?", uid)
 	}
-
 	id, err := getID(c)
 	if err != nil {
 		retError(c, 12, err)
@@ -237,4 +246,24 @@ func GetDevicesDatas(c *gin.Context) {
 		"all":  all,
 		"data": devicedata,
 	})
+}
+
+// WebsocketListen .
+// @Tags  websocket
+// @Summary websocket连接 /ws?maxiiot_user=token&roomID=roomID
+// @Description websocket连接 /ws?maxiiot_user=token&roomID=roomID
+// @Accept  json
+// @Produce  json
+// @Param   Authorization   query  string   true  "jwt"
+// @Router /ws?Authorization=jwt [get]
+func WebsocketListen(c *gin.Context) {
+	// CHECK AUTH HEADER HERE
+	Upgrade := c.GetHeader("Upgrade")
+	Origin := c.GetHeader("Origin")
+	if Upgrade == "" || Origin == "" {
+		c.JSON(http.StatusInternalServerError, 7)
+		return
+	}
+	handler := websocket.Handler(service.Echo)
+	handler.ServeHTTP(c.Writer, c.Request)
 }

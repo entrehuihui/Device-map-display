@@ -115,7 +115,13 @@
                             class="openMapdevicesDevicesOperatFrameC"
                             v-for="(v2, v2index) in v1.DeviceData.Infos"
                             :key="v2 + i1"
-                          >{{v2}} : {{v2index}}</div>
+                          >
+                            <tr>
+                              <th>{{v2index}}</th>
+                              <th>&nbsp;:&nbsp;</th>
+                              <th>{{v2}}</th>
+                            </tr>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -331,7 +337,7 @@
                   <div class="openMapMapSelectSe">
                     <div class="openMapMapSelectSeInside" v-show="mapIndex.index == 0"></div>
                   </div>
-                  <div class="openMapMapSelectIndex">在线地图</div>
+                  <div class="openMapMapSelectIndex">标准地图</div>
                 </div>
                 <div class="openMapMapSelectCc" @click="mapIndex.index = 1">
                   <div class="openMapMapSelectSe">
@@ -567,14 +573,19 @@
         </div>
       </div>
     </div>
+    <div>
+      <!-- <websocket v-on:retdata="socket" ref="websocket"></websocket> -->
+    </div>
   </div>
 </template>
 
 <script>
 import lmap from "@/components/lmap.vue";
+import websocket from "@/components/websocket.vue";
 export default {
   components: {
-    lmap
+    lmap,
+    websocket
   },
   data() {
     return {
@@ -639,6 +650,10 @@ export default {
     };
   },
   methods: {
+    socket: async function(msg) {
+      console.log(msg, new Date().getTime());
+      console.log(typeof msg, new Date().getTime());
+    },
     LatLng: function(lat, lng, motheds = false) {
       if (lat == "" || lng == "") {
         return;
@@ -714,17 +729,16 @@ export default {
       if (this.maxMinCenter.length != 4) {
         return;
       }
+      this.countZoom();
       this.$refs.lmap.center = [
         (this.maxMinCenter[0] + this.maxMinCenter[1]) / 2,
         (this.maxMinCenter[2] + this.maxMinCenter[3]) / 2,
         1
       ];
-      this.countZoom();
     },
     // 改变视野到单个标记
     changeLampZoom: function(lat, long) {
       this.$refs.lmap.center = [lat, long];
-      // this.$set(this.$refs.lmap.center, "time", new Date().getTime());
       this.$refs.lmap.zoom = 16;
     },
     // 计算中心点
@@ -927,14 +941,6 @@ export default {
         if (response.data.ID == 0) {
           return;
         }
-        console.log(response.data);
-        //       Show: 0,
-        //       Types: 0,
-        //       Lat: "",
-        //       Lng: "",
-        //       Radius: 100,
-        //       Number: 0,
-        //       Polygon: []
         if (response.data.Types == 1) {
           var data = JSON.parse(response.data.Info);
           v.Orbit = {
@@ -1054,6 +1060,9 @@ export default {
     devicesList: async function() {
       this.updateSreen();
     }
+  },
+  destroyed() {
+    // this.$refs.websocket.changes = new Date().getTime();
   }
 };
 function getMaxArea(max, min, refer = 0) {

@@ -20,20 +20,10 @@ ip="192.168.181.60"
 name="admin"
 password="admin"
 
-[Map]
-appkey = "56f3a79ce58048658d61ca768b3aecae"
-mapurl = "http://211.159.147.83:8083/api/v3"
-mapshowurl= "http://140.143.130.127/v3/VBMaps/html/map.html"
-# sever = "192.168.181.60:8888"
-sever = "http://120.78.76.139:8888"
-
-[MQTT]
-# MQTT host like: host="tcp://127.0.0.1:1883"
-# serverhost="tcp://127.0.0.1:1883"
-serverhost = "tcp://113.108.88.121:41883"
-username=""
-password=""
-# 监听主题 默认application/+/node/+/rx
-topic="application1/+/node/+/rx"
-# topic = "application/50/node/6467c42060c0e012/rx"
-# topic="#"
+[Redis]
+# redis url like : url="redis://localhost:6379"
+url="redis://localhost:6379"
+# Whether to clear the redis cache: true is yes, false is no
+clearUp = true
+# Maximum number of idle connections in the pool.
+maxIdle = 30

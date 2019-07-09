@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -56,13 +57,14 @@ func DataLogs() gin.HandlerFunc {
 // Cors 处理跨域请求,支持options访问
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
+		fmt.Println("-------------------+++++++++++++++++++++++++++++++++++++++")
 		method := c.Request.Method
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Headers", "Content-Type,Authorization")
 		c.Header("Access-Control-Allow-Methods", "POST, GET,DELETE, PUT, OPTIONS")
 		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
 		c.Header("Access-Control-Allow-Credentials", "true")
-		c.Header("Accept", "application/json, text/plain, */*")
+		c.Header("Accept", "*/*")
 		c.Header("Origin", "*")
 		c.Header("Referer", "*")
 		c.Header("User-Agent", "*")

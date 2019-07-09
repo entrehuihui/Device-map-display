@@ -9,11 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-// Resqonse return request
-type Resqonse struct {
-	Result interface{}
-}
-
 func verifyEmailFormat(email string) bool {
 	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
 	reg := regexp.MustCompile(pattern)

@@ -232,7 +232,7 @@ func Login(c *gin.Context) {
 			userInfo.Email = "******" + userInfo.Email[len(emails[0]):]
 		}
 	}
-	c.Header("Authorization", jwt)
+	// c.Header("Authorization", jwt)
 	retSuccess(c, map[string]interface{}{
 		"id":        userInfo.ID,
 		"jwt":       jwt,
@@ -294,7 +294,7 @@ var code = make([]map[string]interface{}, 0)
 
 // SetCode 读取错误代码
 func SetCode() {
-	body, err := ioutil.ReadFile("./web/api/code.json")
+	body, err := ioutil.ReadFile("./code.json")
 	if err != nil {
 		log.Fatal("SetCode error! [error]", err)
 	}

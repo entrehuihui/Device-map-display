@@ -38,7 +38,7 @@ func (s *Server) CreateState(uid int) error {
 		db.Configstates{
 			UID:    uid,
 			Types:  7,
-			States: "提醒",
+			States: "超出围栏",
 		},
 		db.Configstates{
 			UID:    uid,
