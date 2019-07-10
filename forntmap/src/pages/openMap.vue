@@ -38,13 +38,13 @@
             class="openMapDevicesListTitlec"
             ref="devicetitle1"
             @click="titleselect=2"
-          >状态</div>
+          >实时数据</div>
           <div
             v-show="titleselect == 2"
             class="openMapDevicesListTitlec"
             id="openMapDevicesListTitlecs"
             ref="devicetitle1"
-          >状态</div>
+          >实时数据</div>
           <div
             v-show="titleselect != 3"
             class="openMapDevicesListTitlec"
@@ -59,7 +59,7 @@
           >轨迹</div>
         </div>
         <!-- 设备列表 -->
-        <div class="openMapdevicesinfo">
+        <div class="openMapdevicesinfo" v-show="titleselect==1">
           <!-- 搜索栏 -->
           <div class="openMapdevicessearch">
             <input
@@ -111,6 +111,27 @@
                     <div class="openMapdevicesDevicesOperat">
                       <div class="openMapdevicesDevicesOperatInside">
                         <div class="openMapdevicesDevicesOperatFrame">
+                          <div class="openMapdevicesDevicesOperatFrameC">
+                            <tr>
+                              <th>EUI</th>
+                              <th>&nbsp;:&nbsp;</th>
+                              <th>{{v1.DevEUI}}</th>
+                            </tr>
+                          </div>
+                          <div class="openMapdevicesDevicesOperatFrameC">
+                            <tr>
+                              <th>Latitude</th>
+                              <th>&nbsp;:&nbsp;</th>
+                              <th>{{v1.DeviceData.Latitude}}</th>
+                            </tr>
+                          </div>
+                          <div class="openMapdevicesDevicesOperatFrameC">
+                            <tr>
+                              <th>Longitude</th>
+                              <th>&nbsp;:&nbsp;</th>
+                              <th>{{v1.DeviceData.Longitude}}</th>
+                            </tr>
+                          </div>
                           <div
                             class="openMapdevicesDevicesOperatFrameC"
                             v-for="(v2, v2index) in v1.DeviceData.Infos"
@@ -131,6 +152,79 @@
             </div>
           </div>
         </div>
+        <!-- 实时列表 -->
+        <div class="openMapdevicesinfo" v-show="titleselect==2">
+          <div class="openMapdevicesState">
+            <div
+              class="openMapdevicesGroupDevices"
+              v-for="(v1, k) in devicesState"
+              :key="k+'states'"
+            >
+              <div @click="changeLampZoom(v1.Latitude, v1.Longitude)">
+                <div class="openMapdevicesGroupDevicesName">{{v1.Name}}</div>
+                <!-- 显示状态 -->
+                <div class="openMapdevicesGroupDevicesState">
+                  <div
+                    class="openMapdevicesGroupDevicesStateColor"
+                    :id="'openMapdevicesGroupDevicesStateExplain'+v1.State"
+                  ></div>
+                  <div
+                    class="openMapdevicesGroupDevicesStateExplain"
+                  >{{global.getState(v1.State).States}}</div>
+                  <div
+                    class="openMapdevicesGroupDevicesStateTime"
+                  >{{new Date(v1.Uptime * 1000).toLocaleString()}}</div>
+                </div>
+              </div>
+              <!-- 子菜单 -->
+              <div class="openMapdevicesGroupDevicesNameOption">
+                <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                <div class="openMapdevicesDevicesOperat">
+                  <div class="openMapdevicesDevicesOperatInside">
+                    <div class="openMapdevicesDevicesOperatFrame">
+                      <div class="openMapdevicesDevicesOperatFrameC">
+                        <tr>
+                          <th>Latitude</th>
+                          <th>&nbsp;:&nbsp;</th>
+                          <th>{{v1.DevEUI}}</th>
+                        </tr>
+                      </div>
+                      <div class="openMapdevicesDevicesOperatFrameC">
+                        <tr>
+                          <th>Latitude</th>
+                          <th>&nbsp;:&nbsp;</th>
+                          <th>{{v1.Latitude}}</th>
+                        </tr>
+                      </div>
+                      <div class="openMapdevicesDevicesOperatFrameC">
+                        <tr>
+                          <th>Longitude</th>
+                          <th>&nbsp;:&nbsp;</th>
+                          <th>{{v1.Longitude}}</th>
+                        </tr>
+                      </div>
+                      <div
+                        class="openMapdevicesDevicesOperatFrameC"
+                        v-for="(v2, v2index) in v1.Infos"
+                        :key="v2 +'state'"
+                      >
+                        <tr>
+                          <th>{{v2index}}</th>
+                          <th>&nbsp;:&nbsp;</th>
+                          <th>{{v2}}</th>
+                        </tr>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- 轨迹列表 -->
+        <div class="openMapdevicesinfo" v-show="titleselect==3"></div>
       </div>
     </div>
     <div v-show="!fullscreen.full">
@@ -457,6 +551,7 @@
         </div>
       </div>
     </div>
+    <div></div>
     <div class="openmapOrbit" id="openmapOrbitID" v-show="orbitList.Show">
       <div
         class="openmapOrbitTitle"
@@ -574,7 +669,7 @@
       </div>
     </div>
     <div>
-      <!-- <websocket v-on:retdata="socket" ref="websocket"></websocket> -->
+      <websocket v-on:retdata="socket"></websocket>
     </div>
   </div>
 </template>
@@ -589,6 +684,10 @@ export default {
   },
   data() {
     return {
+      devicesState: [],
+      // -----//
+      websock: null,
+      // -------.//
       orbit: false,
       orbitList: {
         Show: 0,
@@ -650,10 +749,30 @@ export default {
     };
   },
   methods: {
+    // websocket数据
     socket: async function(msg) {
-      console.log(msg, new Date().getTime());
-      console.log(typeof msg, new Date().getTime());
+      msg = JSON.parse(msg);
+      for (const user of this.groundUser) {
+        for (const device of user.Devices.data) {
+          if (msg.Did == device.ID) {
+            msg.Infos = JSON.parse(msg.Infos);
+            if (user.Show) {
+              device.DeviceData = msg;
+              this.pushDevicesMark(device, user.ID);
+            }
+            msg.Name = device.Name;
+            msg.DevEUI = device.DevEUI;
+            this.devicesState.unshift(msg);
+            if (this.devicesState.length > 200) {
+              this.$delete(this.devicesState, 0);
+            }
+            this.$forceUpdate();
+            break;
+          }
+        }
+      }
     },
+    // 返回地图坐标点
     LatLng: function(lat, lng, motheds = false) {
       if (lat == "" || lng == "") {
         return;
@@ -668,10 +787,12 @@ export default {
         this.$refs.lmap.center = [lat, lng];
       }
     },
+    // 上一个围栏点
     preFence: function() {
       this.$delete(this.orbitList.Polygon, this.orbitList.Number, 1);
       this.orbitList.Number--;
     },
+    // 初始化围栏点
     initFence: function(name = "exec") {
       this.orbitList = {
         Show: 0,
@@ -745,7 +866,9 @@ export default {
     countCenter: function() {
       this.maxMinCenter = new Array();
       for (const userid in this.devicesMarks) {
-        for (const data of this.devicesMarks[userid]) {
+        var devicesMarks = this.devicesMarks[userid];
+        for (const deviceid in devicesMarks) {
+          var data = devicesMarks[deviceid];
           if (this.maxMinCenter.length) {
             this.countMaxMinCenter(
               data.DeviceData.Latitude,
@@ -764,25 +887,27 @@ export default {
       this.setCenter();
     },
     // 添加标记
-    pushDevicesMark: function(v, id) {
+    pushDevicesMark: function(v, uid) {
       // 判断是否隐藏标记
       if (this.deviceShow.select) {
         return;
       }
-      var data = this.devicesMarks[id];
+      var data = this.devicesMarks[uid];
       if (!data) {
-        data = new Array();
+        data = {};
       }
-      v.DeviceData.Infos = JSON.parse(v.DeviceData.Infos);
-      data.push(v);
-      this.$set(this.devicesMarks, id, data);
+      data[v.ID] = v;
+      // this.$set(data, v.ID, v)
+      this.$set(this.devicesMarks, uid, data);
       this.countCenter();
     },
+    // 取消标记
     pullDevicesMark: function(v) {
       // 删除标记
       this.$delete(this.devicesMarks, v.ID);
       this.countCenter();
     },
+    // 检索设备
     getDevicesQuery: async function() {
       this.devicesMarks = {};
       for (var user of this.groundUser) {
@@ -791,6 +916,7 @@ export default {
       }
       this.$forceUpdate();
     },
+    // 获取设备状态
     getDevicesState: function(v) {
       if (v.Show) {
         for (const v1 of v.Devices.data) {
@@ -805,6 +931,7 @@ export default {
         this.setFence(v.ID);
       }
     },
+    // 获取设备数据
     getDeviceData: function(v, id) {
       this.req.get("/devicedata?limit=1&id=" + v.ID).then(response => {
         if (response.status != 200) {
@@ -814,10 +941,12 @@ export default {
           return;
         }
         v.DeviceData = response.data.data[0];
+        v.DeviceData.Infos = JSON.parse(v.DeviceData.Infos);
         this.pushDevicesMark(v, id);
         this.$forceUpdate();
       });
     },
+    // 获取设备
     getDevices: async function(id, query = "") {
       var methed = "uid=" + id;
       if (this.global.userinfo.permisson == 3) {
@@ -834,6 +963,7 @@ export default {
       }
       return response.data;
     },
+    // 获取分组
     getUserGround: async function() {
       if (this.global.userinfo.permisson != 3) {
         this.groundUser.push({
@@ -861,6 +991,7 @@ export default {
       }
     },
     // ----------//
+    // 全屏
     fullscreenShow: function(metheds) {
       if (metheds == this.fullscreen.full) {
         return;
@@ -882,6 +1013,7 @@ export default {
       }
       document.getElementById("openmap").requestFullscreen();
     },
+    // 注销
     logout: function() {
       this.global.userinfo = {};
       this.$router.push({
@@ -891,6 +1023,7 @@ export default {
         }
       });
     },
+    // 状态改变
     changeStatus: function(status, key) {
       if (status == 1) {
         status = 2;
@@ -900,11 +1033,13 @@ export default {
       this.updateConfig(status, key);
       return status;
     },
+    // 更新配置
     updateConfig: function(stauts, key) {
       var data = {};
       data[key] = stauts;
       this.req.put("/config", data);
     },
+    // 获取配置
     getConfig: function() {
       this.req.get("/config").then(response => {
         if (response.status != 200) {
@@ -914,6 +1049,7 @@ export default {
         this.$forceUpdate();
       });
     },
+    // 获取状态
     getState: function() {
       this.req.get("/configState").then(response => {
         if (response.status != 200) {
@@ -922,6 +1058,7 @@ export default {
         this.global.state = response.data;
       });
     },
+    // 改变窗口大小
     updateSreen: function() {
       var width = document.body.clientWidth;
       var v = this.devicesList;
@@ -933,6 +1070,7 @@ export default {
       }
       this.$forceUpdate();
     },
+    // 获取围栏
     getFence: function(v) {
       this.req.get("/fence?id=" + v.ID).then(response => {
         if (response.status != 200) {
@@ -961,6 +1099,7 @@ export default {
         this.setFence(v.ID, v.Orbit);
       });
     },
+    // 添加围栏
     postFence: function(name, v) {
       var data = {};
       // 圆形
@@ -999,6 +1138,7 @@ export default {
           this.initFence();
         });
     },
+    // 删除围栏
     delFence: function(id = 0) {
       this.req
         .del("/fence", {
@@ -1016,6 +1156,7 @@ export default {
           }
         });
     },
+    // 监控鼠标
     mouseDownHandleelse(event, ID) {
       this.moveDataelse.x =
         event.pageX - document.getElementById(ID).offsetLeft;
@@ -1030,6 +1171,7 @@ export default {
     mouseUpHandleelse(event) {
       window.onmousemove = null;
     },
+    // 获取用户信息
     getUserinfo: async function() {
       await this.req.get("/login/info").then(response => {
         if (response.status != 200) {
@@ -1061,9 +1203,7 @@ export default {
       this.updateSreen();
     }
   },
-  destroyed() {
-    // this.$refs.websocket.changes = new Date().getTime();
-  }
+  beforeDestroy() {}
 };
 function getMaxArea(max, min, refer = 0) {
   var y = 90;

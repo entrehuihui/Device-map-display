@@ -45,8 +45,7 @@ export default {
     jwt
 }
 function jwt() {
-    if (!this.userinfo.jwt) {
-        this.getCookie();
+    if (!this.userinfo.jwt && this.getCookie()) {
         getUserInfo(this);
         getlogo(this);
         setState(this);

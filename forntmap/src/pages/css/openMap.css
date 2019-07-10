@@ -54,11 +54,12 @@
     width: 340px;
     border-bottom: 1px solid rgb(112, 112, 112);
 }
+/* 设备 */
 .openMapDevicesListTitlec{
     position: relative;
     float: left;
     height: 40px;
-    width:70px;
+    width:100px;
     line-height: 40px;
     text-align: center;
     color: rgb(94, 94, 94);
@@ -128,6 +129,7 @@
     /* background: rgb(214, 214, 214); */
     overflow-x: auto;
     border-top:  2px solid rgba(219, 219, 219, 0.5);
+    user-select:text;
 }
 .openMapdevicesGroup::-webkit-scrollbar{
     width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
@@ -260,6 +262,7 @@
     border-radius: 8px;
     border: 1px solid rgb(163, 163, 163);
     display: none;
+    user-select:text;
 }
 .openMapdevicesGroupDevicesNameOptions{
     position: relative;
@@ -322,12 +325,38 @@
     float: left;
     min-width: 135px;
     max-width: 350px;
-    height: 30px;
+    height: 25px;
     margin-left: 10px;
-    color: black;
+    color: rgb(48, 47, 47);
+    font-size: 12px;
     overflow: hidden;
+    padding-right: 5px;
 }
+/* 状态 */
+.openMapdevicesState{
+    position: relative;
+    width: 340px;
+    top: 30px;
+    height:calc(100% - 50px);;
+    overflow: auto;
+}
+.openMapdevicesState::-webkit-scrollbar{
+    width: 10px;     /*高宽分别对应横竖滚动条的尺寸*/
+    height: 1px;
+}
+.openMapdevicesState::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #ececec;
+}
+.openMapdevicesState::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: rgb(187, 187, 187);
+}
+/* 轨迹 */
 
+/* logo 用户 */
 .openmaplogo{
     position: absolute;
     top: 10px;

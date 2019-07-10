@@ -8,20 +8,13 @@ export default {
       websock: null,
       oldwebsocket: null,
       url: "",
-      wsuri: "",
-      changes: 0
+      wsuri: ""
     };
   },
   props: {},
   methods: {
     retdata: function(data) {
       this.$emit("retdata", data);
-    },
-    watch: {
-      changes: function() {
-        console.log("--------------");
-        this.websock.websocketclose;
-      }
     },
     initWebpack() {
       // 正式地址;
@@ -60,13 +53,13 @@ export default {
     },
     websocketerror() {}
   },
+  watch: {},
   mounted() {
     var a = window.location.href;
     a = a.replace(/https{0,1}/, "ws");
     a = a.split("#")[0] + "ws?Authorization=";
     this.url = a;
     this.initWebpack();
-  },
-  watch: {}
+  }
 };
 </script>

@@ -75,16 +75,16 @@
             v-if="orbit.Types==1 && parseInt(orbit.Radius)"
             :lat-lng="[orbit.Lat, orbit.Lng]"
             :radius="parseInt(orbit.Radius)"
-            :color="global.color[getRand()]"
-            :fillColor="global.color[getRandT()]"
+            :color="global.color[9]"
+            :fillColor="global.color[9]"
             :fillOpacity="0.05"
           ></LCircle>
           <!-- 画矩形 -->
           <LPolygon
             v-if="orbit.Types==2 && orbit.Polygon.length > 2"
             :lat-lngs="orbit.Polygon"
-            :color="global.color[getRand()]"
-            :fillColor="global.color[getRandT()]"
+            :color="global.color[9]"
+            :fillColor="global.color[9]"
             :fillOpacity="0.05"
           ></LPolygon>
         </div>
@@ -133,15 +133,6 @@ export default {
     LControl
   },
   methods: {
-    getRand: function() {
-      // this.rang++;
-      // return this.rang % 9;
-      return 9;
-    },
-    getRandT: function() {
-      // return this.rang % 9;
-      return 9;
-    },
     showMark: function(v) {
       this.center = v;
       // this.zoom = 18;

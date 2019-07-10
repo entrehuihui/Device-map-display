@@ -5,8 +5,8 @@ import global from '@/global/variable.js'
 Vue.prototype.$axios = axios;
 
 // --------------- //
-const localhost = "http://120.78.76.139:8800"; //调试地址/
-// const localhost = "http://127.0.0.1:8800"; //调试地址
+// const localhost = "http://120.78.76.139:8800"; //调试地址/
+const localhost = "http://127.0.0.1:8800"; //调试地址
 // const localhost = ""; //正式
 
 function getAuthorization() {
