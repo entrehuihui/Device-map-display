@@ -159,8 +159,8 @@ func SaveDeviceInfos(c *gin.Context) {
 // @Param	offset	query	string	flase	"起始数"
 // @Param	limit	query	string	flase	"获取数"
 // @Param	status	query	string	flase	"数据状态(自定义状态)"
-// @Param	starttime	query	string	flase	"数据创建起始时间"
-// @Param	endtime	query	string	flase	"数据创建终止时间"
+// @Param	starttime	query	string	flase	"数据起始时间"
+// @Param	endtime	query	string	flase	"数据终止时间"
 // @Param	id		query	int	flase	"设备id"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
@@ -195,7 +195,7 @@ func GetDevicesDatas(c *gin.Context) {
 		return
 	}
 	if endtime != 0 {
-		result = result.Where("createtime < ?", endtime)
+		result = result.Where("uptime < ?", endtime)
 	}
 	//
 	starttime, err := getStarttime(c)
@@ -204,7 +204,7 @@ func GetDevicesDatas(c *gin.Context) {
 		return
 	}
 	if starttime != 0 {
-		result = result.Where("createtime > ?", starttime)
+		result = result.Where("uptime > ?", starttime)
 	}
 	//
 	status, err := getStatus(c)

@@ -42,37 +42,40 @@
           </LPopup>
         </LMarker>
         <!-- 画点 -->
-        <div v-for="(user, userindex) in devicesMarks" :key="userindex+'devicesMarks'">
-          <LMarker
-            v-for="(device, deviceindex) in user"
-            :key="device.Name+deviceindex"
-            :lat-lng="[device.DeviceData.Latitude, device.DeviceData.Longitude]"
-            :icon="icons[device.DeviceData.State-1]"
-            @click="showMark([device.DeviceData.Latitude, device.DeviceData.Longitude])"
-          >
-            <LTooltip :options="{ permanent: true, interactive: true}">
-              <div>{{device.Name}}</div>
-            </LTooltip>
-            <LPopup>
-              <tr>
-                <th>EUI:</th>
-                <th>{{device.DevEUI}}</th>
-              </tr>
-              <div
-                v-for="(infokey, infovalue) in  device.DeviceData.Infos"
-                :key="infokey+deviceindex+'explain'"
-              >
+        <div v-if="devicesMarks.Show">
+          <div v-for="(user, userindex) in devicesMarks" :key="userindex+'devicesMarks'">
+            <LMarker
+              v-for="(device, deviceindex) in user"
+              :key="device.Name+deviceindex"
+              :lat-lng="[device.DeviceData.Latitude, device.DeviceData.Longitude]"
+              :icon="icons[device.DeviceData.State-1]"
+              @click="showMark([device.DeviceData.Latitude, device.DeviceData.Longitude])"
+            >
+              <LTooltip :options="{ permanent: true, interactive: true}">
+                <div>{{device.Name}}</div>
+              </LTooltip>
+              <LPopup>
                 <tr>
-                  <th>{{infokey}}:</th>
-                  <th>{{infovalue}}</th>
+                  <th>EUI:</th>
+                  <th>{{device.DevEUI}}</th>
                 </tr>
-              </div>
-              <tr>
-                <th>{{new Date(device.DeviceData.Uptime*1000).toLocaleString()}}</th>
-              </tr>
-            </LPopup>
-          </LMarker>
+                <div
+                  v-for="(infokey, infovalue) in  device.DeviceData.Infos"
+                  :key="infokey+deviceindex+'explain'"
+                >
+                  <tr>
+                    <th>{{infokey}}:</th>
+                    <th>{{infovalue}}</th>
+                  </tr>
+                </div>
+                <tr>
+                  <th>{{new Date(device.DeviceData.Uptime*1000).toLocaleString()}}</th>
+                </tr>
+              </LPopup>
+            </LMarker>
+          </div>
         </div>
+
         <!-- 画围栏 -->
         <div v-for="(orbit, orbiti) in orbitLists" :key="orbiti+'mark'">
           <!-- 画圆 -->
@@ -92,6 +95,12 @@
             :fillColor="global.color[9]"
             :fillOpacity="0.05"
           ></LPolygon>
+        </div>
+        <!-- 画线 -->
+        <div v-if="devicePloy.OrbitList && devicePloy.OrbitList.length > 0 && devicePloy.Show">
+          <LPolyline :lat-lngs="devicePloy.OrbitList" :color="global.color[4]"></LPolyline>
+          <LMarker :lat-lng="devicePloy.OrbitList[0]" :icon="icons[9]"></LMarker>
+          <LMarker :lat-lng="devicePloy.OrbitList[devicePloy.OrbitList.length-1]" :icon="icons[10]"></LMarker>
         </div>
       </LMap>
     </div>
@@ -152,6 +161,10 @@ export default {
     }
   },
   props: {
+    devicePloy: {
+      type: Object,
+      default: () => {}
+    },
     changeZoom: {
       type: Number,
       default: 0
@@ -276,6 +289,20 @@ export default {
         iconAnchor: [12, 34],
         shadowAnchor: [24, 34],
         popupAnchor: [0, -34]
+      }),
+      icon({
+        iconUrl: "/static/start.png",
+        iconSize: [15, 15],
+        shadowSize: [15, 15],
+        iconAnchor: [8, 8],
+        shadowAnchor: [8, 8]
+      }),
+      icon({
+        iconUrl: "/static/end.png",
+        iconSize: [20, 20],
+        shadowSize: [15, 15],
+        iconAnchor: [10, 20],
+        shadowAnchor: [8, 8]
       })
     ];
   },

@@ -62,7 +62,9 @@ func Echo(ws *websocket.Conn) {
 		}
 		log.Println("Receive from client:" + string(reply))
 		//处理接受到的请求 -- 未完成
-		err = websocket.Message.Send(ws, "你好啊!小老弟")
-		fmt.Println(err)
+		err = websocket.Message.Send(ws, string(reply))
+		if err != nil {
+			log.Println(err)
+		}
 	}
 }

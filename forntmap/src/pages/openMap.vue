@@ -7,6 +7,7 @@
         :changeZoom="changeZoom"
         :mapindex="mapIndex.index"
         :devicesMarks="devicesMarks"
+        :devicePloy="orbitDevices"
         v-on:LatLng="LatLng"
       ></lmap>
     </div>
@@ -157,69 +158,73 @@
         </div>
         <!-- 实时列表 -->
         <div class="openMapdevicesinfo" v-show="titleselect==2">
-          <div class="openMapdevicesState">
-            <div
-              class="openMapdevicesGroupDevices"
-              v-for="(v1, k) in devicesState"
-              :key="k+'states'"
-            >
+          <!-- 没有数据 -->
+          <div class="openMapdeviceOrbitNo" v-show="!devicesState.length">暂无数据</div>
+          <div class="openMapdevicesState" v-show="devicesState.length">
+            <div>
               <div
-                @click="changeLampZoom(v1.DeviceData.Latitude, v1.DeviceData.Longitude, 'state', v1);"
+                class="openMapdevicesGroupDevices"
+                v-for="(v1, k) in devicesState"
+                :key="k+'states'"
               >
-                <div class="openMapdevicesGroupDevicesName">{{v1.Name}}</div>
-                <!-- 显示状态 -->
-                <div class="openMapdevicesGroupDevicesState">
-                  <div
-                    class="openMapdevicesGroupDevicesStateColor"
-                    :id="'openMapdevicesGroupDevicesStateExplain'+v1.DeviceData.State"
-                  ></div>
-                  <div
-                    class="openMapdevicesGroupDevicesStateExplain"
-                  >{{global.getState(v1.DeviceData.State).States}}</div>
-                  <div
-                    class="openMapdevicesGroupDevicesStateTime"
-                  >{{new Date(v1.DeviceData.Uptime * 1000).toLocaleString()}}</div>
+                <div
+                  @click="changeLampZoom(v1.DeviceData.Latitude, v1.DeviceData.Longitude, 'state', v1);"
+                >
+                  <div class="openMapdevicesGroupDevicesName">{{v1.Name}}</div>
+                  <!-- 显示状态 -->
+                  <div class="openMapdevicesGroupDevicesState">
+                    <div
+                      class="openMapdevicesGroupDevicesStateColor"
+                      :id="'openMapdevicesGroupDevicesStateExplain'+v1.DeviceData.State"
+                    ></div>
+                    <div
+                      class="openMapdevicesGroupDevicesStateExplain"
+                    >{{global.getState(v1.DeviceData.State).States}}</div>
+                    <div
+                      class="openMapdevicesGroupDevicesStateTime"
+                    >{{new Date(v1.DeviceData.Uptime * 1000).toLocaleString()}}</div>
+                  </div>
                 </div>
-              </div>
-              <!-- 子菜单 -->
-              <div class="openMapdevicesGroupDevicesNameOption">
-                <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                <div class="openMapdevicesDevicesOperat">
-                  <div class="openMapdevicesDevicesOperatInside">
-                    <div class="openMapdevicesDevicesOperatFrame">
-                      <div class="openMapdevicesDevicesOperatFrameC">
-                        <tr>
-                          <th>EUI</th>
-                          <th>&nbsp;:&nbsp;</th>
-                          <th>{{v1.DevEUI}}</th>
-                        </tr>
-                      </div>
-                      <div class="openMapdevicesDevicesOperatFrameC">
-                        <tr>
-                          <th>Latitude</th>
-                          <th>&nbsp;:&nbsp;</th>
-                          <th>{{v1.DeviceData.Latitude}}</th>
-                        </tr>
-                      </div>
-                      <div class="openMapdevicesDevicesOperatFrameC">
-                        <tr>
-                          <th>Longitude</th>
-                          <th>&nbsp;:&nbsp;</th>
-                          <th>{{v1.DeviceData.Longitude}}</th>
-                        </tr>
-                      </div>
-                      <div
-                        class="openMapdevicesDevicesOperatFrameC"
-                        v-for="(v2, v2index) in v1.DeviceData.Infos"
-                        :key="v2 + 'state'"
-                      >
-                        <tr>
-                          <th>{{v2index}}</th>
-                          <th>&nbsp;:&nbsp;</th>
-                          <th>{{v2}}</th>
-                        </tr>
+                <!-- 子菜单 -->
+                <div class="openMapdevicesGroupDevicesNameOption">
+                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
+                  <div class="openMapdevicesDevicesOperat">
+                    <div class="openMapdevicesDevicesOperatInside">
+                      <div class="openMapdevicesDevicesOperatFrame">
+                        <div class="openMapdevicesDevicesOperatFrameC">
+                          <tr>
+                            <th>EUI</th>
+                            <th>&nbsp;:&nbsp;</th>
+                            <th>{{v1.DevEUI}}</th>
+                          </tr>
+                        </div>
+                        <div class="openMapdevicesDevicesOperatFrameC">
+                          <tr>
+                            <th>Latitude</th>
+                            <th>&nbsp;:&nbsp;</th>
+                            <th>{{v1.DeviceData.Latitude}}</th>
+                          </tr>
+                        </div>
+                        <div class="openMapdevicesDevicesOperatFrameC">
+                          <tr>
+                            <th>Longitude</th>
+                            <th>&nbsp;:&nbsp;</th>
+                            <th>{{v1.DeviceData.Longitude}}</th>
+                          </tr>
+                        </div>
+                        <div
+                          class="openMapdevicesDevicesOperatFrameC"
+                          v-for="(v2, v2index) in v1.DeviceData.Infos"
+                          :key="v2 + 'state'"
+                        >
+                          <tr>
+                            <th>{{v2index}}</th>
+                            <th>&nbsp;:&nbsp;</th>
+                            <th>{{v2}}</th>
+                          </tr>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -257,7 +262,7 @@
               <div
                 class="openMapdevicesGroupDevices"
                 v-for="(v1, k) in orbitDevices.Orbit"
-                :key="k+'states'"
+                :key="k+'orbits'"
               >
                 <div
                   @click="changeLampZoom(v1.DeviceData.Latitude, v1.DeviceData.Longitude, 'orbit', v1);"
@@ -278,49 +283,6 @@
                   </div>
                 </div>
                 <!-- 子菜单 -->
-                <!-- <div class="openMapdevicesGroupDevicesNameOption">
-                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                  <div class="openMapdevicesGroupDevicesNameOptions"></div>
-                  <div class="openMapdevicesDevicesOperat">
-                    <div class="openMapdevicesDevicesOperatInside">
-                      <div class="openMapdevicesDevicesOperatFrame">
-                        <div class="openMapdevicesDevicesOperatFrameC">
-                          <tr>
-                            <th>EUI</th>
-                            <th>&nbsp;:&nbsp;</th>
-                            <th>{{orbitDevices.DevEUI}}</th>
-                          </tr>
-                        </div>
-                        <div class="openMapdevicesDevicesOperatFrameC">
-                          <tr>
-                            <th>Latitude</th>
-                            <th>&nbsp;:&nbsp;</th>
-                            <th>{{v1.Latitude}}</th>
-                          </tr>
-                        </div>
-                        <div class="openMapdevicesDevicesOperatFrameC">
-                          <tr>
-                            <th>Longitude</th>
-                            <th>&nbsp;:&nbsp;</th>
-                            <th>{{v1.Longitude}}</th>
-                          </tr>
-                        </div>
-                        <div
-                          class="openMapdevicesDevicesOperatFrameC"
-                          v-for="(v2, v2index) in v1.Infos"
-                          :key="v2 + 'state'"
-                        >
-                          <tr>
-                            <th>{{v2index}}</th>
-                            <th>&nbsp;:&nbsp;</th>
-                            <th>{{v2}}</th>
-                          </tr>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>-->
                 <div class="openMapdevicesGroupDevicesNameOption">
                   <div class="openMapdevicesGroupDevicesNameOptions"></div>
                   <div class="openMapdevicesGroupDevicesNameOptions"></div>
@@ -352,7 +314,7 @@
                         <div
                           class="openMapdevicesDevicesOperatFrameC"
                           v-for="(v2, v2index) in v1.DeviceData.Infos"
-                          :key="v2 + 'state'"
+                          :key=" v2  + v1.DeviceData.ID +'orbit'"
                         >
                           <tr>
                             <th>{{v2index}}</th>
@@ -617,10 +579,7 @@
               <img src="/static/device.png" class="imgMax" />
             </div>
           </div>
-          <em
-            class="openMapFullem"
-            @click="deviceShow.select=!deviceShow.select; deviceShow.select ? getDevicesQuery(): devicesMarks={}"
-          ></em>
+          <em class="openMapFullem" @click="deviceShow.select=!deviceShow.select; changeMarkShow()"></em>
           <div
             class="openMapZoomOutLeft"
             v-show="deviceShow.explain"
@@ -667,7 +626,7 @@
               <img src="/static/orbit.png" class="imgMax" />
             </div>
           </div>
-          <em class="openMapFullem" @click="orbitShow.select=!orbitShow.select"></em>
+          <em class="openMapFullem" @click="orbitShow.select=!orbitShow.select; changeOrbit()"></em>
           <div
             class="openMapZoomOutLeft"
             v-show="orbitShow.explain"
@@ -815,7 +774,7 @@
       </div>
     </div>
     <div>
-      <websocket v-on:retdata="socket"></websocket>
+      <websocket v-on:retdata="socket" ref="websocket"></websocket>
     </div>
   </div>
 </template>
@@ -832,6 +791,8 @@ export default {
   },
   data() {
     return {
+      time1: "",
+      time2: "",
       devicesState: [],
       // -----//
       websock: null,
@@ -898,21 +859,30 @@ export default {
     };
   },
   methods: {
+    changeMarkShow: function() {
+      this.$set(this.devicesMarks, "Show", this.deviceShow.select);
+    },
+    // 显示隐藏轨迹
+    changeOrbit: function(motheds = false) {
+      this.$set(this.orbitDevices, "Show", this.orbitShow.select);
+    },
     // 清除时间
     clearTime: function() {
       this.$refs.time1.minuteShortText = "";
       this.$refs.time2.minuteShortText = "";
+      this.time1 = "";
+      this.time2 = "";
     },
     getOrbit: function() {
-      var time1 = new Date(this.$refs.time1.minuteShortText).getTime() / 1000;
-      var time2 = new Date(this.$refs.time2.minuteShortText).getTime() / 1000;
-      if (isNaN(time1)) {
-        time1 = "";
+      this.time1 = new Date(this.$refs.time1.minuteShortText).getTime() / 1000;
+      this.time2 = new Date(this.$refs.time2.minuteShortText).getTime() / 1000;
+      var query = "";
+      if (this.time1) {
+        query += "&starttime=" + this.time1;
       }
-      if (isNaN(time2)) {
-        time2 = "";
+      if (this.time2) {
+        query += "&endtime=" + this.time2;
       }
-      var query = "&starttime=" + time1 + "&endtime=" + time2;
       this.req
         .get("/devicedata?limit=200&id=" + this.orbitDevices.ID + query)
         .then(response => {
@@ -922,6 +892,7 @@ export default {
           var data = response.data.data;
           var devices = [];
           var OrbitList = [];
+          var methods = true;
           for (const v of data) {
             v.Infos = JSON.parse(v.Infos);
             devices.push({
@@ -930,16 +901,30 @@ export default {
               DeviceData: v
             });
             OrbitList.unshift([v.Latitude, v.Longitude]);
+            this.countMaxMinCenter(v.Latitude, v.Longitude);
+            if (methods) {
+              this.maxMinCenter = [
+                v.Latitude,
+                v.Latitude,
+                v.Longitude,
+                v.Longitude
+              ];
+              methods = false;
+            } else {
+              this.countMaxMinCenter(v.Latitude, v.Longitude);
+            }
           }
-          this.orbitDevices.Orbit = devices;
-          this.orbitDevices.OrbitList = OrbitList;
-          this.$forceUpdate();
+          this.setCenter();
+          this.$set(this.orbitDevices, "Orbit", devices);
+          this.$set(this.orbitDevices, "OrbitList", OrbitList);
         });
     },
     // 获取设备轨迹
     getDevicesOrbit: function(v) {
       this.orbitDevices = v;
       this.titleselect = 3;
+      this.orbitShow.select = true;
+      this.changeOrbit();
       this.getOrbit();
     },
     // websocket数据
@@ -952,7 +937,6 @@ export default {
       if (this.userConfig.Sound == 1) {
         this.$refs.pushSound.play();
       }
-      msg = JSON.parse(msg);
       for (const user of this.groundUser) {
         for (const device of user.Devices.data) {
           if (msg.Did == device.ID) {
@@ -970,24 +954,40 @@ export default {
             };
             this.devicesState.unshift(devices);
             if (this.devicesState.length > 200) {
-              this.$delete(this.devicesState, 0);
-            }
-            // 轨迹点
-            if (this.orbitDevices.ID == msg.Did) {
-              this.orbitDevices.Orbit.unshift({
-                Name: this.orbitDevices.Name,
-                DevEUI: this.orbitDevices.DevEUI,
-                DeviceData: msg
-              });
-              this.orbitDevices.OrbitList.push([msg.Latitude, msg.Longitude]);
-              if (this.orbitDevices.Orbit.length > 200) {
-                this.orbitDevices.Orbit.splice(200, 1);
-                this.orbitDevices.OrbitList(0, 1);
-              }
+              this.$delete(this.devicesState, 200);
             }
             this.$forceUpdate();
             break;
           }
+          this.$forceUpdate();
+        }
+      }
+      // 轨迹点
+      if (this.orbitDevices.ID == msg.Did) {
+        if (this.time1 && msg.Uptime < this.time1) {
+          return;
+        }
+        if (this.time2 && msg.Uptime > this.time2) {
+          return;
+        }
+        this.orbitDevices.Orbit.unshift({
+          Name: this.orbitDevices.Name,
+          DevEUI: this.orbitDevices.DevEUI,
+          DeviceData: msg
+        });
+        this.$set(
+          this.orbitDevices.OrbitList,
+          this.orbitDevices.OrbitList.length,
+          [msg.Latitude, msg.Longitude]
+        );
+        if (this.orbitDevices.Orbit.length > 200) {
+          this.$delete(this.orbitDevices.Orbit, 200);
+          this.$delete(this.orbitDevices.OrbitList, 0);
+        }
+        // 如果轨迹是显示的
+        if (this.orbitShow.select) {
+          this.countMaxMinCenter(msg.Latitude, msg.Longitude);
+          this.setCenter();
         }
       }
     },
@@ -1116,12 +1116,10 @@ export default {
         data = {};
       }
       data[v.ID] = v;
-      // this.$set(data, v.ID, v)
-      // 判断是否隐藏标记
-      if (!this.deviceShow.select) {
+      this.$set(this.devicesMarks, uid, data);
+      if (this.orbitShow.select && this.orbitDevices.Orbit) {
         return;
       }
-      this.$set(this.devicesMarks, uid, data);
       this.countCenter();
     },
     // 取消标记
@@ -1430,12 +1428,16 @@ export default {
     titleselect: function(v) {
       if (v != 2) {
         this.$delete(this.devicesMarks, "state");
-      } else if (v != 3) {
+      }
+      if (v != 3) {
         this.$delete(this.devicesMarks, "orbit");
       }
     }
   },
-  beforeDestroy() {}
+  beforeDestroy() {
+    console.log("++++++++++++++1++");
+    this.$refs.websocket.websock.close();
+  }
 };
 function getMaxArea(max, min, refer = 0) {
   var y = 90;
