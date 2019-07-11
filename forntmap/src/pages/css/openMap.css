@@ -326,6 +326,7 @@
     min-width: 135px;
     max-width: 350px;
     height: 25px;
+    line-height: 25px;
     margin-left: 10px;
     color: rgb(48, 47, 47);
     font-size: 12px;
@@ -355,6 +356,97 @@
     background: rgb(187, 187, 187);
 }
 /* 轨迹 */
+.openMapdeviceOrbit{
+    position: relative;
+    height: 340px;
+    width: 340px;
+}
+.openMapdeviceOrbitNo{
+    position: relative;
+    height: 340px;
+    width: 340px;
+    line-height: 340px;
+    color: rgb(151, 151, 151);
+    text-align: center;
+}
+.openMapdeviceOrbitName{
+    position: relative;
+    height: 50px;
+    width: 340px;
+    line-height: 50px;
+    text-align: center;
+    overflow: hidden;
+}
+.openMapdeviceOrbitTime{
+    position: relative;
+    height: 70px;
+    width: 340px;
+}
+.openMapdeviceOrbitTimeOne{
+    position: relative;
+    height: 35px;
+    width: 340px;
+}
+.openMapdeviceOrbitTimeTwo{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 150px;
+    line-height: 30px;
+    text-align: center;
+    color: rgb(66, 66, 66);
+}
+.openMapdeviceOrbitSearch{
+    position: relative;
+    float: left;
+    height: 30px;
+    width: 200px;
+    background: rgb(41, 55, 255);
+    margin-left: 40px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+    color: aliceblue;
+}
+.openMapdeviceOrbitSearch:hover{
+    color: rgb(48, 252, 7);
+}
+.openMapdeviceOrbitClear{
+    position: relative;
+    float: left;
+    height: 30px;
+    width: 68px;
+    background: rgb(196, 195, 195);
+    margin-left: 2px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+.openMapdeviceOrbitClear:hover{
+    color: #ececec;
+}
+.openMapdeviceOrbitList{
+    position: absolute;
+    width: 340px;
+    top: 160px;
+    height:calc(100% - 160px);
+    /* height: 100%; */
+    overflow: auto;
+}
+.openMapdeviceOrbitList::-webkit-scrollbar-thumb {/*滚动条里面小方块*/
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    background: #ececec;
+}
+.openMapdeviceOrbitList::-webkit-scrollbar-track {/*滚动条里面轨道*/
+    -webkit-box-shadow: inset 0 0 5px rgba(0,0,0,0.2);
+    border-radius: 10px;
+    background: rgb(187, 187, 187);
+}
+
+
 
 /* logo 用户 */
 .openmaplogo{

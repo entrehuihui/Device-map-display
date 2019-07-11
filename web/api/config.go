@@ -32,12 +32,14 @@ func GetConfiguration(c *gin.Context) {
 		return
 	}
 	if err == gorm.ErrRecordNotFound {
-		retSuccess(c, db.Configuration{
+		config := db.Configuration{
 			ID:       uid,
 			Message:  1,
 			Sound:    1,
 			Language: 1,
-		})
+		}
+		s.Create(&config)
+		retSuccess(c, config)
 		return
 	}
 	retSuccess(c, donfiguration)

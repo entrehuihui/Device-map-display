@@ -54,17 +54,22 @@
               <div>{{device.Name}}</div>
             </LTooltip>
             <LPopup>
+              <tr>
+                <th>EUI:</th>
+                <th>{{device.DevEUI}}</th>
+              </tr>
               <div
                 v-for="(infokey, infovalue) in  device.DeviceData.Infos"
                 :key="infokey+deviceindex+'explain'"
               >
-                <table>
-                  <tr>
-                    <th>{{infokey}}:</th>
-                    <th>{{infovalue}}</th>
-                  </tr>
-                </table>
+                <tr>
+                  <th>{{infokey}}:</th>
+                  <th>{{infovalue}}</th>
+                </tr>
               </div>
+              <tr>
+                <th>{{new Date(device.DeviceData.Uptime*1000).toLocaleString()}}</th>
+              </tr>
             </LPopup>
           </LMarker>
         </div>
