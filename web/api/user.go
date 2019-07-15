@@ -1,6 +1,9 @@
 package api
 
 import (
+	"fmt"
+	"strconv"
+	"strings"
 	"time"
 
 	"../../db"
@@ -257,7 +260,7 @@ type UserDelID struct {
 }
 
 // UserDel .删除用户
-// @Tags devices
+// @Tags user
 // @Summary .删除用户(仅管理员以上)
 // @Description .删除用户
 // @Accept  json
@@ -267,7 +270,7 @@ type UserDelID struct {
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /devices [delete]
+// @Router /users [delete]
 func UserDel(c *gin.Context) {
 	userDelID := UserDelID{}
 	err := c.ShouldBind(&userDelID)
@@ -301,4 +304,116 @@ func UserDel(c *gin.Context) {
 		return
 	}
 	retSuccess(c, "Success")
+}
+
+// Info ..信息
+type Info struct {
+	// 用户ID 修改自身不传
+	ID int
+	// 手机 不修改不传
+	Mobile string
+	// 邮箱 不修改不传
+	Email string
+	// 地址 不修改不传
+	Address string
+	// 头像  不修改不传
+	Photo string
+}
+
+// UpdateUserInfo .更改用户信息
+// @Tags user
+// @Summary .更改用户信息
+// @Description .更改用户信息
+// @Accept  json
+// @Produce  json
+// @Param 	Authorization 	header 	string 	true "With the bearer started JWT"
+// @param Info body api.Info  true "用户信息"
+// @Success 200 {string} json "{"Error":"Success","Data": object}"
+// @Failure  500 {string} json "{"Error":"error","Data": null}"
+// @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
+// @Router /users/info [put]
+func UpdateUserInfo(c *gin.Context) {
+	userinfo := Info{}
+	err := c.ShouldBind(&userinfo)
+	if err != nil {
+		retError(c, 7, err)
+		return
+	}
+	update := make(map[string]string)
+	if userinfo.Mobile != "" {
+		if len(userinfo.Mobile) != 11 {
+			retError(c, 6, nil)
+			return
+		}
+		if !verifyMobile(userinfo.Mobile) {
+			retError(c, 6, nil)
+			return
+		}
+		update["mobile"] = userinfo.Mobile
+	}
+	if userinfo.Email != "" {
+		if len(userinfo.Email) > 100 {
+			retError(c, 5, nil)
+			return
+		}
+		if !verifyEmailFormat(userinfo.Email) {
+			retError(c, 5, nil)
+			return
+		}
+		update["email"] = userinfo.Email
+	}
+	if userinfo.Address != "" {
+		if len(userinfo.Address) > 255 {
+			retError(c, 28, nil)
+			return
+		}
+		update["address"] = userinfo.Address
+	}
+	newname := ""
+	if userinfo.Photo != "" {
+		filename := strings.Split(userinfo.Photo, ".")
+		if len(filename) != 2 {
+			retError(c, 31, nil)
+			return
+		}
+		newname = "/images/user/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(c.GetInt("id")) + "." + filename[1]
+		if err := prictureSize(userinfo.Photo, newname, 100, 100); err != nil {
+			retError(c, 31, err)
+			return
+		}
+		update["photo"] = newname
+	}
+	uid := c.GetInt("id")
+	if userinfo.ID == 0 {
+		userinfo.ID = uid
+	}
+	s := service.GetServer()
+	oldPhoto := Info{}
+	if userinfo.Photo != "" {
+		err = s.Raw("select photo from userinfos where id = ?", userinfo.ID).Scan(&oldPhoto).Error
+		if err != nil {
+			retError(c, 7, err)
+			return
+		}
+	}
+	db := s.Table("userinfos")
+	db = db.Where("id = ?", uid)
+	if c.GetInt("permisson") == 2 {
+		db = db.Where("ownid = ?", uid)
+	}
+	err = db.Updates(update).Error
+	if err != nil {
+		removefile(newname)
+		retError(c, 7, err)
+		return
+	}
+	// 成功  删除就图片
+	if userinfo.Photo != "" {
+		removefile(userinfo.Photo)
+		fmt.Println(oldPhoto, "++++++++++", userinfo.Photo)
+		if oldPhoto.Photo != "/images/user/defaultuser.png" {
+			removefile(oldPhoto.Photo)
+		}
+	}
+	retSuccess(c, nil)
 }

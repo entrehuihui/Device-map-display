@@ -99,6 +99,24 @@ definitions:
         description: 围栏ID  --传0则为删除自己的围栏
         type: integer
     type: object
+  api.Info:
+    properties:
+      address:
+        description: 地址 不修改不传
+        type: string
+      email:
+        description: 邮箱 不修改不传
+        type: string
+      id:
+        description: 用户ID 修改自身不传
+        type: integer
+      mobile:
+        description: 手机 不修改不传
+        type: string
+      photo:
+        description: 头像  不修改不传
+        type: string
+    type: object
   api.LoginInfos:
     properties:
       code:
@@ -317,11 +335,11 @@ paths:
         in: query
         name: status
         type: string
-      - description: 数据创建起始时间
+      - description: 数据起始时间
         in: query
         name: starttime
         type: string
-      - description: 数据创建终止时间
+      - description: 数据终止时间
         in: query
         name: endtime
         type: string
@@ -887,6 +905,41 @@ paths:
       tags:
       - upload
   /users:
+    delete:
+      consumes:
+      - application/json
+      description: .删除用户
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: body
+        name: userDelID
+        required: true
+        schema:
+          $ref: '#/definitions/api.UserDelID'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .删除用户(仅管理员以上)
+      tags:
+      - user
     get:
       consumes:
       - application/json
@@ -985,6 +1038,42 @@ paths:
           schema:
             type: string
       summary: .更改用户过期时间(仅管理员以上)
+      tags:
+      - user
+  /users/info:
+    put:
+      consumes:
+      - application/json
+      description: .更改用户信息
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户信息
+        in: body
+        name: Info
+        required: true
+        schema:
+          $ref: '#/definitions/api.Info'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改用户信息
       tags:
       - user
   /users/status:

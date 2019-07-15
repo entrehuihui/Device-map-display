@@ -496,13 +496,9 @@
       </div>
       <!-- 用户信息下部分张开 -->
       <div class="openMapUserInfo" v-show="userInfo">
-        <div class="openMapUserInfoExplan">
+        <div class="openMapUserInfoExplan" @click="jump(0)">
           <div class="openMapUserInfoExplanRight"></div>
-          <div class="openMapUserInfoExplanLeft">个人中心</div>
-        </div>
-        <div class="openMapUserInfoExplan">
-          <div class="openMapUserInfoExplanRight"></div>
-          <div class="openMapUserInfoExplanLeft">账户管理</div>
+          <div class="openMapUserInfoExplanLeft">设置中心</div>
         </div>
         <div class="openMapUserInfoExplan" @click="logout()">
           <div class="openMapUserInfoExplanLogout">
@@ -814,10 +810,12 @@ export default {
       // --//
       maxMinCenter: [22.593262, 113.925971, 22.593262, 113.925971],
       // ---//
-      devicesMarks: {},
+      devicesMarks: {
+        Show: true
+      },
       devicesQuery: "",
       groundUser: [],
-      titleselect: 3, //设备菜单选择
+      titleselect: 1, //设备菜单选择
       // ------------//
       orbitDevices: {}, //轨迹
       devicesList: true,
@@ -859,6 +857,14 @@ export default {
     };
   },
   methods: {
+    jump: function(index = 0) {
+      this.$router.push({
+        name: "user",
+        params: {
+          index: index
+        }
+      });
+    },
     changeMarkShow: function() {
       this.$set(this.devicesMarks, "Show", this.deviceShow.select);
     },

@@ -72,6 +72,8 @@ func Run() {
 	r.GET("/fence", api.GetFence)    // 获取围栏
 	r.POST("/fence", api.PostFence)  // 设置围栏
 	r.DELETE("/fence", api.DelFence) // 删除围栏
+	// 用户
+	r.PUT("/users/info", api.UpdateUserInfo) // 更改用户信息
 
 	// 管理员权限中间件
 	r.Use(middleware.Administrator())

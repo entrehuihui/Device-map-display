@@ -1,0 +1,120 @@
+#userInfo{
+    width: 1000px;
+    height: 600px;
+}
+
+.userInfoPhoto{
+    position: relative;
+    float: left;
+    width: 400px;
+    height: 600px;
+    text-align: center;
+}
+.userInfoPhotoInside{
+    position: relative;
+    float: left;
+    width: 200px;
+    height: 200px;
+    margin-left: 150px;
+    margin-top: 100px;
+    border-radius: 100px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.userInfoPhotoPrompt{
+    display: none;
+    position: absolute;
+    top: 160px;
+    margin-left: 50px;
+    width: 100px;    
+    height: 30px;
+    background: rgba(161, 161, 161, 0.5);
+    border-radius: 5px;
+    line-height: 30px;
+}
+.userInfoPhotoInside:hover .userInfoPhotoPrompt{
+    display: block;
+}
+.updatefileerror{
+    position: relative;
+    float: left;
+    margin-left: 150px;
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+    color: rgb(223, 102, 102);
+}
+.updatefilebutton{
+    position: relative;
+    float: left;
+    margin-left: 185px;
+    height: 30px;
+    line-height: 30px;
+    width: 200px;
+}
+.updatefileerrorSelect{
+    position: relative;
+    float: left;
+    width: 50px;
+    background: rgb(230, 230, 230);
+    margin-left: 10px;
+    cursor: pointer;
+}
+.updatefileerrorSelect:hover{
+    color: rgb(30, 16, 221);
+}
+
+.userInfoPhotoName{
+    position: relative;
+    float: left;
+    width: 200px;
+    margin-left: 150px;
+    /* margin-top: 30px; */
+    height: 50px;
+    font-size: 30px;
+    line-height: 50px;
+}
+.userInfoPhotoPermisson{
+    position: relative;
+    float: left;
+    width: 200px;
+    margin-left: 150px;
+    height: 30px;
+    font-size: 15px;
+    line-height: 30px;
+}
+.userInfoPhotoVip{
+    position: relative;
+    float: left;
+    width: 30px;
+    height: 30px;
+    background: rgb(255, 255, 255);
+    left: 65px;
+}
+.userInfoDetails{
+    position: relative;
+    float: left;
+    width: 600px;
+    height: 600px;
+    text-align: center;
+}
+.userInfoDetailsTitle{
+    position: relative;
+    float: left;
+    width: 50px;
+    margin-top: 68px;
+    height: 30px;
+    margin-left: 398px;
+    line-height: 30px;
+    border: 1px solid rgb(179, 179, 179);
+    user-select:none;
+    cursor: pointer;
+}
+.userInfoDetailsBody{
+    position: relative;
+    float: left;
+    width: 400px;
+    margin-left: 50px;
+    height: 400px;
+    background: rgb(231, 231, 231);
+}

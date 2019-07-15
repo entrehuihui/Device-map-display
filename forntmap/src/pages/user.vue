@@ -1,0 +1,126 @@
+<template>
+  <div id="user">
+    <div class="userleft">
+      <!-- logo -->
+      <div class="openmaplogo">
+        <img class="imgMax" :src="req.localhost + global.logo[3]" />
+      </div>
+      <!-- 列表 -->
+      <div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=0">
+            <div class="userleftTitleName">个人中心</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 0" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 0" />
+            </div>
+          </div>
+        </div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=1">
+            <div class="userleftTitleName">权限管理</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 1" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 1" />
+            </div>
+          </div>
+        </div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=2">
+            <div class="userleftTitleName">账户管理</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 2" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 2" />
+            </div>
+          </div>
+        </div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=3">
+            <div class="userleftTitleName">设备管理</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 3" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 3" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- 头部 -->
+    <div class="userHeard">
+      <!-- 用户头像 -->
+      <div class="userPhoto">
+        <div class="userPhotoImg">
+          <img :src="req.localhost + global.userinfo.photo" class="imgMax" />
+        </div>
+        <div class="userPhotoName">{{global.userinfo.name}}</div>
+      </div>
+      <!-- retMap -->
+      <div class="userReturn">
+        <a href="/openMap#/openMap">返回地图监控</a>
+      </div>
+    </div>
+    <!-- 中部 -->
+    <div class="userBody">
+      <div class="userBodyInside">
+        <user v-show="index==0"></user>
+        <permisson v-show="index==1"></permisson>
+        <account v-show="index==2"></account>
+        <deives v-show="index==3"></deives>
+      </div>
+    </div>
+    <!-- 尾部 -->
+    <div class="userBottom" :userinfo="global.userinfo"></div>
+  </div>
+</template>
+
+<script>
+import user from "@/components/user.vue";
+import account from "@/components/account.vue";
+import deives from "@/components/deives.vue";
+import permisson from "@/components/permisson.vue";
+export default {
+  components: {
+    user,
+    account,
+    deives,
+    permisson
+  },
+  data() {
+    return {
+      index: 0
+    };
+  },
+  methods: {
+    // 获取用户信息
+    getUserinfo: async function() {
+      await this.req.get("/login/info").then(response => {
+        if (response.status != 200) {
+          this.global.setCookie("", -1);
+          return;
+        }
+        this.global.userinfo = response.data;
+        // this.$set(this.global, "userinfo", response.data);
+        this.$forceUpdate();
+      });
+    },
+    // 获取状态
+    getState: function() {
+      this.req.get("/configState").then(response => {
+        if (response.status != 200) {
+          return;
+        }
+        this.global.state = response.data;
+        this.$forceUpdate();
+      });
+    }
+  },
+  async mounted() {
+    await this.getUserinfo();
+    this.getState();
+  }
+};
+</script>
+
+<style>
+@import url("./css/user.css");
+</style>

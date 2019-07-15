@@ -40,6 +40,7 @@ func Upload(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
+	defer file.Close()
 	if header.Size > 1048576 {
 		retError(c, 29, nil)
 		return
@@ -54,20 +55,19 @@ func Upload(c *gin.Context) {
 		return
 	}
 	//产生随机的字符串文件名
-	newname := "/image/temp/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(hmacSample[0]) + "." + filename[1]
+	newname := "/images/temp/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(hmacSample[0]) + "." + filename[1]
 	fi, err := os.Create("./static" + newname)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
+	//关闭文件
+	defer fi.Close()
 	_, err = io.Copy(fi, file)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
-	//关闭文件
-	fi.Close()
-
 	retSuccess(c, newname)
 }
 
@@ -108,7 +108,18 @@ func movefile(dir, newdir string) error {
 }
 
 func removefile(dir string) {
-	os.Remove("./static" + dir)
+	go func() {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Println("removefile error:", err)
+			}
+		}()
+		time.Sleep(time.Second * 10)
+		err := os.Remove("./static" + dir)
+		if err != nil {
+			log.Println("removefile error:", err)
+		}
+	}()
 }
 
 //PrictureSize 改变传入的图片地址的图片的尺寸
@@ -120,17 +131,15 @@ func prictureSize(pricturePath, savepath string, pWidth, pHight uint) error {
 	if err != nil {
 		return err
 	}
-
+	defer file.Close()
 	//解码图片
 	img, err := jpeg.Decode(file)
 	if err != nil {
 		return err
 	}
-	file.Close()
 
 	// 改变图片尺寸
 	m := resize.Resize(pWidth, pHight, img, resize.Lanczos3)
-
 	//创建新图片
 	out, err := os.Create(savepath)
 	if err != nil {
