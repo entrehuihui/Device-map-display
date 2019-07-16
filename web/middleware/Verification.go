@@ -66,6 +66,7 @@ func Cors() gin.HandlerFunc {
 		c.Header("Origin", "*")
 		c.Header("Referer", "*")
 		c.Header("User-Agent", "*")
+		c.Header("Origin", "*")
 		// //放行所有OPTIONS方法
 		if method == "OPTIONS" {
 			c.AbortWithStatus(http.StatusNoContent)
@@ -82,6 +83,13 @@ func Corstoo() gin.HandlerFunc {
 		c.Header("cache-control", "no-cache")
 		// 处理请求
 		c.Next()
+	}
+}
+
+// Abort .
+func Abort() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Abort()
 	}
 }
 

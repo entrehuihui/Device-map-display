@@ -1441,8 +1441,7 @@ export default {
     }
   },
   beforeDestroy() {
-    console.log("++++++++++++++1++");
-    this.$refs.websocket.websock.close();
+    this.$refs.websocket.close = true;
   }
 };
 function getMaxArea(max, min, refer = 0) {

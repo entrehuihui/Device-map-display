@@ -1,0 +1,216 @@
+#account{
+    width: 1000px;
+    height: 550px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 50px;
+    overflow: hidden;
+}
+.accountSearch{
+    width: 848px;
+    height: 38px;
+    padding-top: 10px;
+    padding-left: 50px;
+    text-align: center;
+    border: 1px solid rgb(184, 182, 182);
+}
+.accountSearchT{
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+}
+.accountSearchI{
+    position: relative;
+    float: left;
+    width: 120px;
+    /* margin-top: 3px; */
+    height: 23px;
+    font-size: 15px;
+    outline: none;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.accountSearchS{
+    position: relative;
+    float: left;
+    width: 80px;
+    height: 30px;
+    line-height: 30px;
+    font-size: 15px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+.accountSearchSearch{
+    position: relative;
+    float: right;
+    width: 48px;
+    margin-right: 30px;
+    height: 28px;
+    line-height: 30px;
+    font-size: 15px;
+    border: 1px solid rgb(184, 182, 182);
+    background: rgb(236, 236, 236);
+    cursor: pointer;
+}
+.accountSearchSearch:hover{
+    color: rgb(35, 32, 204);
+}
+.accountList{
+    position: relative;
+    width: 898px;
+    height: 490px;
+    border: 1px solid rgb(184, 182, 182);
+    overflow: hidden;
+}
+.accountListTitle{
+    position: relative;
+    height: 35px;
+    width: 898px;
+    line-height: 35px;
+    border-bottom: 1px solid rgb(184, 182, 182);
+    text-align: center;
+    line-height: 35px;
+}
+.accountListTitleD{
+    position: relative;
+    height: 35px;
+    width: 898px;
+    line-height: 35px;
+    /* border-bottom: 1px solid rgb(184, 182, 182); */
+    text-align: center;
+    line-height: 35px;
+    margin-top: 6px;
+}
+.accountListTitleD:hover{
+    background: rgb(220, 255, 206);
+}
+.accountList1{
+    position: relative;
+    float: left;
+    height: 12px;
+    width: 12px;
+    border: 1px solid rgb(184, 182, 182);
+    margin-top: 12px;
+    margin-left: 12px;
+    margin-right: 12px;
+    cursor: pointer;
+}
+.accountList1Insede{
+    height: 10px;
+    width: 10px;
+    margin: 1px;
+    background: rgb(105, 106, 107);
+}
+.accountList2{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 150px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList3{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 80px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList4{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 55px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList5{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 100px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList6{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 200px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList7{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 60px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList8{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 162px;
+    overflow: hidden;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList9{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 45px;
+    border-left: 1px solid rgb(207, 205, 205);
+}
+.accountList9P{
+    position: relative;
+    width: 31px;
+    height: 31px;
+    top: 2px;
+    left: 7px;
+    border-radius: 15px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.accountList9PM{
+    position: fixed;
+    z-index: 900;
+    width: 400px;
+    height: 400px;
+    overflow: hidden;
+    top: 30%;
+    display: none;
+    border-radius: 200px;
+    margin-left: 100px;
+}
+.accountList9:hover .accountList9PM{
+    display:block;
+}
+.accountListDisable{
+    position: relative;
+    float: left;
+    height: 29px;
+    width: 45px;
+    background: rgb(188, 240, 140);
+    margin: 3px;
+    border-radius: 5px;
+    line-height: 29px;
+    cursor: pointer;
+    left: 4px;
+    text-align: center;
+}
+.accountListDisable:hover{
+    color: rgb(77, 4, 245);
+}
+.accountListTitleB{
+    position: absolute;
+    height: 35px;
+    width: 898px;
+    top: 453px;
+    border-top: 1px solid rgb(184, 182, 182);
+}

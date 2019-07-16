@@ -16,7 +16,7 @@
             </div>
           </div>
         </div>
-        <div class="userleftTitle">
+        <div class="userleftTitle" v-show="global.userinfo.permisson != 1">
           <div class="userleftTitle1" @click="index=1">
             <div class="userleftTitleName">权限管理</div>
             <div class="userleftTitlefold">
@@ -25,7 +25,7 @@
             </div>
           </div>
         </div>
-        <div class="userleftTitle">
+        <div class="userleftTitle" v-show="global.userinfo.permisson != 1">
           <div class="userleftTitle1" @click="index=2">
             <div class="userleftTitleName">账户管理</div>
             <div class="userleftTitlefold">
@@ -47,6 +47,7 @@
     </div>
     <!-- 头部 -->
     <div class="userHeard">
+      <div class="userOut" @click="ligout()">注销</div>
       <!-- 用户头像 -->
       <div class="userPhoto">
         <div class="userPhotoImg">
@@ -62,10 +63,10 @@
     <!-- 中部 -->
     <div class="userBody">
       <div class="userBodyInside">
-        <user v-show="index==0"></user>
-        <permisson v-show="index==1"></permisson>
-        <account v-show="index==2"></account>
-        <deives v-show="index==3"></deives>
+        <user v-if="index==0"></user>
+        <permisson v-if="index==1"></permisson>
+        <account v-if="index==2"></account>
+        <deives v-if="index==3"></deives>
       </div>
     </div>
     <!-- 尾部 -->
@@ -91,6 +92,16 @@ export default {
     };
   },
   methods: {
+    // 注销
+    ligout: function() {
+      this.global.userinfo = {};
+      this.$router.push({
+        name: "index",
+        params: {
+          logout: true
+        }
+      });
+    },
     // 获取用户信息
     getUserinfo: async function() {
       await this.req.get("/login/info").then(response => {

@@ -9,7 +9,8 @@ export default {
       websock: null,
       oldwebsocket: null,
       url: "",
-      wsuri: ""
+      wsuri: "",
+      close: false
     };
   },
   props: {},
@@ -68,15 +69,24 @@ export default {
       //关闭 --重新连接
       console.log("WebSocket关闭");
       // 如果当前连接断开--重新连接
-      console.log(e.target.url, this.wsuri);
-      if (e.target.url == this.wsuri) {
+      if (e.target.url == this.wsuri && !this.close) {
+        console.log("websocket意外断开, 2秒后重连");
         await this.global.sleep(2000);
         this.initWebpack();
+      } else {
+        console.log("主动关闭websocket");
+        this.close = false;
       }
     },
     async websocketerror(e) {}
   },
-  watch: {},
+  watch: {
+    close: function(v) {
+      if (v) {
+        this.wsuri.close();
+      }
+    }
+  },
   mounted() {
     var a = window.location.href;
     a = a.replace(/https{0,1}/, "ws");

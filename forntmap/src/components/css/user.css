@@ -15,7 +15,7 @@
     float: left;
     width: 200px;
     height: 200px;
-    margin-left: 150px;
+    margin-left: 100px;
     margin-top: 100px;
     border-radius: 100px;
     overflow: hidden;
@@ -87,34 +87,107 @@
     position: relative;
     float: left;
     width: 30px;
-    height: 30px;
-    background: rgb(255, 255, 255);
+    height: 20px;
+    font-size: 12px;
+    line-height: 20px;
+    /* background: rgb(221, 166, 166); */
     left: 65px;
+}
+.userInfoPhotoVipP{
+    position: relative;
+    float: right;
+    height: 15px;
+    width: 15px;
+    margin-top: 2px;
 }
 .userInfoDetails{
     position: relative;
     float: left;
     width: 600px;
-    height: 600px;
+    height: 400px;
     text-align: center;
+    padding-top: 150px;
 }
 .userInfoDetailsTitle{
     position: relative;
     float: left;
     width: 50px;
-    margin-top: 68px;
     height: 30px;
     margin-left: 398px;
     line-height: 30px;
-    border: 1px solid rgb(179, 179, 179);
     user-select:none;
     cursor: pointer;
+    color: rgb(153, 153, 153);
+    visibility:hidden;
+}
+#userInfoDetails{
+    border: none;
+}
+.userInfoDetails:hover .userInfoDetailsTitle{
+    visibility:initial;
 }
 .userInfoDetailsBody{
     position: relative;
     float: left;
     width: 400px;
     margin-left: 50px;
-    height: 400px;
-    background: rgb(231, 231, 231);
+    height: 250px;
+}
+
+.userInfoDetailsBD{
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 400px;
+    margin-top: 10px;
+    line-height: 40px;
+    /* border: 1px solid rgb(179, 179, 179); */
+    overflow: hidden;
+}
+.userInfoDetailsBDT{
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 100px;
+    text-align: right;
+}
+.userInfoDetailsBDE{
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 10px;
+    text-align: center;
+}
+.userInfoDetailsBDC{
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 280px;
+    margin-left: 10px;
+    text-align: left;
+}
+.userInfoDetailsBDCI{
+    width: 230px;
+    height: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
+    outline: none;
+    border: 1px solid rgb(153, 153, 153);
+}
+#userInfoDetailsBDP{
+    left: 50px;
+}
+.userInfoDetailsBP{
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 60PX;
+    margin-left: 10px;
+    background: rgb(185, 185, 185);
+    border-radius: 10px;
+    left: 130px;
+    cursor: pointer;
+}
+.userInfoDetailsBP:hover{
+    color: white;
 }

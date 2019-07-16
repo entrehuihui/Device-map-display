@@ -7,6 +7,9 @@ export default {
 }
 
 function checkPhone(phone) {
+    if (phone.length != 11) {
+        return false
+    }
     if ((/^1[34578]\d{9}$/.test(phone))) {
         return true;
     }

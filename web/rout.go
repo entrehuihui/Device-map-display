@@ -28,21 +28,19 @@ import (
 func Run() {
 	r := gin.New()
 	r.Use(middleware.Cors())
-
-	//图片上传
-	r.POST("/upload", api.Upload)
-	// websocket
-	r.GET("/ws", api.WebsocketListen)
-
-	// swag
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	// 日志中间件
-	r.Use(middleware.DataLogs())
-
 	// 开放图片
 	r.Static("/static/", "./static/static")
 	r.Static("/images/", "./static/images")
 	r.Static("/map/", "./static/map")
+	//图片上传
+	r.POST("/upload", api.Upload)
+	// swag
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/favicon.ico")
+	// 日志中间件
+	r.Use(middleware.DataLogs())
+	// websocket
+	r.GET("/ws", api.WebsocketListen)
 
 	// 设置浏览器不缓存
 	r.Use(middleware.Corstoo())
@@ -84,6 +82,7 @@ func Run() {
 	r.DELETE("/devices", api.DevicesDel)              // 删除设备
 	// 用户
 	r.GET("/users", api.GetUsers)                   // 获取用户列表
+	r.DELETE("/users", api.UserDel)                 // 删除用户
 	r.PUT("/users/expire", api.UpdateDevicesExpire) // 更改用户过期时间
 	r.PUT("/users/status", api.UpdateUserStatus)    // 更改用户状态
 	// 配置

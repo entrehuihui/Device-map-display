@@ -114,11 +114,16 @@ func removefile(dir string) {
 				log.Println("removefile error:", err)
 			}
 		}()
-		time.Sleep(time.Second * 10)
-		err := os.Remove("./static" + dir)
-		if err != nil {
-			log.Println("removefile error:", err)
+		var err error
+		for i := 0; i < 3; i++ {
+			//
+			err := os.Remove("./static" + dir)
+			if err == nil {
+				return
+			}
+			time.Sleep(time.Minute * 1)
 		}
+		log.Println("removefile error:", err)
 	}()
 }
 

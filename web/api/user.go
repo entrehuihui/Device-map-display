@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 	"time"
@@ -126,7 +125,7 @@ func GetUsers(c *gin.Context) {
 	}
 	if all != 0 {
 		//查数据
-		err = result.Limit(limit).Offset(offset).Find(&userinfo).Error
+		err = result.Limit(limit).Offset(offset).Order("id").Find(&userinfo).Error
 		if err != nil {
 			retError(c, 7, err)
 			return
@@ -256,7 +255,7 @@ func UpdateUserExpire(c *gin.Context) {
 // UserDelID 设备ID
 type UserDelID struct {
 	// 用户ID
-	ID int
+	ID []int
 }
 
 // UserDel .删除用户
@@ -278,27 +277,16 @@ func UserDel(c *gin.Context) {
 		retError(c, 1, err)
 		return
 	}
-	if userDelID.ID == 0 {
+	if len(userDelID.ID) == 0 {
 		retError(c, 12, nil)
 		return
 	}
-	s := service.GetServer()
-	user, err := s.CheckUserID(userDelID.ID)
-	if err != nil {
-		retError(c, 7, err)
-		return
-	}
+	db := service.GetServer().Table("userinfos").Where("id in (?) or ownid in (?)", userDelID.ID, userDelID.ID)
 	if c.GetInt("permisson") != 3 {
-		if user.Ownid != c.GetInt("id") {
-			retError(c, 18, err)
-			return
-		}
+		db = db.Where("ownid = ?", c.GetInt("id"))
 	}
 
-	updates := map[string]interface{}{
-		"del": 1,
-	}
-	_, err = s.UpdateUser(userDelID.ID, updates)
+	err = db.Update("del", 2).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
@@ -410,7 +398,6 @@ func UpdateUserInfo(c *gin.Context) {
 	// 成功  删除就图片
 	if userinfo.Photo != "" {
 		removefile(userinfo.Photo)
-		fmt.Println(oldPhoto, "++++++++++", userinfo.Photo)
 		if oldPhoto.Photo != "/images/user/defaultuser.png" {
 			removefile(oldPhoto.Photo)
 		}

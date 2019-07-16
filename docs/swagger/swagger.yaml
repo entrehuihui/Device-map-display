@@ -154,7 +154,9 @@ definitions:
     properties:
       id:
         description: 用户ID
-        type: integer
+        items:
+          type: integer
+        type: array
     type: object
   api.UserExpire:
     properties:

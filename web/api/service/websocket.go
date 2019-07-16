@@ -44,7 +44,6 @@ func Echo(ws *websocket.Conn) {
 	}
 	//鉴权成功
 	addr := ws.Request().RemoteAddr
-	log.Println(info, "+++++++++++++++++++++++++", addr)
 	if socketList[info[0]] == nil {
 		socketList[info[0]] = make(map[string]*websocket.Conn, 0)
 	}

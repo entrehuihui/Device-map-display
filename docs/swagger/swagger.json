@@ -1649,7 +1649,10 @@
             "properties": {
                 "id": {
                     "description": "用户ID",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

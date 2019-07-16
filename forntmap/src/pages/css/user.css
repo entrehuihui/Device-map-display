@@ -67,12 +67,18 @@
     padding-top: 20px;
     line-height: 40px;
 }
+.userOut{
+    position: relative;
+    float: right;
+    height: 40px;
+    width: 60px;
+    cursor: pointer;
+}
 .userPhoto{
     position: relative;
     float: right;
     height: 40px;
     width: 140px;
-    margin-right: 40px;
 }
 .userPhotoImg{
     position: relative;
