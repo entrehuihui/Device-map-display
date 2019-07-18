@@ -196,6 +196,28 @@
     border-left: 1px solid rgb(207, 205, 205);
     /* background: #000; */
 }
+.accountList81{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 150px;
+}
+.accountList82{
+    position: relative;
+    float: left;
+    height: 29px;
+    width: 50px;
+    background: rgb(212, 211, 211);
+    line-height: 29px;
+    margin-top: 3px;
+    border-radius: 5px;
+    background: rgb(188, 240, 140);
+    cursor: pointer;
+}
+.accountList82:hover{
+    color: rgb(77, 4, 245);
+}
+
 .accountList9{
     position: relative;
     float: left;

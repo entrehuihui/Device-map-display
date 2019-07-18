@@ -8,7 +8,7 @@
       <!-- 列表 -->
       <div>
         <div class="userleftTitle">
-          <div class="userleftTitle1" @click="index=0">
+          <div class="userleftTitle1" @click="index=0" :id="index==0 ? 'userleftTitle1':''">
             <div class="userleftTitleName">个人中心</div>
             <div class="userleftTitlefold">
               <img src="/static/right.png" class="imgMax" v-show="index == 0" />
@@ -16,8 +16,8 @@
             </div>
           </div>
         </div>
-        <div class="userleftTitle" v-show="global.userinfo.permisson != 1">
-          <div class="userleftTitle1" @click="index=1">
+        <div class="userleftTitle" v-show="global.userinfo.permisson == 3">
+          <div class="userleftTitle1" @click="index=1" :id="index==1 ? 'userleftTitle1':''">
             <div class="userleftTitleName">权限管理</div>
             <div class="userleftTitlefold">
               <img src="/static/right.png" class="imgMax" v-show="index == 1" />
@@ -26,7 +26,7 @@
           </div>
         </div>
         <div class="userleftTitle" v-show="global.userinfo.permisson != 1">
-          <div class="userleftTitle1" @click="index=2">
+          <div class="userleftTitle1" @click="index=2" :id="index==2 ? 'userleftTitle1':''">
             <div class="userleftTitleName">账户管理</div>
             <div class="userleftTitlefold">
               <img src="/static/right.png" class="imgMax" v-show="index == 2" />
@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="userleftTitle">
-          <div class="userleftTitle1" @click="index=3">
+          <div class="userleftTitle1" @click="index=3" :id="index==3 ? 'userleftTitle1':''">
             <div class="userleftTitleName">设备管理</div>
             <div class="userleftTitlefold">
               <img src="/static/right.png" class="imgMax" v-show="index == 3" />
@@ -63,9 +63,13 @@
     <!-- 中部 -->
     <div class="userBody">
       <div class="userBodyInside">
+        <!-- 个人中心 -->
         <user v-if="index==0"></user>
+        <!-- 权限管理 -->
         <permisson v-if="index==1"></permisson>
+        <!-- 用户管理 -->
         <account v-if="index==2"></account>
+        <!-- 设备管理 -->
         <deives v-if="index==3"></deives>
       </div>
     </div>
@@ -77,7 +81,7 @@
 <script>
 import user from "@/components/user.vue";
 import account from "@/components/account.vue";
-import deives from "@/components/deives.vue";
+import deives from "@/components/devices.vue";
 import permisson from "@/components/permisson.vue";
 export default {
   components: {

@@ -30,18 +30,18 @@ type Logininfo struct {
 
 // Deviceinfo 设备列表
 type Deviceinfo struct {
-	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
-	Name       string `gorm:"not null;size:80"` //设备名称
-	UID        int    `gorm:"not null;index"`
-	Uname      string `gorm:"not null"`
-	Classid    int    `gorm:"not null;index"`
-	Calssname  string `gorm:"not null"`
-	DevEUI     string `gorm:"size:16"`  //设备UID
-	Status     int    `gorm:"not null"` // 1启用 2禁用 3过期
-	Createtime int64  `gorm:"not null"`
-	Updatetime int64  `gorm:"not null;default:0"`
-	Expiretime int64  `gorm:"not null;default:0"`
-	Del        int    `gorm:"not null;default:0"`
+	ID          int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
+	Name        string `gorm:"not null;size:80"` //设备名称
+	UID         int    `gorm:"not null;index"`
+	Uname       string `gorm:"not null"`
+	Classid     int    `gorm:"not null;index"`
+	Classname   string `gorm:"not null"`
+	DevEUI      string `gorm:"size:16"`  //设备UID
+	Status      int    `gorm:"not null"` // 1启用 2禁用 3过期
+	Createtime  int64  `gorm:"not null"`
+	Updatetime  int64  `gorm:"not null;default:0"`
+	Expiredtime int64  `gorm:"not null;default:0"`
+	Del         int    `gorm:"not null;default:0"`
 }
 
 // Devicedata 设备数据
@@ -92,4 +92,16 @@ type Fencelists struct {
 	Createtime int64  `gorm:"not null;default:0"`
 	Info       string `gorm:"not null;default:''"`
 	Del        int    `gorm:"not null;default:0"`
+}
+
+// Permisson 权限
+type Permisson struct {
+	ID         int `gorm:"primary_key;AUTO_INCREMENT;unique_index"` //VIP等级--用户默认等级为1
+	Users      int `gorm:"not null;default:0"`                      //子用户数
+	Devices    int `gorm:"not null;default:1"`                      //设备数
+	Orbit      int `gorm:"not null;default:2"`                      //是否可以显示轨迹 1显示 2不显示
+	Fence      int `gorm:"not null;default:2"`                      //是否可以显示围栏 1显示 2不显示
+	FenceAlarm int `gorm:"not null;default:2"`                      //是否可以检测围栏报警 1检测 2不检测
+	Real       int `gorm:"not null;default:2"`                      //是否支持实时数据 1支持 2不支持
+	Logo       int `gorm:"not null;default:2"`                      //是否支持定制LOGO 1支持 2不支持
 }

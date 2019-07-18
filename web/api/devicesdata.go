@@ -55,51 +55,55 @@ func SaveDeviceInfos(c *gin.Context) {
 		retError(c, 1, err)
 		return
 	}
-	if len(deviceInfos.DevEUI) != 16 {
-		retError(c, 22, nil)
+
+	errs, err := checkData(&deviceInfos, c.GetInt("id"))
+	if err != nil {
+		retError(c, errs, err)
 		return
+	}
+	retSuccess(c, "Success")
+}
+
+// 检测数据
+func checkData(deviceInfos *DeviceInfos, uid int) (int, error) {
+	if len(deviceInfos.DevEUI) != 16 {
+		return 22, nil
 	}
 	// 判断经纬度
 	if deviceInfos.Latitude > 90 || deviceInfos.Latitude < -90 {
-		retError(c, 36, nil)
-		return
+		return 36, nil
 	}
 	if deviceInfos.Longitude > 180 || deviceInfos.Longitude < -180 {
-		retError(c, 37, nil)
-		return
+		return 37, nil
 	}
-	uid := c.GetInt("id")
 	s := service.GetServer()
 	// 查询设备是否保存
 	infos, err := s.CheckDevicesInfo(uid, deviceInfos.DevEUI)
 	if err != nil && err != gorm.ErrRecordNotFound {
-		retError(c, 7, err)
-		return
+		return 7, err
 	}
 	// 设备未添加则创建设备
 	if err == gorm.ErrRecordNotFound {
 		userInfo, err := s.CheckUserID(uid)
 		if err != nil {
-			retError(c, 7, err)
-			return
+			return 7, err
 		}
 		now := time.Now().Unix()
 		deviceinfo := db.Deviceinfo{
-			Name:       deviceInfos.Name,
-			UID:        uid,
-			Uname:      userInfo.Name,
-			Classid:    uid,
-			Calssname:  userInfo.Name,
-			DevEUI:     deviceInfos.DevEUI,
-			Status:     1,
-			Createtime: now,
-			Updatetime: 0,
-			Expiretime: 0,
+			Name:        deviceInfos.Name,
+			UID:         uid,
+			Uname:       userInfo.Name,
+			Classid:     uid,
+			Classname:   userInfo.Name,
+			DevEUI:      deviceInfos.DevEUI,
+			Status:      1,
+			Createtime:  now,
+			Updatetime:  0,
+			Expiredtime: 0,
 		}
 		err = s.CreateDevice(&deviceinfo)
 		if err != nil {
-			retError(c, 7, err)
-			return
+			return 7, err
 		}
 		infos = [2]int{deviceinfo.ID, uid}
 	}
@@ -111,8 +115,7 @@ func SaveDeviceInfos(c *gin.Context) {
 	// 保存数据
 	jsons, err := json.Marshal(deviceInfos.Info)
 	if err != nil {
-		retError(c, 1, err)
-		return
+		return 1, err
 	}
 	if jsons == nil {
 		jsons = []byte("{}")
@@ -130,21 +133,19 @@ func SaveDeviceInfos(c *gin.Context) {
 	}
 	err = s.SaveDeviceData(devicedata)
 	if err != nil {
-		retError(c, 7, err)
-		return
+		return 7, err
 	}
 	datas, err := json.Marshal(devicedata)
 	if err != nil {
 		log.Printf("SaveDeviceInfos  Marshal error! [error]%s  [data]%v", err, devicedata)
-		retSuccess(c, "Success")
-		return
+		return 0, nil
 	}
 	data := string(datas)
 	go service.GroupWrite(uid, data)
 	if uid != infos[1] {
 		go service.GroupWrite(infos[1], data)
 	}
-	retSuccess(c, "Success")
+	return 0, nil
 }
 
 //GRPC接口  --带完成

@@ -7,6 +7,7 @@ import (
 	"./db"
 	_ "./docs"
 	"./web"
+	"./web/api/service"
 	"github.com/spf13/viper"
 )
 
@@ -20,6 +21,7 @@ func main() {
 		return
 	}
 	db.SetSQL(os.Stdout)
-
+	// 加载VIP列表
+	service.InitVIP()
 	web.Run()
 }

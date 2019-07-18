@@ -81,7 +81,7 @@
           <!-- 设备名 -->
           <div class="accountList6">{{device.Name}}</div>
           <!-- 群组名 -->
-          <div class="accountList6">{{device.Calssname}}</div>
+          <div class="accountList6">{{device.Classname}}</div>
           <!-- 用户名 -->
           <div class="accountList6">{{device.Uname}}</div>
           <!-- 创建时间 -->
@@ -95,23 +95,28 @@
           </div>
           <!-- 状态 -->
           <div class="accountList7">
-            <div v-show="device.Expiretime==0 || device.Expiretime > nowTime">
+            <div v-show="device.Expiredtime==0 || device.Expiredtime > nowTime">
               <div v-show="device.Status==1 ">启用</div>
               <div v-show="device.Status==2 ">禁用</div>
             </div>
             <div
-              v-show="device.Status==3 || (nowTime >= device.Expiretime && device.Expiretime!=0)"
+              v-show="device.Status==3 || (nowTime >= device.Expiredtime && device.Expiredtime!=0)"
             >到期</div>
           </div>
           <!-- 操作 -->
           <div class="accountList8">
-            <div class="accountListDisable" v-show="device.Status!=3">
-              <div v-show="device.Status==1">禁用</div>
-              <div v-show="device.Status==2">启用</div>
+            <div v-show="global.userinfo.permisson != 1">
+              <div class="accountListDisable" v-show="device.Status!=3">
+                <div v-show="device.Status==1" @click="updateStatus([device.ID],2)">禁用</div>
+                <div v-show="device.Status==2" @click="updateStatus([device.ID],1)">启用</div>
+              </div>
+              <div
+                class="accountListDisable"
+                @click="allotDevices.Classid=device.Classid; allotDevices.IDs=[device.ID]; allotDevices.Name=device.Classname"
+              >分配</div>
+              <div class="accountListDisable" @click="expireTimeID = [device.ID]">延期</div>
+              <div class="accountListDisable" @click="delDevices([device.ID])">删除</div>
             </div>
-            <div class="accountListDisable">分配</div>
-            <div class="accountListDisable">延期</div>
-            <div class="accountListDisable">删除</div>
           </div>
         </div>
       </div>
@@ -121,28 +126,59 @@
         <div class="accountList1" @click="selectAll(true)">
           <div class="accountList1Insede" v-show="devices.Show"></div>
         </div>
-        <!-- 禁用 -->
-        <div class="accountListDisable">禁用</div>
-        <!-- 启用 -->
-        <div class="accountListDisable">启用</div>
-        <!-- 删除 -->
-        <div class="accountListDisable">删除</div>
-        <!-- 分配 -->
-        <div class="accountListDisable">分配</div>
+        <div v-show="global.userinfo.permisson != 1">
+          <!-- 禁用 -->
+          <div class="accountListDisable" @click="updateAlls(1)">禁用</div>
+          <!-- 启用 -->
+          <div class="accountListDisable" @click="updateAlls(2)">启用</div>
+          <!-- 删除 -->
+          <div class="accountListDisable" @click="updateAlls(3)">删除</div>
+          <!-- 分配 -->
+          <div class="accountListDisable" @click="updateAlls(4)">分配</div>
+          <!-- 延期 -->
+          <div class="accountListDisable" @click="updateAlls(5)">延期</div>
+        </div>
         <!-- 分页 -->
         <div class="accountListPages">
           <pages :all="allPage" v-on:page="page"></pages>
         </div>
+      </div>
+      <!-- 续期 -->
+      <div v-show="expireTimeID">
+        <div class="accountListExpire" @click="expireTimeID=null"></div>
+        <div class="accountListExpire1">
+          <div class="accountListExpire6">时间为空表示永远不过期</div>
+          <div class="accountListExpire5" @click="expireTimeID=null">X</div>
+          <div class="accountListExpire2">
+            <div class="accountListExpire3">到期时间 :</div>
+            <div class="accountListExpire3">
+              <times :type="'day'" ref="time3"></times>
+            </div>
+            <div class="accountListExpire3">
+              <div class="accountListExpire4" @click="updateExoired()">确定</div>
+              <div class="accountListExpire4" @click="clearTime3()">清除</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 分配 -->
+      <div v-if="allotDevices.Classid">
+        <selectUser
+          v-on:close="allotDevices = {Classid:0, IDs:[], Name:''}"
+          :allotDevices="allotDevices"
+          v-on:seelctID="seelctID"
+        ></selectUser>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import selectUser from "@/components/selectUser.vue";
 import times from "@/components/time.vue";
 import pages from "@/components/pages.vue";
 export default {
-  components: { times, pages },
+  components: { times, pages, selectUser },
   data() {
     return {
       name: "",
@@ -153,10 +189,145 @@ export default {
       offset: 0,
       devices: {},
       query: "",
-      nowTime: parseInt(new Date().getTime() / 1000)
+      nowTime: parseInt(new Date().getTime() / 1000),
+      expireTimeID: null,
+      allotDevices: {
+        IDs: [],
+        Classid: 0,
+        Name: ""
+      }
     };
   },
   methods: {
+    seelctID: function(id) {
+      this.allot(this.allotDevices.IDs, id);
+      this.allotDevices = {
+        ID: [],
+        Classid: 0,
+        Name: ""
+      };
+      this.$forceUpdate();
+    },
+    updateAlls: function(methods, uid = 0) {
+      // 分配
+      if (methods == 4) {
+        var ids = new Array();
+        var name = "";
+        var classid = 0;
+        for (const device of this.devices.data) {
+          if (device.Show) {
+            ids.push(device.ID);
+            if (classid == 0) {
+              classid = device.Classid;
+              name = device.Classname;
+            } else if (classid != device.Classid) {
+              alert("只能分配同一群组下设备");
+              return;
+            }
+          }
+        }
+        this.allotDevices = {
+          IDs: ids,
+          Classid: classid,
+          Name: name
+        };
+        this.$forceUpdate();
+        return;
+      }
+      var ids = new Array();
+      for (const device of this.devices.data) {
+        if (device.Show) {
+          ids.push(device.ID);
+        }
+      }
+      if (ids.length == 0) {
+        return;
+      }
+      switch (methods) {
+        case 1: //禁用
+          this.updateStatus(ids, 2);
+          break;
+        case 2: //启用
+          this.updateStatus(ids, 1);
+          break;
+        case 3: //删除
+          this.delDevices(ids);
+          break;
+        case 5: //延期
+          this.expireTimeID = ids;
+          this.$forceUpdate();
+          break;
+      }
+    },
+    allot: function(ids, uid) {
+      this.req
+        .put("/devices/user", {
+          ids: ids,
+          uid: uid
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+          } else {
+            alert(response.data);
+            this.getDevices();
+          }
+        });
+    },
+    clearTime3: function() {
+      this.$refs.time3.dayShortText = "";
+    },
+    updateExoired: function() {
+      var now = this.$refs.time3.dayShortText;
+      if (now) {
+        now = parseInt(new Date(now).getTime() / 1000);
+      } else {
+        now = 0;
+      }
+      this.req
+        .put("/devices/expire", {
+          expiredtime: now,
+          ids: this.expireTimeID
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+          } else {
+            alert(response.data);
+            this.getDevices();
+          }
+          this.expireTimeID = null;
+        });
+    },
+    delDevices: function(ids) {
+      this.req
+        .del("/devices", {
+          ids: ids
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+          } else {
+            alert(response.data);
+            this.getDevices();
+          }
+        });
+    },
+    updateStatus: function(ids, status) {
+      this.req
+        .put("/devices/status", {
+          ids: ids,
+          status: status
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+          } else {
+            alert(response.data);
+            this.getDevices();
+          }
+        });
+    },
     selectAll: function(methods = false) {
       if (methods) {
         this.devices.Show = !this.devices.Show;
@@ -203,6 +374,7 @@ export default {
         this.query += "&endtime=" + time2;
       }
       this.allPage = 1;
+      this.offset = 0;
       this.getDevices();
     },
     clearQuery: function() {
@@ -214,6 +386,9 @@ export default {
       this.ground = 0;
     },
     getFrounds: function() {
+      if (this.global.userinfo.permisson != 2) {
+        return;
+      }
       this.grounds = [
         {
           ID: this.global.userinfo.id,

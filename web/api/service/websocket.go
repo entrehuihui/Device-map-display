@@ -59,7 +59,7 @@ func Echo(ws *websocket.Conn) {
 			log.Printf("receive failed:%s", err)
 			break
 		}
-		log.Println("Receive from client:" + string(reply))
+		// log.Println("Receive from client:" + string(reply))
 		//处理接受到的请求 -- 未完成
 		err = websocket.Message.Send(ws, string(reply))
 		if err != nil {

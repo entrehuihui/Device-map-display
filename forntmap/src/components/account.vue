@@ -86,7 +86,10 @@
           <!-- 状态 -->
           <div class="accountList7">状态</div>
           <!-- 操作 -->
-          <div class="accountList8">操作</div>
+          <div class="accountList8">
+            <div class="accountList81">操作</div>
+            <div class="accountList82">添加</div>
+          </div>
         </div>
         <div class="accountListTitleD" v-for="(user, index) in users.data" :key="user.ID + 'user'">
           <!-- 选择框 -->
@@ -135,7 +138,7 @@
               <!-- <div v-show="user.Status==3" @click="expireTime=user.ID">续期</div> -->
             </div>
             <div class="accountListDisable" @click="userDetails = user">详情</div>
-            <div class="accountListDisable" @click="expireTimeID=user.ID">延期</div>
+            <div class="accountListDisable" @click="expireTimeID=[user.ID]">延期</div>
             <div class="accountListDisable" @click="delUser([user.ID])">删除</div>
           </div>
         </div>
@@ -152,6 +155,8 @@
         <div class="accountListDisable" @click="changeAll(2)">启用</div>
         <!-- 删除 -->
         <div class="accountListDisable" @click="changeAll(3)">删除</div>
+        <!-- 延期 -->
+        <div class="accountListDisable" @click="changeAll(4)">延期</div>
         <!-- 分页 -->
         <div class="accountListPages">
           <pages :all="allPage" v-on:page="page"></pages>
@@ -179,15 +184,20 @@
           </div>
         </div>
       </div>
+      <!-- 添加用户 -->
+      <div>
+        <adduser></adduser>
+      </div>
     </div>
   </div>
 </template>
 <script>
 import times from "@/components/time.vue";
+import adduser from "@/components/adduser.vue";
 import pages from "@/components/pages.vue";
 import accountChild from "@/components/accountChild.vue";
 export default {
-  components: { times, pages, accountChild },
+  components: { times, pages, accountChild, adduser },
   data() {
     return {
       users: {},
@@ -218,11 +228,13 @@ export default {
       var now = this.$refs.time3.dayShortText;
       if (now) {
         now = parseInt(new Date(now).getTime() / 1000);
-      } else now = 0;
+      } else {
+        now = 0;
+      }
       this.req
         .put("/users/expire", {
           expiredtime: now,
-          id: this.expireTimeID
+          ids: this.expireTimeID
         })
         .then(response => {
           if (response.status != 200) {
@@ -252,6 +264,9 @@ export default {
           ids.push(user.ID);
         }
       }
+      if (ids.length == 0) {
+        return;
+      }
       switch (methods) {
         case 1:
           this.disableUsers(ids, 2);
@@ -261,6 +276,10 @@ export default {
           break;
         case 3:
           this.delUser(ids);
+          break;
+        case 4:
+          this.expireTimeID = ids;
+          this.$forceUpdate();
           break;
       }
     },
@@ -304,6 +323,7 @@ export default {
         this.query += "&endtime=" + time2;
       }
       this.allPage = 1;
+      this.offset = 0;
       this.getUsers();
     },
     delUser: function(ids) {

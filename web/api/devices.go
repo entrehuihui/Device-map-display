@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"time"
 
 	"../../db"
@@ -80,7 +79,7 @@ func GetDevices(c *gin.Context) {
 			return
 		}
 		if endtime != 0 {
-			result = result.Where("expiretime < ?", endtime)
+			result = result.Where("Expiredtime < ?", endtime)
 		}
 		//
 		starttime, err := getStarttime(c)
@@ -89,7 +88,7 @@ func GetDevices(c *gin.Context) {
 			return
 		}
 		if starttime != 0 {
-			result = result.Where("expiretime > ?", starttime)
+			result = result.Where("Expiredtime > ?", starttime)
 		}
 		//
 		status, err := getStatus(c)
@@ -127,7 +126,7 @@ func GetDevices(c *gin.Context) {
 	}
 	if all != 0 {
 		//查数据
-		err = result.Limit(limit).Offset(offset).Find(&deviceinfo).Error
+		err = result.Where("del != 1").Limit(limit).Offset(offset).Order("id").Find(&deviceinfo).Error
 		if err != nil {
 			retError(c, 7, err)
 			return
@@ -177,7 +176,7 @@ func UpdateDevicesStatus(c *gin.Context) {
 		return
 	}
 	s := service.GetServer()
-	result := s.Model(&db.Deviceinfo{}).Where("id in (?)", deviceStatus.IDs)
+	result := s.Table("deviceinfos").Where("id in (?)", deviceStatus.IDs)
 	if permisson != 3 {
 		result = result.Where("classid = ?", uid)
 	}
@@ -185,13 +184,15 @@ func UpdateDevicesStatus(c *gin.Context) {
 	// 如果是启用 -- 判断是否过期
 	if deviceStatus.Status == 1 {
 		now := time.Now().Unix()
-		result = result.Where("expiredtime == 0 or expiredtime > ?", now)
+		result = result.Where("expiredtime = 0 or expiredtime > ?", now)
 	}
 	err = result.Update("status", deviceStatus.Status).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
+	// 删除redis-缓存
+	s.DelDeviceListInfo(deviceStatus.IDs)
 	retSuccess(c, "Success")
 }
 
@@ -242,7 +243,7 @@ func UpdateDevicesUser(c *gin.Context) {
 		retError(c, 12, nil)
 		return
 	}
-	result := s.Model(&db.Deviceinfo{}).Where("id in (?)", devicesUser.IDs)
+	result := s.Table("deviceinfos").Where("id in (?)", devicesUser.IDs)
 	if permisson != 3 {
 		if userinfo.Ownid != uid {
 			retError(c, 20, nil)
@@ -250,19 +251,22 @@ func UpdateDevicesUser(c *gin.Context) {
 		}
 		result = result.Where("classid = ?", uid)
 	}
-	err = result.Update("uid", userinfo.ID, "uname", userinfo.Name).Error
+	err = result.Update(map[string]interface{}{
+		"uid": userinfo.ID, "uname": userinfo.Name,
+	}).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
 	// 删除redis-缓存
+	s.DelDeviceListInfo(devicesUser.IDs)
 	retSuccess(c, "Success")
 }
 
 // DeviceExpire 设备过期时间信息
 type DeviceExpire struct {
 	// 设备ID
-	ID int
+	IDs []int
 	// 过期时间
 	Expiredtime int64
 }
@@ -286,7 +290,7 @@ func UpdateDevicesExpire(c *gin.Context) {
 		retError(c, 1, err)
 		return
 	}
-	if deviceExpire.ID == 0 {
+	if len(deviceExpire.IDs) == 0 {
 		retError(c, 12, nil)
 		return
 	}
@@ -301,28 +305,27 @@ func UpdateDevicesExpire(c *gin.Context) {
 			status = 3
 		}
 	}
-	updates := make(map[string]interface{}, 0)
-	updates["status"] = status
-	updates["expiredtime"] = deviceExpire.Expiredtime
-	permisson := c.GetInt("permisson")
-	if permisson != 3 {
-		uid := c.GetInt("id")
-		updates["classid"] = uid
-	}
 	s := service.GetServer()
-	_, err = s.UpdateDevice(deviceExpire.ID, updates)
+	db := s.Table("deviceinfos").Where("id in (?)", deviceExpire.IDs)
+	if c.GetInt("permisson") != 3 {
+		db = db.Where("classid = ?", c.GetInt("id"))
+	}
+	err = db.Updates(map[string]interface{}{
+		"expiredtime": deviceExpire.Expiredtime, "status": status,
+	}).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
 	// 删除redis-缓存
+	s.DelDeviceListInfo(deviceExpire.IDs)
 	retSuccess(c, "Success")
 }
 
 // DevicesID 设备ID
 type DevicesID struct {
 	// 设备ID
-	ID int
+	IDs []int
 }
 
 // DevicesDel .删除设备
@@ -344,33 +347,21 @@ func DevicesDel(c *gin.Context) {
 		retError(c, 1, err)
 		return
 	}
-	if devicesID.ID == 0 {
+	if len(devicesID.IDs) == 0 {
 		retError(c, 12, nil)
 		return
 	}
 	s := service.GetServer()
-	devices, err := s.GetDeviceinfosByID(devicesID.ID)
-	if err != nil {
-		retError(c, 7, err)
-		return
-	}
-	fmt.Println(devices)
+	db := s.Table("deviceinfos").Where("id in (?)", devicesID.IDs)
 	if c.GetInt("permisson") != 3 {
-		if devices.Classid != c.GetInt("id") {
-			retError(c, 18, err)
-			return
-		}
+		db = db.Where("classid = ?", c.GetInt("id"))
 	}
-
-	updates := map[string]interface{}{
-		"del": 1,
-	}
-	_, err = s.UpdateDevice(devicesID.ID, updates)
+	err = db.Update("del", 1).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
-	// 删除
-	service.DelDevicesInfo(devices.ID, devices.DevEUI)
+	// 删除redis-缓存
+	s.DelDeviceListInfo(devicesID.IDs)
 	retSuccess(c, "Success")
 }

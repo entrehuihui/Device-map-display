@@ -1466,6 +1466,102 @@
                 }
             }
         },
+        "/vip": {
+            "get": {
+                "description": "获取vip列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vip"
+                ],
+                "summary": "获取vip列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "获取vip列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "vip"
+                ],
+                "summary": "获取vip列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "vip信息",
+                        "name": "Permisson",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.Permisson"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/ws": {
             "get": {
                 "description": "websocket连接 /ws?maxiiot_user=token\u0026roomID=roomID",
@@ -1531,9 +1627,12 @@
                     "description": "过期时间",
                     "type": "integer"
                 },
-                "id": {
+                "ids": {
                     "description": "设备ID",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -1589,9 +1688,12 @@
         "api.DevicesID": {
             "type": "object",
             "properties": {
-                "id": {
+                "ids": {
                     "description": "设备ID",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },
@@ -1692,6 +1794,43 @@
                 }
             }
         },
+        "api.Permisson": {
+            "type": "object",
+            "properties": {
+                "devices": {
+                    "description": "设备数",
+                    "type": "integer"
+                },
+                "fence": {
+                    "description": "围栏权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "fenceAlarm": {
+                    "description": "围栏报警权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "id": {
+                    "description": "vipID",
+                    "type": "integer"
+                },
+                "logo": {
+                    "description": "定制LOGO权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "orbit": {
+                    "description": "轨迹权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "real": {
+                    "description": "实时数据权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "users": {
+                    "description": "子用户数",
+                    "type": "integer"
+                }
+            }
+        },
         "api.Registerinfo": {
             "type": "object",
             "properties": {
@@ -1740,9 +1879,12 @@
                     "description": "过期时间",
                     "type": "integer"
                 },
-                "id": {
+                "ids": {
                     "description": "用户ID",
-                    "type": "integer"
+                    "type": "array",
+                    "items": {
+                        "type": "integer"
+                    }
                 }
             }
         },

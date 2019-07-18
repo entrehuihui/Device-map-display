@@ -1,0 +1,94 @@
+.permissonList{
+    position: absolute;
+    width: 800px;
+    height: 355px;
+    border: 1px solid rgb(184, 182, 182);
+    overflow: hidden;
+    top: 100px;
+    left: 100px;
+}
+.permissonList1{
+    position: relative;
+    float: left;
+    width: 800px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    border-bottom: 1px solid  rgb(184, 182, 182);
+}
+.permissonList2{
+    position: relative;
+    float: left;
+    width: 800px;
+    height: 45px;
+    margin-top: 5px;
+    line-height: 45px;
+    text-align: center;
+    /* cursor: pointer; */
+}
+.permissonList2:hover{
+    background: rgb(238, 237, 237);
+}
+.permissonList3{
+    position: relative;
+    float: left;
+    width: 85px;
+    height: 45px;
+    border-left: 1px solid  rgb(184, 182, 182);
+}
+.permissonList4{
+    position: relative;
+    float: left;
+    width: 110px;
+    height: 45px;
+    border-left: 1px solid  rgb(184, 182, 182);
+}
+.permissonList5{
+    color: red;
+}
+.permissonList6{
+    color: rgb(0, 0, 0);
+}
+.permissonList7{
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 30px;
+    margin-left: 5px;
+    background: rgb(122, 224, 26);
+    border-radius: 5px;
+    margin-top: 7px;
+    cursor: pointer;
+    line-height: 30px;
+}
+.permissonList7:hover{
+    color: white;
+}
+.permissonList8{
+    position: relative;
+    float: left;
+    width: 50px;
+    margin-left: 5px;
+    margin-top: 7px;
+    height: 25px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    font-size: 14px;
+}
+.permissonList8::-webkit-outer-spin-button,
+    .permissonList8::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+}
+.permissonList9{
+    position: relative;
+    float: left;
+    height: 32px;
+    width: 75px;
+    margin-left: 5px;
+    margin-top: 7px;
+    padding-left: 10px;
+    padding-right: 10px;
+    font-size: 14px;
+}

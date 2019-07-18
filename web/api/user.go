@@ -213,7 +213,7 @@ func UpdateUserStatus(c *gin.Context) {
 // UserExpire .用户过期时间信息
 type UserExpire struct {
 	// 用户ID
-	ID int
+	IDs []int
 	// 过期时间
 	Expiredtime int64
 }
@@ -237,7 +237,7 @@ func UpdateUserExpire(c *gin.Context) {
 		retError(c, 1, err)
 		return
 	}
-	if userExpire.ID == 0 {
+	if len(userExpire.IDs) == 0 {
 		retError(c, 12, nil)
 		return
 	}
@@ -252,15 +252,14 @@ func UpdateUserExpire(c *gin.Context) {
 			status = 3
 		}
 	}
-	updates := make(map[string]interface{}, 0)
-	updates["status"] = status
-	updates["expiredtime"] = userExpire.Expiredtime
-	permisson := c.GetInt("permisson")
-	if permisson != 3 {
-		updates["ownid"] = c.GetInt("id")
-	}
 	s := service.GetServer()
-	_, err = s.UpdateUser(userExpire.ID, updates)
+	db := s.Table("userinfos").Where("id in (?)", userExpire.IDs)
+	if c.GetInt("permisson") != 3 {
+		db = db.Where("ownid = ?", c.GetInt("id"))
+	}
+	err = db.Updates(map[string]interface{}{
+		"expiredtime": userExpire.Expiredtime, "status": status,
+	}).Error
 	if err != nil {
 		retError(c, 7, err)
 		return

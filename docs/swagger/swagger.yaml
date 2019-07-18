@@ -27,9 +27,11 @@ definitions:
       expiredtime:
         description: 过期时间
         type: integer
-      id:
+      ids:
         description: 设备ID
-        type: integer
+        items:
+          type: integer
+        type: array
     type: object
   api.DeviceInfos:
     properties:
@@ -68,9 +70,11 @@ definitions:
     type: object
   api.DevicesID:
     properties:
-      id:
+      ids:
         description: 设备ID
-        type: integer
+        items:
+          type: integer
+        type: array
     type: object
   api.DevicesUser:
     properties:
@@ -141,6 +145,33 @@ definitions:
         description: 新密码 MD5加密
         type: string
     type: object
+  api.Permisson:
+    properties:
+      devices:
+        description: 设备数
+        type: integer
+      fence:
+        description: 围栏权限 1启用 2禁止
+        type: integer
+      fenceAlarm:
+        description: 围栏报警权限 1启用 2禁止
+        type: integer
+      id:
+        description: vipID
+        type: integer
+      logo:
+        description: 定制LOGO权限 1启用 2禁止
+        type: integer
+      orbit:
+        description: 轨迹权限 1启用 2禁止
+        type: integer
+      real:
+        description: 实时数据权限 1启用 2禁止
+        type: integer
+      users:
+        description: 子用户数
+        type: integer
+    type: object
   api.Registerinfo:
     properties:
       code:
@@ -175,9 +206,11 @@ definitions:
       expiredtime:
         description: 过期时间
         type: integer
-      id:
+      ids:
         description: 用户ID
-        type: integer
+        items:
+          type: integer
+        type: array
     type: object
   api.UserStatus:
     properties:
@@ -1166,6 +1199,70 @@ paths:
       summary: 更改用户状态(仅管理员以上)
       tags:
       - user
+  /vip:
+    get:
+      consumes:
+      - application/json
+      description: 获取vip列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取vip列表
+      tags:
+      - vip
+    put:
+      consumes:
+      - application/json
+      description: 获取vip列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: vip信息
+        in: body
+        name: Permisson
+        required: true
+        schema:
+          $ref: '#/definitions/api.Permisson'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取vip列表
+      tags:
+      - vip
   /ws:
     get:
       consumes:

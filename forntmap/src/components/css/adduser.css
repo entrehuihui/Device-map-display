@@ -1,0 +1,106 @@
+.adduserB{
+    position: absolute;
+    width: 1000px;
+    height: 600px;
+    background: rgb(141, 139, 139, 0.5);
+    top: 0px;
+    left: 0px;
+}
+.adduserI{
+    position: absolute;
+    width: 450px;
+    height: 450px;
+    border: 1px solid rgb(184, 182, 182);
+    top: 100px;
+    left: 300px;
+    background: rgb(255, 255, 255);
+    border-radius: 10px;
+}
+.adduserI0{
+    position: relative;
+    float: left;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
+    text-align: center;
+    font-size: 20px;
+    margin-left: 420px;
+    cursor: pointer;
+}
+.adduserI0:hover{
+    color: red;
+}
+.adduserI1{
+    position: relative;
+    float: left;
+    height: 35px;
+    margin-top: 5px;
+    width: 400px;
+    top: 10px;
+}
+.adduserI2{
+   position: relative;
+    float: left;
+    height: 35px; 
+    margin-left: 40px;
+    width: 100px;
+    text-align: right;
+    line-height: 35px;
+}
+.adduserI3{
+   position: relative;
+    float: left;
+    height: 35px; 
+    margin-left: 10px;
+    width: 190px;
+    text-align: left;
+    line-height: 35px;
+}
+.adduserI4{
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 165px;
+    outline: none;
+    height: 25px;
+    margin-top: 0px;
+    font-size: 15px;
+    text-align: center;
+}
+.adduserI5{
+    position: absolute;
+    height: 30px; 
+    width: 187px;
+    margin-top: 3px;
+    text-align: right;
+    line-height: 30px;
+    border: 1px solid rgb(184, 182, 182);
+}
+.adduserI6{
+    position: relative;
+    float: left;
+    z-index: 999;
+}
+.adduserI7{
+    position: relative;
+    float: left;
+    height: 30px;;
+    margin-top: 3px;
+    width: 189px;
+    padding-left: 60PX;
+}
+.adduserI8{
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 30px;
+    margin-top: 3px;;
+    line-height: 30px;
+    text-align: center;
+    border: 1px solid rgb(184, 182, 182);
+    background: rgb(90, 248, 28);
+    border-radius: 5px;
+    cursor: pointer;
+}
+.adduserI8:hover{
+    color: rgb(0, 172, 252);
+}

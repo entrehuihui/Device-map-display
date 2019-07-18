@@ -37,6 +37,17 @@ func deviceMarkKey(classid int, deveui string) string {
 	return deviceMark + strconv.Itoa(classid) + ":" + deveui
 }
 
+// DelDeviceListInfo 批量删除redis key
+func (s *Server) DelDeviceListInfo(ids []int) {
+	deviceinfos, err := s.GetDeviceinfosByIDs(ids)
+	if err != nil {
+		log.Println("DelDeviceListInfo Error : ", err)
+	}
+	for _, deviceinfo := range deviceinfos {
+		DelDevicesInfo(deviceinfo.ID, deviceinfo.DevEUI)
+	}
+}
+
 // DelDevicesInfo .
 func DelDevicesInfo(classid int, deveui string) {
 	conn := db.GetRedis()
@@ -53,7 +64,7 @@ func AddDevicesInfo(deviceinfo *db.Deviceinfo) [2]int {
 	defer conn.Close()
 	now := time.Now().Unix()
 	uid := deviceinfo.UID
-	if deviceinfo.Expiretime != 0 && deviceinfo.Expiretime < now || deviceinfo.Status != 1 {
+	if deviceinfo.Expiredtime != 0 && deviceinfo.Expiredtime < now || deviceinfo.Status != 1 {
 		uid = deviceinfo.Classid
 	}
 	_, err := conn.Do("SET", deviceMarkKey(deviceinfo.Classid, deviceinfo.DevEUI), strconv.Itoa(deviceinfo.ID)+":"+strconv.Itoa(uid), "EX", 86400)
@@ -102,5 +113,15 @@ func (s *Server) GetDeviceinfosByID(id int) (db.Deviceinfo, error) {
 		ID: id,
 	}
 	err := s.Where("del != 1").Find(&deviceinfo).Error
+	return deviceinfo, err
+}
+
+// GetDeviceinfosByIDs .按id列表获取设备信息
+func (s *Server) GetDeviceinfosByIDs(ids []int) ([]db.Deviceinfo, error) {
+	deviceinfo := make([]db.Deviceinfo, 0)
+	if len(ids) == 0 {
+		return deviceinfo, nil
+	}
+	err := s.Where("id in (?)", ids).Find(&deviceinfo).Error
 	return deviceinfo, err
 }
