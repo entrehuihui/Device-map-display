@@ -68,6 +68,7 @@ func Upload(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
+	removefile(newname, 5)
 	retSuccess(c, newname)
 }
 
@@ -107,7 +108,7 @@ func movefile(dir, newdir string) error {
 	return nil
 }
 
-func removefile(dir string) {
+func removefile(dir string, times time.Duration) {
 	go func() {
 		defer func() {
 			if err := recover(); err != nil {
@@ -116,14 +117,13 @@ func removefile(dir string) {
 		}()
 		var err error
 		for i := 0; i < 3; i++ {
-			//
-			err := os.Remove("./static" + dir)
+			time.Sleep(time.Minute * times)
+			err = os.Remove("./static" + dir)
 			if err == nil {
 				return
 			}
-			time.Sleep(time.Minute * 1)
+			log.Println("removefile error:", err)
 		}
-		log.Println("removefile error:", err)
 	}()
 }
 

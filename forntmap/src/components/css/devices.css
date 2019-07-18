@@ -1,0 +1,8 @@
+#devices{
+    width: 1000px;
+    height: 550px;
+    padding-left: 50px;
+    padding-right: 50px;
+    padding-top: 10px;
+    overflow: hidden;
+}

@@ -17,8 +17,8 @@
       </div>
       <div v-show="!retphoto" class="updatefileerror" ref="updatefileerror"></div>
       <div v-show="retphoto" class="updatefilebutton">
-        <div class="updatefileerrorSelect" @click="putPhoto()">确定</div>
         <div class="updatefileerrorSelect" @click="retphoto = ''">取消</div>
+        <div class="updatefileerrorSelect" @click="putPhoto()">确定</div>
       </div>
       <div class="userInfoPhotoName">{{global.userinfo.name}}</div>
       <div class="userInfoPhotoPermisson">
@@ -37,7 +37,13 @@
     </div>
     <!-- 信息 -->
     <div class="userInfoDetails" v-show="!modify">
-      <div class="userInfoDetailsTitle" @click="modify = true; mobile=''; address=''; email=''">修改</div>
+      <div class="userInfoDetailsTitle">
+        <div class="userInfoDetailsTitle1" @click="updatePassword=true">修改密码</div>
+        <div
+          class="userInfoDetailsTitle1"
+          @click="modify = true; mobile=''; address=''; email=''"
+        >修改详情</div>
+      </div>
       <div class="userInfoDetailsBody">
         <div class="userInfoDetailsBD">
           <div class="userInfoDetailsBDT">电话</div>
@@ -107,11 +113,63 @@
         </div>
       </div>
     </div>
+    <!-- 修改密码 -->
+    <div class="userInfoPassword" v-show="updatePassword">
+      <div class="userInfoPassword1">
+        <div class="userInfoPassword2">
+          <div class="userInfoPassword3" @click="closePassword()">X</div>
+        </div>
+        <div class="userInfoDetailsBD">
+          <div class="userInfoDetailsBDT">旧密码</div>
+          <div class="userInfoDetailsBDE">:</div>
+          <div class="userInfoDetailsBDC">
+            <input
+              type="password"
+              class="userInfoDetailsBDCI"
+              v-model="password"
+              placeholder="旧密码"
+              ref="password"
+            />/>
+          </div>
+        </div>
+        <div class="userInfoDetailsBD">
+          <div class="userInfoDetailsBDT">新密码</div>
+          <div class="userInfoDetailsBDE">:</div>
+          <div class="userInfoDetailsBDC">
+            <input
+              type="password"
+              class="userInfoDetailsBDCI"
+              v-model="password1"
+              placeholder="新密码"
+              ref="password1"
+            />/>
+          </div>
+        </div>
+        <div class="userInfoDetailsBD">
+          <div class="userInfoDetailsBDT">重复新密码</div>
+          <div class="userInfoDetailsBDE">:</div>
+          <div class="userInfoDetailsBDC">
+            <input
+              type="password"
+              class="userInfoDetailsBDCI"
+              v-model="password2"
+              placeholder="重复新密码"
+              ref="password2"
+            />/>
+          </div>
+        </div>
+        <div class="userInfoDetailsBD" id="userInfoDetailsBDP">
+          <div class="userInfoDetailsBP" @click="closePassword()">取消</div>
+          <div class="userInfoDetailsBP" @click="postPassword()">确定</div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import check from "@/global/check.js";
+import md5 from "js-md5";
 export default {
   props: {},
   data() {
@@ -121,10 +179,61 @@ export default {
       mobile: "",
       email: "",
       address: "",
-      post: false
+      post: false,
+      updatePassword: false,
+      password: "",
+      password1: "",
+      password2: ""
     };
   },
   methods: {
+    // 注销
+    ligout: function() {
+      this.global.userinfo = {};
+      this.$router.push({
+        name: "index",
+        params: {
+          logout: true
+        }
+      });
+    },
+    postPassword: function() {
+      if (this.password == "") {
+        this.$refs.password.style = "border: 1px solid red;";
+        return;
+      }
+      this.$refs.password.style = "border: 1px solid rgb(153, 153, 153);";
+      if (this.password1 == "") {
+        this.$refs.password1.style = "border: 1px solid red;";
+        return;
+      }
+      this.$refs.password1.style = "border: 1px solid rgb(153, 153, 153);";
+      if (this.password2 == "" || this.password2 != this.password1) {
+        this.$refs.password2.style = "border: 1px solid red;";
+        return;
+      }
+      this.$refs.password2.style = "border: 1px solid rgb(153, 153, 153);";
+
+      this.req
+        .put("/users/password", {
+          oldpassword: md5(this.password),
+          password: md5(this.password1)
+        })
+        .then(response => {
+          if (response.status != 200) {
+            alert(response.msg);
+            return;
+          }
+          alert(response.data);
+          this.ligout();
+        });
+    },
+    closePassword: function() {
+      this.updatePassword = false;
+      this.password = "";
+      this.password1 = "";
+      this.password2 = "";
+    },
     postDetails: function() {
       this.post = false;
       if (this.mobile == "" && this.email == "" && this.address == "") {

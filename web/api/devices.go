@@ -20,8 +20,8 @@ import (
 // @Param	offset	query	string	flase	"起始数"
 // @Param	limit	query	string	flase	"获取数"
 // @Param	status	query	string	flase	"设备状态 1启用 2禁用 3已过期"
-// @Param	starttime	query	string	flase	"设备创建起始时间"
-// @Param	endtime	query	string	flase	"设备创建终止时间"
+// @Param	starttime	query	string	flase	"设备到期起始时间"
+// @Param	endtime	query	string	flase	"设备到期终止时间"
 // @Param	name	query	string	flase	"设备名"
 // @Param	classid	query	int	flase	"群组id"
 // @Param	uid		query	int	flase	"用户id"
@@ -80,7 +80,7 @@ func GetDevices(c *gin.Context) {
 			return
 		}
 		if endtime != 0 {
-			result = result.Where("createtime < ?", endtime)
+			result = result.Where("expiretime < ?", endtime)
 		}
 		//
 		starttime, err := getStarttime(c)
@@ -89,7 +89,7 @@ func GetDevices(c *gin.Context) {
 			return
 		}
 		if starttime != 0 {
-			result = result.Where("createtime > ?", starttime)
+			result = result.Where("expiretime > ?", starttime)
 		}
 		//
 		status, err := getStatus(c)
@@ -255,6 +255,7 @@ func UpdateDevicesUser(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
+	// 删除redis-缓存
 	retSuccess(c, "Success")
 }
 
@@ -314,6 +315,7 @@ func UpdateDevicesExpire(c *gin.Context) {
 		retError(c, 7, err)
 		return
 	}
+	// 删除redis-缓存
 	retSuccess(c, "Success")
 }
 

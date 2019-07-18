@@ -375,13 +375,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "设备创建起始时间",
+                        "description": "设备到期起始时间",
                         "name": "starttime",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "设备创建终止时间",
+                        "description": "设备到期终止时间",
                         "name": "endtime",
                         "in": "query"
                     },
@@ -1135,13 +1135,13 @@
                     },
                     {
                         "type": "string",
-                        "description": "用户创建起始时间",
+                        "description": "用户到期起始时间",
                         "name": "starttime",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "description": "用户创建终止时间",
+                        "description": "用户到期终止时间",
                         "name": "endtime",
                         "in": "query"
                     },
@@ -1167,6 +1167,12 @@
                         "type": "integer",
                         "description": "用户级别",
                         "name": "permisson",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "description": "VIP等级",
+                        "name": "vip",
                         "in": "query"
                     }
                 ],
@@ -1327,6 +1333,60 @@
                         "schema": {
                             "type": "object",
                             "$ref": "#/definitions/api.Info"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/users/password": {
+            "put": {
+                "description": ".更改用户密码",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": ".更改用户密码",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "用户密码",
+                        "name": "PasswordInfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.PasswordInfo"
                         }
                     }
                 ],
@@ -1611,6 +1671,23 @@
                 },
                 "password": {
                     "description": "密码 MD5加密(小写)",
+                    "type": "string"
+                }
+            }
+        },
+        "api.PasswordInfo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "description": "用户ID 修改自身不传",
+                    "type": "integer"
+                },
+                "oldpassword": {
+                    "description": "旧密码 MD5加密 修改下级用户不传",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "新密码 MD5加密",
                     "type": "string"
                 }
             }

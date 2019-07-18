@@ -4,6 +4,7 @@ import (
 	"log"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gomodule/redigo/redis"
 
@@ -28,10 +29,7 @@ func (s *Server) CheckDevicesInfo(classid int, deveui string) ([2]int, error) {
 		}
 	}
 	deviceinfo, err := s.GetDeviceinfos(classid, deveui)
-	if err == nil {
-		AddDevicesInfo(&deviceinfo)
-	}
-	return [2]int{deviceinfo.ID, deviceinfo.UID}, err
+	return AddDevicesInfo(&deviceinfo), err
 }
 
 func deviceMarkKey(classid int, deveui string) string {
@@ -50,13 +48,19 @@ func DelDevicesInfo(classid int, deveui string) {
 }
 
 // AddDevicesInfo .
-func AddDevicesInfo(deviceinfo *db.Deviceinfo) {
+func AddDevicesInfo(deviceinfo *db.Deviceinfo) [2]int {
 	conn := db.GetRedis()
 	defer conn.Close()
-	_, err := conn.Do("SET", deviceMarkKey(deviceinfo.Classid, deviceinfo.DevEUI), strconv.Itoa(deviceinfo.ID)+":"+strconv.Itoa(deviceinfo.UID), "EX", 86400)
+	now := time.Now().Unix()
+	uid := deviceinfo.UID
+	if deviceinfo.Expiretime != 0 && deviceinfo.Expiretime < now || deviceinfo.Status != 1 {
+		uid = deviceinfo.Classid
+	}
+	_, err := conn.Do("SET", deviceMarkKey(deviceinfo.Classid, deviceinfo.DevEUI), strconv.Itoa(deviceinfo.ID)+":"+strconv.Itoa(uid), "EX", 86400)
 	if err != nil {
 		log.Println("AddDevicesInfo Error : ", err)
 	}
+	return [2]int{deviceinfo.ID, uid}
 }
 
 // GetDeviceinfos .按classid和deveui获取设备信息

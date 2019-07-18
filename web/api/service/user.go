@@ -44,3 +44,12 @@ func (s *Server) UpdateUser(id int, updates map[string]interface{}) (db.Userinfo
 	err := s.Model(&userinfo).Updates(updates).Error
 	return userinfo, err
 }
+
+// UpdateUsers 更新用户子子账户信息
+func (s *Server) UpdateUsers(id int, updates map[string]interface{}) (db.Userinfo, error) {
+	userinfo := db.Userinfo{
+		ID: id,
+	}
+	err := s.Model(&userinfo).Where("ownid = ?", id).Updates(updates).Error
+	return userinfo, err
+}

@@ -1,0 +1,289 @@
+
+.accountChildO{
+    position: absolute;
+    width: 900PX;
+    height: 600PX;
+    background: rgba(189, 187, 187, 0.5);
+    top: 0PX;
+}
+
+.accountChildI{
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: rgb(255, 255, 255);
+    left: 200px;
+    top: 100px;
+    border: 1px solid rgb(105, 106, 107);
+    border-radius: 10px;
+}
+.accountChildClose{
+    position: relative;
+    float: left;
+    width: 600px;
+    height: 30px;
+    right: 0px;
+}
+.accountChildCloseI{
+    position: relative;
+    float: right;
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+}
+.accountChildCloseI:hover{
+    color: red;
+}
+.accountChildP{
+    position: relative;
+    float: left;
+    width: 200px;
+    height: 310px;
+    margin-left: 50px;
+    margin-top: 50px;
+    text-align: center;
+}
+.accountChildPI{
+    width: 160px;
+    height: 160px;
+    border-radius: 100px;
+    margin-left: 20px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.accountChildPRemind{
+    position: absolute;
+    height: 20px;
+    width: 80px;
+    top: 130px;
+    font-size: 12px;
+    line-height: 20px;
+    background: rgb(218, 216, 216, 0.4);
+    margin-left: 40px;
+    display: none;
+}
+.accountChildPI:hover .accountChildPRemind{
+    display: block;
+}
+.accountChildPPost{
+    position: relative;
+    float: left;
+    height: 25px;
+    width: 200px;
+    text-align:center;
+}
+#updatefileerror{
+    color: rgb(255, 88, 46);
+}
+.accountChildPPostD{
+    position: relative;
+    float: left;
+    margin-left: 10px;
+    height: 23px;
+    line-height: 23px;
+    width: 40px;
+    border: 1px solid rgb(105, 106, 107);
+    left: 45px;
+    cursor: pointer;
+}
+.accountChildPPostD:hover{
+    color: blue;
+}
+.accountChildPName{
+    position: relative;
+    float: left;
+    height: 30px;;
+    width: 200px;
+    line-height: 30px;
+    font-size: 25px;
+}
+.accountChildPPermisson{
+    position: relative;
+    float: left;
+    height: 25px;;
+    width: 200px;
+    line-height: 25px;
+}
+.accountChildPVip{
+    position: relative;
+    float: left;
+    height: 20px;;
+    width: 200px;
+    line-height: 20px;
+    font-size: 15px;
+}
+.accountChildPPassword{
+    position: relative;
+    float: left;
+    height: 30px;
+    width: 100px;
+    background: rgb(197, 196, 196);
+    line-height: 30px;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 5px;
+}
+.accountChildPPassword:hover{
+    color: white;
+}
+.accountChildPVipImg{
+    position: relative;
+    float: left;
+    height: 15px;
+    width: 15px;
+    margin-left: 75px;
+    margin-top: 2px;
+}
+.accountChildPVipN{
+    position: relative;
+    float: left;
+    height: 20px;
+    width: 40px;
+    text-align: left;
+}
+
+.accountChildD{
+    position: relative;
+    float: left;
+    width: 290px;
+    height: 320px;
+    margin-left: 10px;
+}
+.accountChildDUpdate{
+    position: relative;
+    float: right;
+    width: 80px;
+    height: 20px;
+    color: rgb(167, 169, 172);
+    visibility:hidden;
+    cursor: pointer;
+    margin-left: 5px;
+    text-align: center;
+    line-height: 20px;
+}
+.accountChildD:hover .accountChildDUpdate{
+      visibility:visible;
+}
+.accountChildDUpdate:hover{
+    color: rgb(5, 5, 5);
+}
+.accountChildDD{
+    position: relative;
+    float: left;
+    width: 280px;
+    height: 30px;
+    margin-top: 5px;
+    line-height: 30px;
+    cursor: pointer;
+}
+.accountChildDD1{
+    position: relative;
+    float: left;
+    text-align: right;
+    width: 80px;
+    height: 30px;
+}
+.accountChildDD2{
+    position: relative;
+    float: left;
+    text-align: left;
+    width: 190px;
+    height: 30px;
+    margin-left: 10px;
+    overflow: hidden;
+}
+.accountChildDD3{
+    position: absolute;
+    top: 20px;
+    z-index: 9999;
+    background: rgba(131, 131, 131, 0.8);
+    max-width: 210px;
+    min-height: 30px;
+    text-align: left;
+    display: none;
+    left: 70px;
+    color: rgb(255, 255, 255);
+    padding-left: 10px;
+    padding-right: 10px;
+    white-space:normal;
+    overflow: hidden;
+    word-break: break-all;
+}
+.accountChildDD:hover .accountChildDD3{
+    display: block;
+}
+
+.accountChildU{
+    position: absolute;
+    top: 50px;
+    width: 290px;
+    height: 320px;
+    left: 260px;
+    background: rgba(255, 255, 255);
+}
+.accountChildUT{
+    position: relative;
+    height: 30px;
+    width: 600px;
+}
+.accountChildU2{
+    position: relative;
+    float: left;
+    width: 160px;
+    height: 22px;
+    margin-left: 10px;
+    padding-left: 10px;
+    padding-right: 10px;
+    outline: none;
+    border: 1px solid rgb(155, 154, 154);
+}
+.accountChildU3{
+    position: relative;
+    float: left;
+    width: 50px;
+    height: 30px;
+    background: rgb(207, 206, 206);
+    margin-left: 10px;
+    text-align: center;
+    border-radius: 5px;
+    left: 100px;
+}
+.accountChildU3:hover{
+    color: white;
+}
+
+.accountChildPassword{
+    position: absolute;
+    width: 600px;
+    height: 400px;
+    background: rgb(255, 255, 255, 0.5);
+    top: 0px;
+    left: 0px;;
+    border-radius: 10px;
+}
+.accountChildPassword1{
+    position: relative;
+    width: 320px;
+    height: 150px;
+    margin-top: 80px;
+    padding-left: 20px;
+    margin-left: 150px;
+    background: rgb(255, 255, 255);
+    border-radius: 10px;
+    border: 1px solid rgb(155, 154, 154);
+    overflow: hidden;
+}
+.accountChildPassword2{
+    margin-left: 295px;
+    height: 25px;
+    width: 25px;
+    text-align: center;
+    font-size: 25px;
+    line-height: 25px;
+    cursor: pointer;
+}
+.accountChildPassword2:hover{
+    color: red;
+}

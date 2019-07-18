@@ -9,16 +9,9 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func verifyEmailFormat(email string) bool {
-	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
-	reg := regexp.MustCompile(pattern)
-	return reg.MatchString(email)
-}
-
-func verifyMobile(mobile string) bool {
-	reg := `^1([38][0-9]|14[57]|5[^4])\d{8}$`
-	rgx := regexp.MustCompile(reg)
-	return rgx.MatchString(mobile)
+func retJump(c *gin.Context, errs int) {
+	log.Printf("[error] web fail  [Msg]: %v", errs)
+	c.JSON(301, errs)
 }
 
 func retError(c *gin.Context, errs int, e interface{}) {
@@ -32,6 +25,18 @@ func retError(c *gin.Context, errs int, e interface{}) {
 
 func retSuccess(c *gin.Context, data interface{}) {
 	c.JSON(http.StatusOK, data)
+}
+
+func verifyEmailFormat(email string) bool {
+	pattern := `\w+([-+.]\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*` //匹配电子邮箱
+	reg := regexp.MustCompile(pattern)
+	return reg.MatchString(email)
+}
+
+func verifyMobile(mobile string) bool {
+	reg := `^1([38][0-9]|14[57]|5[^4])\d{8}$`
+	rgx := regexp.MustCompile(reg)
+	return rgx.MatchString(mobile)
 }
 
 func getOffset(c *gin.Context) (int, error) {
@@ -59,6 +64,15 @@ func getStatus(c *gin.Context) (int, error) {
 	}
 	status, err := strconv.Atoi(statuss)
 	return status, err
+}
+
+func getVIP(c *gin.Context) (int, error) {
+	vips := c.Query("vip")
+	if vips == "" {
+		return 0, nil
+	}
+	vip, err := strconv.Atoi(vips)
+	return vip, err
 }
 
 func getPermisson(c *gin.Context) (int, error) {

@@ -19,11 +19,13 @@ function getAuthorization() {
 function ret(response) {
     if (response == undefined) {
         return {
-            status: 500
+            status: 500,
+            msg:"net::ERR_CONNECTION_REFUSED"
         }
     }
     if (response.status == 200) {
     } else if (response.status == 301) {
+        console.log(response, "+++++++++++++++++");
         router.push('/');
         response.msg = global.getcode(response.data)
     } else {

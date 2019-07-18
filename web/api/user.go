@@ -21,12 +21,13 @@ import (
 // @Param	offset	query	string	flase	"起始数"
 // @Param	limit	query	string	flase	"获取数"
 // @Param	status	query	string	flase	"用户状态 1启用 2禁用 3已过期"
-// @Param	starttime	query	string	flase	"用户创建起始时间"
-// @Param	endtime		query	string	flase	"用户创建终止时间"
+// @Param	starttime	query	string	flase	"用户到期起始时间"
+// @Param	endtime		query	string	flase	"用户到期终止时间"
 // @Param	name		query	string	flase	"用户名"
 // @Param	ownid		query	int	flase	"群组id"
 // @Param	id			query	int	flase	"用户id"
 // @Param	permisson 	query	int	flase	"用户级别"
+// @Param	vip 		query	int	flase	"VIP等级"
 // @Success 200 {string} json "{"Error":"Success","Data": object}"
 // @Failure  500 {string} json "{"Error":"error","Data": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
@@ -87,9 +88,23 @@ func GetUsers(c *gin.Context) {
 			retError(c, 13, err)
 			return
 		}
-		if status != 0 {
-			result = result.Where("status = ?", status)
+		if status > 0 && status < 4 {
+			if status == 3 {
+				result = result.Where("expiredtime <= ? and expiredtime != 0", time.Now().Unix())
+			} else {
+				result = result.Where("status = ?", status)
+			}
 		}
+		//
+		vip, err := getVIP(c)
+		if err != nil {
+			retError(c, 13, err)
+			return
+		}
+		if vip != 0 {
+			result = result.Where("v_ip = ?", vip)
+		}
+		//
 		permissonquery, err := getPermisson(c)
 		if err != nil {
 			retError(c, 18, err)
@@ -103,6 +118,8 @@ func GetUsers(c *gin.Context) {
 		if name != "" {
 			result = result.Where("name like ?", "%"+name+"%")
 		}
+		//
+		result = result.Where("del = 0")
 		//
 		limit, err = getLimit(c)
 		if err != nil {
@@ -183,9 +200,9 @@ func UpdateUserStatus(c *gin.Context) {
 	// 如果是启用 -- 判断是否过期
 	if userStatus.Status == 1 {
 		now := time.Now().Unix()
-		result = result.Where("expiredtime == 0 or expiredtime > ?", now)
+		result = result.Where("expiredtime = 0 or expiredtime > ?", now)
 	}
-	err = result.Update("", userStatus.Status).Error
+	err = result.Update("status", userStatus.Status).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
@@ -240,8 +257,7 @@ func UpdateUserExpire(c *gin.Context) {
 	updates["expiredtime"] = userExpire.Expiredtime
 	permisson := c.GetInt("permisson")
 	if permisson != 3 {
-		uid := c.GetInt("id")
-		updates["classid"] = uid
+		updates["ownid"] = c.GetInt("id")
 	}
 	s := service.GetServer()
 	_, err = s.UpdateUser(userExpire.ID, updates)
@@ -286,7 +302,7 @@ func UserDel(c *gin.Context) {
 		db = db.Where("ownid = ?", c.GetInt("id"))
 	}
 
-	err = db.Update("del", 2).Error
+	err = db.Update("del", 1).Error
 	if err != nil {
 		retError(c, 7, err)
 		return
@@ -365,7 +381,7 @@ func UpdateUserInfo(c *gin.Context) {
 			return
 		}
 		newname = "/images/user/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(c.GetInt("id")) + "." + filename[1]
-		if err := prictureSize(userinfo.Photo, newname, 100, 100); err != nil {
+		if err := prictureSize(userinfo.Photo, newname, 200, 200); err != nil {
 			retError(c, 31, err)
 			return
 		}
@@ -391,16 +407,79 @@ func UpdateUserInfo(c *gin.Context) {
 	}
 	err = db.Updates(update).Error
 	if err != nil {
-		removefile(newname)
+		removefile(newname, 1)
 		retError(c, 7, err)
 		return
 	}
 	// 成功  删除就图片
-	if userinfo.Photo != "" {
-		removefile(userinfo.Photo)
-		if oldPhoto.Photo != "/images/user/defaultuser.png" {
-			removefile(oldPhoto.Photo)
+	if userinfo.Photo != "" && oldPhoto.Photo != "/images/user/defaultuser.png" {
+		removefile(oldPhoto.Photo, 1)
+	}
+	retSuccess(c, "Success")
+}
+
+// PasswordInfo .
+type PasswordInfo struct {
+	// 用户ID 修改自身不传
+	ID int
+	// 旧密码 MD5加密 修改下级用户不传
+	Oldpassword string
+	// 新密码 MD5加密
+	Password string
+}
+
+// UpdatePassword .更改用户密码
+// @Tags user
+// @Summary .更改用户密码
+// @Description .更改用户密码
+// @Accept  json
+// @Produce  json
+// @Param 	Authorization 	header 	string 	true "With the bearer started JWT"
+// @param PasswordInfo body api.PasswordInfo  true "用户密码"
+// @Success 200 {string} json "{"Error":"Success","Data": object}"
+// @Failure  500 {string} json "{"Error":"error","Data": null}"
+// @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
+// @Router /users/password [put]
+func UpdatePassword(c *gin.Context) {
+	password := PasswordInfo{}
+	err := c.ShouldBind(&password)
+	if err != nil {
+		retError(c, 1, err)
+		return
+	}
+	if len(password.Password) != 32 {
+		retError(c, 11, nil)
+		return
+	}
+	uid := c.GetInt("id")
+	s := service.GetServer()
+	userinfo := db.Userinfo{}
+	if password.ID != 0 && uid != password.ID {
+		userinfo, err = s.CheckUserID(2)
+		if err != nil {
+			retError(c, 7, nil)
+			return
+		}
+		if c.GetInt("permisson") != 3 && userinfo.Ownid != uid {
+			retJump(c, 20)
+			return
+		}
+	} else {
+		userinfo, err = s.CheckUserID(uid)
+		if err != nil {
+			retError(c, 7, nil)
+			return
+		}
+		if userinfo.Password != password.Oldpassword {
+			retError(c, 3, nil)
+			return
 		}
 	}
-	retSuccess(c, nil)
+
+	result := s.Table("userinfos").Where("id = ?", userinfo.ID).Update("password", password.Password)
+	if err = result.Error; err != nil || result.RowsAffected != 1 {
+		retError(c, 7, err)
+		return
+	}
+	retSuccess(c, "Success")
 }

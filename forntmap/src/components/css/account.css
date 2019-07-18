@@ -3,16 +3,23 @@
     height: 550px;
     padding-left: 50px;
     padding-right: 50px;
-    padding-top: 50px;
+    padding-top: 10px;
     overflow: hidden;
 }
 .accountSearch{
-    width: 848px;
-    height: 38px;
-    padding-top: 10px;
-    padding-left: 50px;
+    width: 883px;
+    height: 78px;
+    padding-left: 15px;
     text-align: center;
     border: 1px solid rgb(184, 182, 182);
+    background: rgb(255, 250, 250);
+}
+.accountSearchOne{
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 30px;
+    margin-top: 7px;
 }
 .accountSearchT{
     position: relative;
@@ -21,6 +28,7 @@
     height: 30px;
     line-height: 30px;
     font-size: 15px;
+    margin-left: 20px;
 }
 .accountSearchI{
     position: relative;
@@ -43,11 +51,30 @@
     padding-left: 10px;
     padding-right: 10px;
 }
+#accountSearchPermisson{
+    width: 110px;
+}
+#accountSearchGround{
+    width: 145px;
+}
+#accountSearchTime{
+    width: 80px;
+}
+.accountSearchSTimes{
+    position: relative;
+    float: left;
+    width: 160px;
+    border: 1px solid rgb(144, 145, 146);
+}
+#accountSearchSTimes{
+    margin-left: 10px;
+}
+
 .accountSearchSearch{
     position: relative;
     float: right;
     width: 48px;
-    margin-right: 30px;
+    margin-right: 10px;
     height: 28px;
     line-height: 30px;
     font-size: 15px;
@@ -61,7 +88,7 @@
 .accountList{
     position: relative;
     width: 898px;
-    height: 490px;
+    height: 455px;
     border: 1px solid rgb(184, 182, 182);
     overflow: hidden;
 }
@@ -86,6 +113,13 @@
 }
 .accountListTitleD:hover{
     background: rgb(220, 255, 206);
+}
+.accountList0{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 35px;
+    border-left: 1px solid rgb(207, 205, 205);
 }
 .accountList1{
     position: relative;
@@ -140,10 +174,11 @@
     position: relative;
     float: left;
     height: 35px;
-    width: 200px;
+    width: 110px;
     overflow: hidden;
     border-left: 1px solid rgb(207, 205, 205);
 }
+
 .accountList7{
     position: relative;
     float: left;
@@ -156,9 +191,10 @@
     position: relative;
     float: left;
     height: 35px;
-    width: 162px;
+    width: 206px;
     overflow: hidden;
     border-left: 1px solid rgb(207, 205, 205);
+    /* background: #000; */
 }
 .accountList9{
     position: relative;
@@ -211,6 +247,85 @@
     position: absolute;
     height: 35px;
     width: 898px;
-    top: 453px;
-    border-top: 1px solid rgb(184, 182, 182);
+    border-bottom: 1px solid rgb(184, 182, 182);
+    border-right: 1px solid rgb(184, 182, 182);
+    border-left: 1px solid rgb(184, 182, 182);
+}
+
+.accountListPages{
+    position: relative;
+    float: right;
+    height: 30px;
+    min-width: 320px;
+    margin-top: 3px;
+}
+.accountListExpire{
+    position: absolute;
+    width: 900px;
+    height: 600px;
+    background: rgb(173, 173, 173, 0.4);
+    top: 0;
+}
+.accountListExpire1{
+    position: absolute;
+    width: 400px;
+    height: 100px;
+    background: rgb(243, 243, 243);
+    top: 100px;
+    left: 300px;
+    border-radius: 10px;
+}
+.accountListExpire2{
+    position: relative;
+    float: left;
+    margin-top: 5px;
+    margin-left: 10px;
+    height: 35px;
+    width: 400px;
+}
+.accountListExpire3{
+    position: relative;
+    float: left;
+    height: 35px;
+    line-height: 35px;
+    margin-left: 10px;
+}
+.accountListExpire4{
+    position: relative;
+    float: left;
+    height: 27px;
+    line-height: 27px;
+    width: 50px;
+    border: 1px solid rgb(144, 145, 146);
+    text-align: center;
+    margin-top: 5px;
+    cursor: pointer;
+    margin-left: 5px;
+}
+.accountListExpire4:hover{
+    color: aqua;
+}
+.accountListExpire5{
+    position: relative;
+    float: left;
+    margin-left: 20px;
+    height: 30px;
+    width: 30px;
+    cursor: pointer;
+    text-align: center;
+    font-size: 18x;
+    line-height: 30px;
+}
+.accountListExpire5:hover{
+    color: red;
+}
+.accountListExpire6{
+    position: relative;
+    float: left;
+    width: 350px;
+    height: 30px;
+    color: rgb(69, 70, 71);
+    font-size: 12px;
+    text-align: center;
+    line-height: 30px;
 }

@@ -129,6 +129,18 @@ definitions:
         description: 密码 MD5加密(小写)
         type: string
     type: object
+  api.PasswordInfo:
+    properties:
+      id:
+        description: 用户ID 修改自身不传
+        type: integer
+      oldpassword:
+        description: 旧密码 MD5加密 修改下级用户不传
+        type: string
+      password:
+        description: 新密码 MD5加密
+        type: string
+    type: object
   api.Registerinfo:
     properties:
       code:
@@ -460,11 +472,11 @@ paths:
         in: query
         name: status
         type: string
-      - description: 设备创建起始时间
+      - description: 设备到期起始时间
         in: query
         name: starttime
         type: string
-      - description: 设备创建终止时间
+      - description: 设备到期终止时间
         in: query
         name: endtime
         type: string
@@ -964,11 +976,11 @@ paths:
         in: query
         name: status
         type: string
-      - description: 用户创建起始时间
+      - description: 用户到期起始时间
         in: query
         name: starttime
         type: string
-      - description: 用户创建终止时间
+      - description: 用户到期终止时间
         in: query
         name: endtime
         type: string
@@ -987,6 +999,10 @@ paths:
       - description: 用户级别
         in: query
         name: permisson
+        type: integer
+      - description: VIP等级
+        in: query
+        name: vip
         type: integer
       produces:
       - application/json
@@ -1076,6 +1092,42 @@ paths:
           schema:
             type: string
       summary: .更改用户信息
+      tags:
+      - user
+  /users/password:
+    put:
+      consumes:
+      - application/json
+      description: .更改用户密码
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户密码
+        in: body
+        name: PasswordInfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.PasswordInfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .更改用户密码
       tags:
       - user
   /users/status:

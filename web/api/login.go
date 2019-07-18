@@ -194,13 +194,36 @@ func Login(c *gin.Context) {
 	// 判断有效期
 	nows := time.Now().Unix()
 	if nows > userInfo.Expiredtime && userInfo.Expiredtime != 0 {
-		// 更新用户状态未已过期
-		s.UpdateUser(userInfo.ID, map[string]interface{}{
+		// 更新用户状态已过期
+		_, err = s.UpdateUser(userInfo.ID, map[string]interface{}{
 			"status": 3,
 		})
-		retError(c, 9, nil)
+		retError(c, 9, err)
 		return
 	}
+	//如果是子账户 -- 判断父账户是否已经过期或者禁用
+	if userInfo.Permisson == 1 {
+		ownUserinfo, err := s.CheckUserID(userInfo.Ownid)
+		if err != nil {
+			retError(c, 9, err)
+			return
+		}
+		// 判断父账户
+		if ownUserinfo.Status != 1 {
+			code := 9
+			if ownUserinfo.Status == 2 {
+				code = 23
+			}
+			retError(c, code, nil)
+			return
+		}
+		// 判断父账户是否过期
+		if nows > ownUserinfo.Expiredtime && ownUserinfo.Expiredtime != 0 {
+			retError(c, 9, nil)
+			return
+		}
+	}
+
 	jwt := service.NewJWT(userInfo.ID, userInfo.Permisson)
 	if jwt == "" {
 		retError(c, 7, nil)

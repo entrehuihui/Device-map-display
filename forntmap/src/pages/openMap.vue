@@ -943,9 +943,21 @@ export default {
       if (this.userConfig.Sound == 1) {
         this.$refs.pushSound.play();
       }
+      // 检测是否存在设备
+      var uid = 0;
+      if (this.global.userinfo.permisson == 3) {
+        uid = msg.Classid;
+      } else {
+        uid = msg.UID;
+      }
       for (const user of this.groundUser) {
+        if (user.ID != uid) {
+          continue;
+        }
+        var check = true;
         for (const device of user.Devices.data) {
           if (msg.Did == device.ID) {
+            check = false;
             msg.Infos = JSON.parse(msg.Infos);
             // 设备标记点
             if (user.Show) {
@@ -965,9 +977,15 @@ export default {
             this.$forceUpdate();
             break;
           }
-          this.$forceUpdate();
         }
+        //设备不存在 -- 添加重新拉取设备列表
+        if (check) {
+          user.Devices = await this.getDevices(uid);
+        }
+        this.$forceUpdate();
+        break;
       }
+
       // 轨迹点
       if (this.orbitDevices.ID == msg.Did) {
         if (this.time1 && msg.Uptime < this.time1) {
@@ -1179,7 +1197,7 @@ export default {
     getDevices: async function(id, query = "") {
       var methed = "uid=" + id;
       if (this.global.userinfo.permisson == 3) {
-        methed = "classid" + id;
+        methed = "classid=" + id;
       }
       var response = await this.req.get(
         "/devices?" + methed + "&name=" + query
