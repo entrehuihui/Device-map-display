@@ -1167,6 +1167,9 @@ export default {
         for (const v1 of v.Devices.data) {
           this.getDeviceData(v1, v.ID);
           await this.global.sleep(100);
+          if (!v.Show) {
+            return;
+          }
         }
         // 展示围栏
         // 获取围栏

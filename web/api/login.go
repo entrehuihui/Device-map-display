@@ -69,15 +69,25 @@ func Register(c *gin.Context) {
 		retError(c, 6, nil)
 		return
 	}
+	s := service.GetServer()
+	_, err = s.CheckUserName(registerinfo.Name)
+	if err == nil {
+		retError(c, 8, err)
+		return
+	}
+	if err != gorm.ErrRecordNotFound {
+		retError(c, 7, err)
+		return
+	}
 	now := time.Now()
 	// 创建账号
 	userInfo := db.Userinfo{
 		Ownid:       1,
 		Name:        registerinfo.Name,
 		Password:    registerinfo.Password,
-		Photo:       "",
+		Photo:       "/images/user/defaultuser.png",
 		Permisson:   2,
-		VIP:         0,
+		VIP:         1,
 		Status:      1,
 		Createtime:  now.Unix(),
 		Updatetime:  now.Unix(),
@@ -87,7 +97,6 @@ func Register(c *gin.Context) {
 		Address:     "",
 		Details:     "",
 	}
-	s := service.GetServer()
 	err = s.CreateUser(userInfo)
 	if err != nil {
 		retError(c, 7, err)

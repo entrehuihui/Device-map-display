@@ -267,6 +267,121 @@ func UpdateUserExpire(c *gin.Context) {
 	retSuccess(c, "Success")
 }
 
+// NewUserinfo 新用户信息
+type NewUserinfo struct {
+	// 用户名
+	Name string
+	// 用户密码
+	Password string
+	// 过期时间
+	Expired int64
+	// 状态 1启用 2禁用
+	Status int
+	// Vip 等级
+	Vip int
+	// 备注
+	Details string
+}
+
+// UserPut .添加用户
+// @Tags user
+// @Summary .添加用户(仅管理员以上)
+// @Description .添加用户
+// @Accept  json
+// @Produce  json
+// @Param 	Authorization 	header 	string 	true "With the bearer started JWT"
+// @param NewUserinfo body api.NewUserinfo  true "新用户信息"
+// @Success 200 {string} json "{"Error":"Success","Data": object}"
+// @Failure  500 {string} json "{"Error":"error","Data": null}"
+// @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
+// @Router /users [put]
+func UserPut(c *gin.Context) {
+	newUserinfo := NewUserinfo{}
+	err := c.ShouldBind(&newUserinfo)
+	if err != nil {
+		retError(c, 1, err)
+		return
+	}
+	// 检测密码
+	if len(newUserinfo.Password) != 32 {
+		retError(c, 3, nil)
+		return
+	}
+	// 状态
+	if newUserinfo.Status < 0 || newUserinfo.Status > 2 {
+		retError(c, 13, nil)
+		return
+	}
+	// 过期时间
+	now := time.Now().Unix()
+	if newUserinfo.Expired != 0 && newUserinfo.Expired < now {
+		newUserinfo.Status = 3
+	}
+	// VIP
+	if newUserinfo.Vip < 0 || newUserinfo.Vip > 6 {
+		retError(c, 39, nil)
+		return
+	}
+	// 检测备注
+	if len(newUserinfo.Details) > 200 {
+		retError(c, 21, nil)
+		return
+	}
+	// 检查名称
+	if newUserinfo.Name == "" || len(newUserinfo.Name) > 20 {
+		retError(c, 2, nil)
+		return
+	}
+	s := service.GetServer()
+	_, err = s.CheckUserName(newUserinfo.Name)
+	if err == nil {
+		retError(c, 8, err)
+		return
+	}
+	if err != gorm.ErrRecordNotFound {
+		retError(c, 7, err)
+		return
+	}
+
+	// 获取户账户信息
+	uid := c.GetInt("id")
+	permisson := 2
+	if c.GetInt("permisson") != 3 {
+		owninfo, err := s.CheckUserID(uid)
+		if err != nil {
+			retError(c, 7, err)
+			return
+		}
+		newUserinfo.Vip = owninfo.VIP
+		permisson = 1
+	}
+
+	// 创建用户
+	userinfo := db.Userinfo{
+		Ownid:       uid,
+		Name:        newUserinfo.Name,
+		Password:    newUserinfo.Password,
+		Photo:       "/images/user/defaultuser.png",
+		Permisson:   permisson,
+		VIP:         newUserinfo.Vip,
+		Status:      newUserinfo.Status,
+		Createtime:  now,
+		Updatetime:  0,
+		Expiredtime: newUserinfo.Expired,
+		Mobile:      "",
+		Email:       "",
+		Address:     "",
+		Details:     "",
+		Del:         0,
+	}
+	err = s.CreateUser(userinfo)
+	if err != nil {
+		retError(c, 7, err)
+		return
+	}
+	retSuccess(c, userinfo)
+}
+
 // UserDelID 设备ID
 type UserDelID struct {
 	// 用户ID

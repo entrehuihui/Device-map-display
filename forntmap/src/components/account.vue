@@ -88,7 +88,7 @@
           <!-- 操作 -->
           <div class="accountList8">
             <div class="accountList81">操作</div>
-            <div class="accountList82">添加</div>
+            <div class="accountList82" @click="adduserShow=true">添加</div>
           </div>
         </div>
         <div class="accountListTitleD" v-for="(user, index) in users.data" :key="user.ID + 'user'">
@@ -185,8 +185,8 @@
         </div>
       </div>
       <!-- 添加用户 -->
-      <div>
-        <adduser></adduser>
+      <div v-show="adduserShow">
+        <adduser v-on:close="adduserShow=false"></adduser>
       </div>
     </div>
   </div>
@@ -212,7 +212,8 @@ export default {
       expireTimeID: null,
       nowTime: parseInt(new Date().getTime() / 1000),
       ground: 0,
-      grounds: []
+      grounds: [],
+      adduserShow: false
     };
   },
   methods: {

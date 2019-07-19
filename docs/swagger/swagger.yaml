@@ -133,6 +133,27 @@ definitions:
         description: 密码 MD5加密(小写)
         type: string
     type: object
+  api.NewUserinfo:
+    properties:
+      details:
+        description: 备注
+        type: string
+      expired:
+        description: 过期时间
+        type: integer
+      name:
+        description: 用户名
+        type: string
+      password:
+        description: 用户密码
+        type: string
+      status:
+        description: 状态 1启用 2禁用
+        type: integer
+      vip:
+        description: Vip 等级
+        type: integer
+    type: object
   api.PasswordInfo:
     properties:
       id:
@@ -1053,6 +1074,41 @@ paths:
           schema:
             type: string
       summary: 获取用户列表
+      tags:
+      - user
+    put:
+      consumes:
+      - application/json
+      description: .添加用户
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 新用户信息
+        in: body
+        name: NewUserinfo
+        required: true
+        schema:
+          $ref: '#/definitions/api.NewUserinfo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: .添加用户(仅管理员以上)
       tags:
       - user
   /users/expire:

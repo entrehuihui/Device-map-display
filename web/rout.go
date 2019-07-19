@@ -85,6 +85,7 @@ func Run() {
 	// 用户
 	r.GET("/users", api.GetUsers)                // 获取用户列表
 	r.DELETE("/users", api.UserDel)              // 删除用户
+	r.PUT("/users", api.UserPut)                 // 创建用户
 	r.PUT("/users/expire", api.UpdateUserExpire) // 更改用户过期时间
 	r.PUT("/users/status", api.UpdateUserStatus) // 更改用户状态
 	r.PUT("/users/password", api.UpdatePassword) // 更改用户密码

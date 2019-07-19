@@ -1197,6 +1197,58 @@
                     }
                 }
             },
+            "put": {
+                "description": ".添加用户",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "user"
+                ],
+                "summary": ".添加用户(仅管理员以上)",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "新用户信息",
+                        "name": "NewUserinfo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.NewUserinfo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
             "delete": {
                 "description": ".删除用户",
                 "consumes": [
@@ -1774,6 +1826,35 @@
                 "password": {
                     "description": "密码 MD5加密(小写)",
                     "type": "string"
+                }
+            }
+        },
+        "api.NewUserinfo": {
+            "type": "object",
+            "properties": {
+                "details": {
+                    "description": "备注",
+                    "type": "string"
+                },
+                "expired": {
+                    "description": "过期时间",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "用户名",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "用户密码",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "状态 1启用 2禁用",
+                    "type": "integer"
+                },
+                "vip": {
+                    "description": "Vip 等级",
+                    "type": "integer"
                 }
             }
         },
