@@ -331,7 +331,7 @@ export default {
       let formData = new FormData();
       formData.append("file", file);
       event.target.value = "";
-      this.req.postfile("/upload", formData).then(response => {
+      this.req.postfile("/upload", formData, 1).then(response => {
         if (response.status != 200) {
           console.log(response);
           this.$refs.updatefileerror.innerHTML = response.msg;

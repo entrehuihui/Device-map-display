@@ -30,9 +30,9 @@ func GetVIP(c *gin.Context) {
 type Permisson struct {
 	// vipID
 	ID int
-	// 子用户数
+	// 子用户数 最多1000
 	Users int
-	// 设备数
+	// 设备数 最多5000
 	Devices int
 	// 轨迹权限 1启用 2禁止
 	Orbit int
@@ -44,6 +44,8 @@ type Permisson struct {
 	Real int
 	// 定制LOGO权限 1启用 2禁止
 	Logo int
+	// 定制状态权限 1启用 2禁止
+	State int
 }
 
 // PutVIP 获取vip列表(超级用户权限)
@@ -66,33 +68,48 @@ func PutVIP(c *gin.Context) {
 		return
 	}
 	//
+	if permisson.Users < 0 || permisson.Users > 1000 {
+		retError(c, 1, nil)
+		return
+	}
+	//
+	if permisson.Devices < 1 || permisson.Devices > 5000 {
+		retError(c, 1, nil)
+		return
+	}
+	//
 	if permisson.Orbit < 1 || permisson.Orbit > 2 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
 		return
 	}
 	//
 	if permisson.Fence < 1 || permisson.Fence > 2 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
 		return
 	}
 	//
 	if permisson.FenceAlarm < 1 || permisson.FenceAlarm > 2 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
 		return
 	}
 	//
 	if permisson.Real < 1 || permisson.Real > 2 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
 		return
 	}
 	//
 	if permisson.Logo < 1 || permisson.Logo > 2 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
+		return
+	}
+	//
+	if permisson.State < 1 || permisson.State > 2 {
+		retError(c, 1, nil)
 		return
 	}
 	//
 	if permisson.ID > 6 || permisson.ID < 1 {
-		retError(c, 7, nil)
+		retError(c, 1, nil)
 		return
 	}
 	//

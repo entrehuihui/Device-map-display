@@ -25,11 +25,11 @@ func SetExp(sec int, hmacSample string) {
 }
 
 // NewJWT .
-func NewJWT(id, permisson int) string {
+func NewJWT(id, permisson, vip int) string {
 	now := int(time.Now().Unix())
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"id":  strconv.Itoa(id),
-		"yi":  strconv.Itoa(now<<6 | permisson<<4 | (now & 0xf)),
+		"yi":  strconv.Itoa(now<<6 | permisson<<4 | vip<<1 | 0x01),
 		"exp": time.Now().Add(time.Second * time.Duration(exp)).Unix(),
 	})
 	tokenString, err := token.SignedString(hmacSampleSecret)
@@ -67,6 +67,7 @@ func ParseJWT(tokenString string) ([]int, error) {
 	if err != nil {
 		return nil, err
 	}
-	yi = yi >> 4 & 0x03
-	return []int{id, yi}, nil
+	permisson := yi >> 4 & 0x03
+	vip := yi >> 1 & 0x07
+	return []int{id, permisson, vip}, nil
 }

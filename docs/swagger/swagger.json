@@ -936,9 +936,157 @@
                     "application/json"
                 ],
                 "tags": [
-                    "login"
+                    "logo"
                 ],
                 "summary": "获取背景图列表",
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "修改背景图列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "logo"
+                ],
+                "summary": "修改背景图列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "图片信息",
+                        "name": "Logo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.Logo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "删除背景图列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "logo"
+                ],
+                "summary": "删除背景图列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "图片ID",
+                        "name": "DelLogo",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "$ref": "#/definitions/api.DelLogo"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/login/logo/3": {
+            "get": {
+                "description": "获取logo",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "logo"
+                ],
+                "summary": "获取logo",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "{\"Error\":\"Success\",\"Data\": object}",
@@ -1672,6 +1820,14 @@
                 }
             }
         },
+        "api.DelLogo": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer"
+                }
+            }
+        },
         "api.DeviceExpire": {
             "type": "object",
             "properties": {
@@ -1829,6 +1985,19 @@
                 }
             }
         },
+        "api.Logo": {
+            "type": "object",
+            "properties": {
+                "photo": {
+                    "description": "图片地址",
+                    "type": "string"
+                },
+                "types": {
+                    "description": "图片类型 1登陆背景 2登陆界面 3logo",
+                    "type": "integer"
+                }
+            }
+        },
         "api.NewUserinfo": {
             "type": "object",
             "properties": {
@@ -1904,6 +2073,10 @@
                 },
                 "real": {
                     "description": "实时数据权限 1启用 2禁止",
+                    "type": "integer"
+                },
+                "state": {
+                    "description": "定制状态权限 1启用 2禁止",
                     "type": "integer"
                 },
                 "users": {

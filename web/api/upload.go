@@ -3,7 +3,6 @@ package api
 import (
 	"errors"
 	"image/jpeg"
-	"io"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -29,6 +28,49 @@ import (
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /upload  [post]
 func Upload(c *gin.Context) {
+	// 旧代码, 不改变图片尺寸
+	// jwt := c.Query("Authorization")
+	// hmacSample, err := service.ParseJWT(jwt)
+	// if err != nil {
+	// 	retError(c, 19, err)
+	// 	return
+	// }
+	// file, header, err := c.Request.FormFile("file")
+	// if err != nil {
+	// 	retError(c, 7, err)
+	// 	return
+	// }
+	// defer file.Close()
+	// if header.Size > 1048576 {
+	// 	retError(c, 29, nil)
+	// 	return
+	// }
+	// filename := strings.Split(header.Filename, ".")
+	// if len(filename) != 2 {
+	// 	retError(c, 7, nil)
+	// 	return
+	// }
+	// if filename[1] != "jpg" && filename[1] != "png" {
+	// 	retError(c, 30, nil)
+	// 	return
+	// }
+	// //产生随机的字符串文件名
+	// newname := "/images/temp/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(hmacSample[0]) + "." + filename[1]
+	// fi, err := os.Create("./static" + newname)
+	// if err != nil {
+	// 	retError(c, 7, err)
+	// 	return
+	// }
+	// //关闭文件
+	// defer fi.Close()
+	// _, err = io.Copy(fi, file)
+	// if err != nil {
+	// 	retError(c, 7, err)
+	// 	return
+	// }
+	// removefile(newname, 5)
+	// retSuccess(c, newname)
+
 	jwt := c.Query("Authorization")
 	hmacSample, err := service.ParseJWT(jwt)
 	if err != nil {
@@ -56,14 +98,31 @@ func Upload(c *gin.Context) {
 	}
 	//产生随机的字符串文件名
 	newname := "/images/temp/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(hmacSample[0]) + "." + filename[1]
-	fi, err := os.Create("./static" + newname)
+	img, err := jpeg.Decode(file)
 	if err != nil {
 		retError(c, 7, err)
 		return
 	}
-	//关闭文件
-	defer fi.Close()
-	_, err = io.Copy(fi, file)
+	// 改变图片尺寸
+	indexs := c.GetHeader("Config")
+	if indexs == "" {
+		retError(c, 7, err)
+		return
+	}
+	index, err := strconv.Atoi(indexs)
+	if err != nil {
+		retError(c, 7, err)
+		return
+	}
+	pWidth, pHight := getXY(index)
+	m := resize.Resize(pWidth, pHight, img, resize.Lanczos3)
+	out, err := os.Create("./static" + newname)
+	if err != nil {
+		retError(c, 7, err)
+		return
+	}
+	defer out.Close()
+	err = jpeg.Encode(out, m, nil)
 	if err != nil {
 		retError(c, 7, err)
 		return
@@ -128,7 +187,7 @@ func removefile(dir string, times time.Duration) {
 }
 
 //PrictureSize 改变传入的图片地址的图片的尺寸
-func prictureSize(pricturePath, savepath string, pWidth, pHight uint) error {
+func prictureSize(pricturePath, savepath string, types int) error {
 	savepath = "./static" + savepath
 	pricturePath = "./static" + pricturePath
 	//打开图片
@@ -142,7 +201,7 @@ func prictureSize(pricturePath, savepath string, pWidth, pHight uint) error {
 	if err != nil {
 		return err
 	}
-
+	pWidth, pHight := getXY(types)
 	// 改变图片尺寸
 	m := resize.Resize(pWidth, pHight, img, resize.Lanczos3)
 	//创建新图片
@@ -157,4 +216,19 @@ func prictureSize(pricturePath, savepath string, pWidth, pHight uint) error {
 		return err
 	}
 	return nil
+}
+
+//图片尺寸
+func getXY(types int) (uint, uint) {
+	switch types {
+	case 1: //头像
+		return 200, 200
+	case 2: //登陆背景
+		return 1920, 1080
+	case 3: //登陆框
+		return 600, 400
+	case 4: //logo
+		return 300, 60
+	}
+	return 200, 200
 }

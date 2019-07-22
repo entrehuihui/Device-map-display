@@ -1,10 +1,10 @@
 <template>
   <div id="index">
     <div class="indexbackgroud">
-      <img class="indexbackgroud" :src="req.localhost + global.logo[1]" />
+      <img class="indexbackgroud" :src="req.localhost + logo[1]" />
     </div>
     <div class="indexlogin">
-      <img class="indexbackgroud" :src="req.localhost + global.logo[2]" />
+      <img class="indexbackgroud" :src="req.localhost + logo[2]" />
       <div class="indexloginone">
         <div class="indexloginonetwo">
           <div class="indexloginprompt" ref="prompt"></div>
@@ -57,7 +57,8 @@ export default {
       remember: true,
       account: "",
       password: "",
-      cookieName: "openMap"
+      cookieName: "openMap",
+      logo: []
     };
   },
   methods: {
@@ -129,7 +130,7 @@ export default {
         if (response.status != 200) {
           return;
         }
-        this.global.logo = response.data;
+        this.logo = response.data;
         this.$forceUpdate();
       });
     },

@@ -111,7 +111,7 @@ func GetConfigState(c *gin.Context) {
 	}
 	var err error
 	configstates := make([]db.Configstates, 0)
-	err = s.Where("uid = ?", uid).Find(&configstates).Error
+	err = s.Where("uid = ?", uid).Order("id").Find(&configstates).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		retError(c, 7, err)
 		return
@@ -122,7 +122,7 @@ func GetConfigState(c *gin.Context) {
 			retError(c, 7, err)
 			return
 		}
-		err = s.Where("uid = ?", uid).Find(&configstates).Error
+		err = s.Where("uid = ?", uid).Order("id").Find(&configstates).Error
 		if err != nil {
 			retError(c, 7, err)
 			return

@@ -233,7 +233,7 @@ func Login(c *gin.Context) {
 		}
 	}
 
-	jwt := service.NewJWT(userInfo.ID, userInfo.Permisson)
+	jwt := service.NewJWT(userInfo.ID, userInfo.Permisson, userInfo.VIP)
 	if jwt == "" {
 		retError(c, 7, nil)
 		return
@@ -276,35 +276,6 @@ func Login(c *gin.Context) {
 		"address":   userInfo.Address,
 		"photo":     userInfo.Photo,
 	})
-}
-
-// GetLogin 获取背景图列表....
-// @Tags login
-// @Summary 获取背景图列表
-// @Description 获取背景图列表
-// @Accept  json
-// @Produce  json
-// @Success 200 {string} json "{"Error":"Success","Data": object}"
-// @Failure  500 {string} json "{"Error":"error","Data": null}"
-// @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /login/logo [get]
-func GetLogin(c *gin.Context) {
-	s := service.GetServer()
-	logoinfos := make([]db.Logoinfo, 0)
-	err := s.Raw("SELECT * FROM logoinfos WHERE id IN (SELECT max(id) FROM logoinfos WHERE del = 0  GROUP BY types)").Scan(&logoinfos).Error
-	if err != nil {
-		retError(c, 7, err)
-		return
-	}
-	//
-	maps := make(map[int]string, 0)
-	maps[1] = "/images/logo/beijing.jpg"
-	maps[2] = "/images/logo/beijinglogo.jpg"
-	maps[3] = "/images/logo/shanbiaologo.jpg"
-	for _, v := range logoinfos {
-		maps[v.ID] = v.URL
-	}
-	retSuccess(c, maps)
 }
 
 // GetCode .

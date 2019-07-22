@@ -11,6 +11,7 @@
           <div class="permissonList3">围栏报警</div>
           <div class="permissonList3">实时数据</div>
           <div class="permissonList3">LOGO</div>
+          <div class="permissonList3">状态</div>
           <div class="permissonList4">操作</div>
         </div>
         <div class="permissonList2" v-for="(vip) in vips" :key="vip.ID +'vip'">
@@ -87,6 +88,18 @@
               </select>
             </div>
           </div>
+          <div class="permissonList3">
+            <div v-show="!vip.Update">
+              <div v-show="vip.State==1" class="permissonList6">允许</div>
+              <div v-show="vip.State==2" class="permissonList5">禁止</div>
+            </div>
+            <div v-show="vip.Update">
+              <select class="permissonList9" v-model="vip.State">
+                <option value="1">允许</option>
+                <option value="2">禁止</option>
+              </select>
+            </div>
+          </div>
           <div class="permissonList4">
             <div v-show="!vip.Update &&!vips.Update">
               <div class="permissonList7" @click="changeShow(vip, true)">修改</div>
@@ -119,7 +132,8 @@ export default {
         Fence: parseInt(vip.Fence),
         FenceAlarm: parseInt(vip.FenceAlarm),
         Real: parseInt(vip.Real),
-        Logo: parseInt(vip.Logo)
+        Logo: parseInt(vip.Logo),
+        State: parseInt(vip.State)
       });
       if (response.status == 200) {
         alert(response.data);

@@ -3,7 +3,7 @@
     <div class="userleft">
       <!-- logo -->
       <div class="openmaplogo">
-        <img class="imgMax" :src="req.localhost + global.logo[3]" />
+        <img class="imgMax" :src="req.localhost +logo" />
       </div>
       <!-- 列表 -->
       <div>
@@ -43,6 +43,24 @@
             </div>
           </div>
         </div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=4" :id="index==4 ? 'userleftTitle1':''">
+            <div class="userleftTitleName">状态管理</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 4" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 4" />
+            </div>
+          </div>
+        </div>
+        <div class="userleftTitle">
+          <div class="userleftTitle1" @click="index=5" :id="index==5 ? 'userleftTitle1':''">
+            <div class="userleftTitleName">LOGO管理</div>
+            <div class="userleftTitlefold">
+              <img src="/static/right.png" class="imgMax" v-show="index == 5" />
+              <img src="/static/top.png" class="imgMax" v-show="index != 5" />
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <!-- 头部 -->
@@ -71,6 +89,10 @@
         <account v-if="index==2"></account>
         <!-- 设备管理 -->
         <deives v-if="index==3"></deives>
+        <!-- 状态管理 -->
+        <status v-if="index==4"></status>
+        <!-- 状态管理 -->
+        <logos v-if="index==5"></logos>
       </div>
     </div>
     <!-- 尾部 -->
@@ -83,16 +105,21 @@ import user from "@/components/user.vue";
 import account from "@/components/account.vue";
 import deives from "@/components/devices.vue";
 import permisson from "@/components/permisson.vue";
+import status from "@/components/status.vue";
+import logos from "@/components/logo.vue";
 export default {
   components: {
     user,
     account,
     deives,
-    permisson
+    permisson,
+    status,
+    logos
   },
   data() {
     return {
-      index: 0
+      index: 0,
+      logo: ""
     };
   },
   methods: {
@@ -127,10 +154,27 @@ export default {
         this.global.state = response.data;
         this.$forceUpdate();
       });
+    },
+    // getLogo
+    getLogo: function() {
+      // this.logo
+      this.req.get("/login/logo/3").then(response => {
+        if (response.status == 200) {
+          this.logo = response.data;
+          this.$forceUpdate();
+        }
+      });
     }
   },
+
   async mounted() {
+    var index = this.$route.params.index;
+    console.log(index, "+++++++++");
+    if (index) {
+      this.index = index;
+    }
     await this.getUserinfo();
+    this.getLogo();
     this.getState();
   }
 };

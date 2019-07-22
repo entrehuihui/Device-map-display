@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"testing"
-	"time"
 
 	"../service"
 	"github.com/spf13/viper"
@@ -28,7 +27,7 @@ func Test_NewJWTParseJWT(t *testing.T) {
 	for index := 0; index < 1000000; index++ {
 		id = index
 		p = index%3 + 1
-		tokenString := service.NewJWT(id, p)
+		tokenString := service.NewJWT(id, p, 1)
 		if tokenString == "" {
 			log.Fatal("tokenString is error")
 		}
@@ -48,14 +47,19 @@ func Test_NewJWTParseJWTExp(t *testing.T) {
 	fmt.Println("test Test_NewJWT and ParseJWT is expired!")
 	service.SetExp(2, "")
 	id := 1
-	tokenString := service.NewJWT(id, 0)
-	if tokenString == "" {
-		log.Fatal("tokenString is error")
+	permisson := 1
+	for index := 1; index < 7; index++ {
+		id = index
+		permisson = index%3 + 1
+		tokenString := service.NewJWT(id, permisson, index)
+		if tokenString == "" {
+			log.Fatal("tokenString is error")
+		}
+		// time.Sleep(time.Second * 3)
+		ids, err := service.ParseJWT(tokenString)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println(ids)
 	}
-	time.Sleep(time.Second * 3)
-	ids, err := service.ParseJWT(tokenString)
-	if err != nil {
-		log.Fatal(err)
-	}
-	fmt.Println(ids)
 }

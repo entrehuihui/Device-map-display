@@ -14,7 +14,6 @@ export default {
 import req from '@/global/req.js'
 
 var code = []
-var logo = {}
 var userinfo = {
 }
 var state = []
@@ -32,7 +31,6 @@ var color = [
     "rgb(214, 7, 255)"
 ]
 export default {
-    logo,
     code,
     getcode,
     userinfo,

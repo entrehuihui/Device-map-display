@@ -33,11 +33,13 @@ func Run() {
 	r.Static("/static/", "./static/static")
 	r.Static("/images/", "./static/images")
 	r.Static("/map/", "./static/map")
-	//图片上传
-	r.POST("/upload", api.Upload)
 	// swag
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	r.GET("/favicon.ico")
+
+	//图片上传
+	r.POST("/upload", middleware.Verification(), api.Upload)
+
 	// 日志中间件
 	r.Use(middleware.DataLogs())
 	// websocket
@@ -58,6 +60,9 @@ func Run() {
 
 	//  登陆检测中间件
 	r.Use(middleware.Verification())
+	// logo
+	r.GET("/login/logo/3", api.GetLogo) // 获取logo
+
 	// 登陆信息
 	r.GET("/login/info", api.GetLoginInfo)
 	r.GET("/config", api.GetConfiguration)    // 获取用户配置
@@ -77,6 +82,9 @@ func Run() {
 
 	// 管理员权限中间件
 	r.Use(middleware.Administrator())
+	// logo
+	r.DELETE("/login/logo", api.DelLogin) // 删除背景图列表
+	r.PUT("/login/logo", api.PutLogin)    // 修改背景图列表
 	// 设备
 	r.PUT("/devices/status", api.UpdateDevicesStatus) // 更新设备状态
 	r.PUT("/devices/user", api.UpdateDevicesUser)     // 更改设备所属权

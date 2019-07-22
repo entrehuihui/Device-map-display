@@ -494,8 +494,12 @@ func UpdateUserInfo(c *gin.Context) {
 			retError(c, 31, nil)
 			return
 		}
+		if filename[1] != "jpg" && filename[1] != "png" {
+			retError(c, 30, nil)
+			return
+		}
 		newname = "/images/user/" + strconv.FormatInt(time.Now().Unix(), 10) + getRandomString(4) + strconv.Itoa(c.GetInt("id")) + "." + filename[1]
-		if err := prictureSize(userinfo.Photo, newname, 200, 200); err != nil {
+		if err := prictureSize(userinfo.Photo, newname, 1); err != nil {
 			retError(c, 31, err)
 			return
 		}

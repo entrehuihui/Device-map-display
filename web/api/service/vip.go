@@ -2,6 +2,7 @@ package service
 
 import (
 	"log"
+	"strconv"
 
 	"github.com/jinzhu/gorm"
 
@@ -10,17 +11,63 @@ import (
 
 // InitVIP 加载vip列表
 func InitVIP() {
-	permisson := db.Permisson{}
-	err := GetServer().First(&permisson).Error
+	permissons := make([]db.Permisson, 0)
+	err := GetServer().Find(&permissons).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		log.Fatal(err)
 	}
-	if err == gorm.ErrRecordNotFound {
-		createVIP()
+	if err == gorm.ErrRecordNotFound || len(permissons) != 6 {
+		permissons = createVIP()
+	}
+
+}
+
+// 保存进redis
+func setVipRedis(permissons []db.Permisson) {
+	conn := db.GetRedis()
+	defer conn.Close()
+	conn.Send("MULTI")
+	for _, permisson := range permissons {
+		// 缓存协议类型
+		conn.Send("SET", VIPKey(permisson.ID), setVipPermisson(permisson))
 	}
 }
 
-func createVIP() {
+// user 最多1000 Devices最多5000
+func setVipPermisson(permisson db.Permisson) int {
+	model := permisson.Users
+	model = model<<13 | permisson.Devices
+	model = model<<1 | permisson.Orbit
+	model = model<<1 | permisson.Fence
+	model = model<<1 | permisson.FenceAlarm
+	model = model<<1 | permisson.Real
+	model = model<<1 | permisson.Logo
+	model = model<<1 | permisson.State
+	model = model << 1
+	return model
+}
+
+func getVipPermisson(model int) db.Permisson {
+	permisson := db.Permisson{}
+	permisson.State = model >> 1 & 0x01
+	permisson.Logo = model >> 1 & 0x01
+	permisson.Real = model >> 1 & 0x01
+	permisson.FenceAlarm = model >> 1 & 0x01
+	permisson.Fence = model >> 1 & 0x01
+	permisson.Orbit = model >> 1 & 0x01
+	permisson.Devices = model >> 1 & 0x01fff
+	permisson.Users = model >> 13 & 0x07f
+	return permisson
+}
+
+// VIPKey 返回VIP redis key
+func VIPKey(vip int) string {
+	return "vipkey:" + strconv.Itoa(vip)
+}
+
+// 1100100 1001110001000
+
+func createVIP() []db.Permisson {
 	permissons := []db.Permisson{
 		db.Permisson{
 			ID:         1,
@@ -99,4 +146,5 @@ func createVIP() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	return permissons
 }

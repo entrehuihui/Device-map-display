@@ -335,7 +335,7 @@
     <div v-show="!fullscreen.full">
       <!-- logo图标 -->
       <div class="openmaplogo">
-        <img class="imgMax" :src="req.localhost + global.logo[3]" />
+        <img class="imgMax" :src="req.localhost + logo" />
       </div>
       <!-- 设备菜单 -->
       <div class="openMapDevices" v-show="!devicesList" @click="devicesList = true">
@@ -787,6 +787,7 @@ export default {
   },
   data() {
     return {
+      logo: "",
       time1: "",
       time2: "",
       devicesState: [],
@@ -1430,10 +1431,21 @@ export default {
         }
         this.global.userinfo = response.data;
       });
+    },
+    // getLogo
+    getLogo: function() {
+      // this.logo
+      this.req.get("/login/logo/3").then(response => {
+        if (response.status == 200) {
+          this.logo = response.data;
+        }
+        this.$forceUpdate();
+      });
     }
   },
   async mounted() {
     await this.getUserinfo();
+    this.getLogo();
     this.getState();
     this.getUserGround();
     this.getConfig();

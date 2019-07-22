@@ -22,6 +22,11 @@ definitions:
         description: 声音开关 1开2关 不更改不填或填0
         type: integer
     type: object
+  api.DelLogo:
+    properties:
+      id:
+        type: integer
+    type: object
   api.DeviceExpire:
     properties:
       expiredtime:
@@ -133,6 +138,15 @@ definitions:
         description: 密码 MD5加密(小写)
         type: string
     type: object
+  api.Logo:
+    properties:
+      photo:
+        description: 图片地址
+        type: string
+      types:
+        description: 图片类型 1登陆背景 2登陆界面 3logo
+        type: integer
+    type: object
   api.NewUserinfo:
     properties:
       details:
@@ -188,6 +202,9 @@ definitions:
         type: integer
       real:
         description: 实时数据权限 1启用 2禁止
+        type: integer
+      state:
+        description: 定制状态权限 1启用 2禁止
         type: integer
       users:
         description: 子用户数
@@ -863,6 +880,41 @@ paths:
       tags:
       - login
   /login/logo:
+    delete:
+      consumes:
+      - application/json
+      description: 删除背景图列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片ID
+        in: body
+        name: DelLogo
+        required: true
+        schema:
+          $ref: '#/definitions/api.DelLogo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 删除背景图列表
+      tags:
+      - logo
     get:
       consumes:
       - application/json
@@ -884,7 +936,71 @@ paths:
             type: string
       summary: 获取背景图列表
       tags:
-      - login
+      - logo
+    put:
+      consumes:
+      - application/json
+      description: 修改背景图列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 图片信息
+        in: body
+        name: Logo
+        required: true
+        schema:
+          $ref: '#/definitions/api.Logo'
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 修改背景图列表
+      tags:
+      - logo
+  /login/logo/3:
+    get:
+      consumes:
+      - application/json
+      description: 获取logo
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取logo
+      tags:
+      - logo
   /login/register:
     put:
       consumes:

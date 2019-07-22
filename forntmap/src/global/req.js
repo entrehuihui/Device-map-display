@@ -20,7 +20,7 @@ function ret(response) {
     if (response == undefined) {
         return {
             status: 500,
-            msg:"net::ERR_CONNECTION_REFUSED"
+            msg: "net::ERR_CONNECTION_REFUSED"
         }
     }
     if (response.status == 200) {
@@ -69,13 +69,15 @@ export default {
             })
         return ret(response)
     },
-    postfile: async function (url, postData, config = {
-        headers: {
-            "Content-Type": "multipart/form-data"
-        }
-    }) {
+    postfile: async function (url, postData, config = 0) {
         var response = await Vue.prototype.$axios
-            .post(localhost + url + "?Authorization=" + global.userinfo.jwt, postData, config).catch(error => {
+            .post(localhost + url + "?Authorization=" + global.userinfo.jwt, postData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                    "Authorization": global.jwt(),
+                    "Config": config,
+                }
+            }).catch(error => {
                 return error.response
             })
         return ret(response)
