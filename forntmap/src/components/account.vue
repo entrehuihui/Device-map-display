@@ -185,8 +185,8 @@
         </div>
       </div>
       <!-- 添加用户 -->
-      <div v-show="adduserShow">
-        <adduser v-on:close="adduserShow=false"></adduser>
+      <div v-if="adduserShow">
+        <adduser v-on:close="adduserShow=false;getUsers()"></adduser>
       </div>
     </div>
   </div>

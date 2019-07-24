@@ -51,7 +51,7 @@ func Run() {
 	r.StaticFile("/login", "./static/index.html")
 	// login
 	r.POST("/login", api.Login)
-	r.PUT("/login/register", api.Register)
+	r.POST("/login/register", api.Register)
 	r.GET("/login/register/name", api.CheckUserName)
 	r.GET("/login/logo", api.GetLogin)
 	// 先加载code
@@ -102,8 +102,9 @@ func Run() {
 
 	// 超级管理员权限
 	r.Use(middleware.SuperAdministrator())
-	r.GET("/vip", api.GetVIP) // 获取VIP列表
-	r.PUT("/vip", api.PutVIP) // 更新VIP列表
+	r.GET("/vip", api.GetVIP)                  // 获取VIP列表
+	r.PUT("/vip", api.PutVIP)                  // 更新VIP列表
+	r.GET("/login/logo/user", api.GetUserLogo) // 获取用户LOGO图列表
 
 	// 启动服务器
 	if err := r.Run(viper.GetString("Server.port")); err != nil {

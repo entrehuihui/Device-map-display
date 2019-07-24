@@ -40,7 +40,7 @@ type Registerinfo struct {
 // @Success 200 {string} json "{"Result": object}"
 // @Failure  500 {string} json "{"Result": null}"
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
-// @Router /login/register [put]
+// @Router /login/register [post]
 func Register(c *gin.Context) {
 	registerinfo := Registerinfo{}
 	err := c.ShouldBind(&registerinfo)
@@ -118,7 +118,7 @@ func Register(c *gin.Context) {
 // @Router /login/register/name [get]
 func CheckUserName(c *gin.Context) {
 	name := c.Query("name")
-	if len(name) > 20 || name == "" {
+	if len(name) > 20 || name == "" || len(name) < 4 {
 		retError(c, 2, nil)
 		return
 	}

@@ -1,0 +1,31 @@
+version: '2.0'
+services:
+  mymapp_app:
+    image: alpine:latest
+    build: .
+    ports:
+      - 8800:8800
+      - 8801:8801
+    depends_on:
+      - mymapp_sql
+      - mymapp_redis
+    volumes:
+      - $PWD:/mymapp
+    working_dir: /mymapp
+    command: ./mymapp
+
+  mymapp_sql:
+    image: postgres:latest
+    ports:
+      - 8802:5432
+    environment:
+      - POSTGRES_PASSWORD=mapPlatform
+      - POSTGRES_USER=mapPlatform
+      - POSTGRES_DB=mp2
+    volumes:
+      - ./postgresqldb/:/var/lib/postgresql/data
+
+  mymapp_redis:
+    ports:
+      - 6379
+    image: redis:latest

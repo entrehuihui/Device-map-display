@@ -44,10 +44,10 @@ export default {
       // this.wsuri =
       //   "ws://120.78.76.139:8999/ws?Authorization=" +
       //   this.global.jwt()
+      this.wsuri = "ws://127.0.0.1:8800/ws?Authorization=" + this.global.jwt();
       if (this.websock) {
         this.websock.close;
       }
-      this.wsuri = "ws://127.0.0.1:8800/ws?Authorization=" + this.global.jwt();
       this.websock = new WebSocket(this.wsuri); //这里面的this都指向vue
       this.websock.onopen = this.websocketopen;
       this.websock.onmessage = this.websocketonmessage;

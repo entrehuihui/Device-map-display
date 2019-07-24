@@ -60,7 +60,7 @@ function setState(event) {
         event.state = response.data;
     });
 }
-function setCode() {
+function setCode(event) {
     req.get("/login/code").then(response => {
         if (response.status != 200) {
             return;
@@ -91,6 +91,7 @@ function getcode(id) {
     if (id == undefined) {
         return "失败!"
     }
+    console.log(id, this.code);
     if (id > this.code.length) {
         return "失败!"
     }

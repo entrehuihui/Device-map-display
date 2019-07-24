@@ -42,37 +42,39 @@
           </LPopup>
         </LMarker>
         <!-- 画点 -->
-        <div v-if="devicesMarks.Show">
+        <div>
           <div v-for="(user, userindex) in devicesMarks" :key="userindex+'devicesMarks'">
-            <LMarker
-              v-for="(device, deviceindex) in user"
-              :key="device.Name+deviceindex"
-              :lat-lng="[device.DeviceData.Latitude, device.DeviceData.Longitude]"
-              :icon="icons[device.DeviceData.State-1]"
-              @click="showMark([device.DeviceData.Latitude, device.DeviceData.Longitude])"
-            >
-              <LTooltip :options="{ permanent: true, interactive: true}">
-                <div>{{device.Name}}</div>
-              </LTooltip>
-              <LPopup>
-                <tr>
-                  <th>EUI:</th>
-                  <th>{{device.DevEUI}}</th>
-                </tr>
-                <div
-                  v-for="(infokey, infovalue) in  device.DeviceData.Infos"
-                  :key="infokey+deviceindex+'explain'"
-                >
+            <div v-if="devicesMarks.Show || userindex =='orbit' || userindex == 'state'">
+              <LMarker
+                v-for="(device, deviceindex) in user"
+                :key="device.Name+deviceindex"
+                :lat-lng="[device.DeviceData.Latitude, device.DeviceData.Longitude]"
+                :icon="icons[device.DeviceData.State-1]"
+                @click="showMark([device.DeviceData.Latitude, device.DeviceData.Longitude])"
+              >
+                <LTooltip :options="{ permanent: true, interactive: true}">
+                  <div>{{device.Name}}</div>
+                </LTooltip>
+                <LPopup>
                   <tr>
-                    <th>{{infokey}}:</th>
-                    <th>{{infovalue}}</th>
+                    <th>EUI:</th>
+                    <th>{{device.DevEUI}}</th>
                   </tr>
-                </div>
-                <tr>
-                  <th>{{new Date(device.DeviceData.Uptime*1000).toLocaleString()}}</th>
-                </tr>
-              </LPopup>
-            </LMarker>
+                  <div
+                    v-for="(infokey, infovalue) in  device.DeviceData.Infos"
+                    :key="infokey+deviceindex+'explain'"
+                  >
+                    <tr>
+                      <th>{{infokey}}:</th>
+                      <th>{{infovalue}}</th>
+                    </tr>
+                  </div>
+                  <tr>
+                    <th>{{new Date(device.DeviceData.Uptime*1000).toLocaleString()}}</th>
+                  </tr>
+                </LPopup>
+              </LMarker>
+            </div>
           </div>
         </div>
 

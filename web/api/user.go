@@ -296,6 +296,7 @@ type NewUserinfo struct {
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /users [put]
 func UserPut(c *gin.Context) {
+	// 检测VIP权限
 	newUserinfo := NewUserinfo{}
 	err := c.ShouldBind(&newUserinfo)
 	if err != nil {
@@ -354,6 +355,11 @@ func UserPut(c *gin.Context) {
 		}
 		newUserinfo.Vip = owninfo.VIP
 		permisson = 1
+		err = service.VipUsers(uid, owninfo.VIP)
+		if err != nil {
+			retError(c, 1, err)
+			return
+		}
 	}
 
 	// 创建用户

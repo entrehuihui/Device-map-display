@@ -8,7 +8,6 @@
           <div class="permissonList3">设备数</div>
           <div class="permissonList3">轨迹</div>
           <div class="permissonList3">围栏</div>
-          <div class="permissonList3">围栏报警</div>
           <div class="permissonList3">实时数据</div>
           <div class="permissonList3">LOGO</div>
           <div class="permissonList3">状态</div>
@@ -19,13 +18,27 @@
           <div class="permissonList3">
             <div v-show="!vip.Update">{{vip.Users}}</div>
             <div v-show="vip.Update">
-              <input type="number" class="permissonList8" min="1" max="1000" v-model="vip.Users" />
+              <input
+                type="number"
+                class="permissonList8"
+                min="0"
+                max="50"
+                v-model="vip.Users"
+                @keyup="vip.Users > 50? vip.Users=50:''; vip.Users < 0? vip.Users=0:''"
+              />
             </div>
           </div>
           <div class="permissonList3">
             <div v-show="!vip.Update">{{vip.Devices}}</div>
             <div v-show="vip.Update">
-              <input type="number" class="permissonList8" min="1" max="1000" v-model="vip.Devices" />
+              <input
+                type="number"
+                class="permissonList8"
+                min="1"
+                max="1000"
+                v-model="vip.Devices"
+                @keyup="vip.Devices > 1000? vip.Devices=1000:''; vip.Devices < 1? vip.Devices=1:''"
+              />
             </div>
           </div>
           <div class="permissonList3">
@@ -47,18 +60,6 @@
             </div>
             <div v-show="vip.Update">
               <select class="permissonList9" v-model="vip.Fence">
-                <option value="1">允许</option>
-                <option value="2">禁止</option>
-              </select>
-            </div>
-          </div>
-          <div class="permissonList3">
-            <div v-show="!vip.Update">
-              <div v-show="vip.FenceAlarm==1" class="permissonList6">允许</div>
-              <div v-show="vip.FenceAlarm==2" class="permissonList5">禁止</div>
-            </div>
-            <div v-show="vip.Update">
-              <select class="permissonList9" v-model="vip.FenceAlarm">
                 <option value="1">允许</option>
                 <option value="2">禁止</option>
               </select>

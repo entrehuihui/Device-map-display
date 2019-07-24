@@ -36,13 +36,13 @@
             <div class="indexloginexplain">自动登陆</div>
           </div>
           <div class="indexloginforget">
-            <a href="/login/forget">忘记密码</a>
+            <router-link to="/login/forget">忘记密码</router-link>
           </div>
         </div>
         <div class="indexloginonethree" id="indexloginonelogin" @click="checkPassword()">登陆</div>
         <div class="indexloginonethree">
           <div class="indexregister">
-            <a href="/login/register">立即注册</a>
+            <router-link to="/login/register">立即注册</router-link>
           </div>
         </div>
       </div>
@@ -155,6 +155,12 @@ export default {
       if (this.global.getCookie()) {
         this.jump();
       }
+    }
+    if (this.$route.params.name) {
+      this.account = this.$route.params.name;
+      this.password = this.$route.params.password;
+      console.log(this.account, this.password);
+      this.login();
     }
   }
 };

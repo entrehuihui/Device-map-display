@@ -115,6 +115,7 @@
               placeholder="不修改不填"
               v-model="mobile"
               ref="mobile"
+              @keyup="mobile.length > 11 ? mobile=mobile.substr(0, 11):''"
             />
           </div>
           <div class="accountChildDD">

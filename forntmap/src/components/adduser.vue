@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import check from "@/global/check.js";
 import times from "@/components/time.vue";
 import md5 from "js-md5";
 export default {
@@ -128,7 +129,7 @@ export default {
           alert(response.msg);
           return;
         }
-        this.closed()
+        this.closed();
         alert("Success");
       });
     },
@@ -148,7 +149,12 @@ export default {
       this.$refs.name.style = "border: 1px solid red;";
     },
     check: function() {
-      if (this.name == "" || this.name.length > 20 || this.name.length < 4) {
+      if (
+        this.name == "" ||
+        this.name.length > 20 ||
+        this.name.length < 4 ||
+        !check.checkName(this.name)
+      ) {
         this.$refs.name.style = "border: 1px solid red;";
         return;
       }

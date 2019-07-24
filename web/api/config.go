@@ -150,6 +150,13 @@ type ConfigState struct {
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /configState [put]
 func UpdateConfigState(c *gin.Context) {
+	if c.GetInt("permisson") != 3 {
+		err := service.VipState(c.GetInt("vip"))
+		if err != nil {
+			retError(c, 46, err)
+			return
+		}
+	}
 	configState := ConfigState{}
 	err := c.ShouldBind(&configState)
 	if err != nil {

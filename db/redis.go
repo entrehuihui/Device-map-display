@@ -19,9 +19,12 @@ func initPoll() {
 		maxIdle = 30
 	}
 	Pool := NewRedisPool(viper.GetString("Redis.url"), maxIdle, time.Second*240)
+loop:
 	_, err := Pool.Dial()
 	if err != nil {
-		log.Fatal("redis error: ", err)
+		log.Println("redis error: ", err)
+		time.Sleep(3 * time.Second)
+		goto loop
 	}
 	// 清空redis库
 	if viper.GetBool("Redis.clearUp") {
@@ -37,16 +40,34 @@ func NewRedisPool(redisURL string, maxIdle int, idleTimeout time.Duration) *redi
 	return &redis.Pool{
 		MaxIdle:     maxIdle,
 		IdleTimeout: idleTimeout,
+		// Dial: func() (redis.Conn, error) {
+		// 	c, err := redis.DialURL(redisURL,
+		// 		redis.DialReadTimeout(time.Second*3),
+		// 		redis.DialWriteTimeout(time.Second*3),
+		// 	)
+		// 	if err != nil {
+		// 		log.Fatal("redis connection error: ", err)
+		// 	}
+		// 	c.Do("SELECT", 1)
+		// 	return c, err
+		// },
 		Dial: func() (redis.Conn, error) {
-			c, err := redis.DialURL(redisURL,
-				redis.DialReadTimeout(time.Second*3),
-				redis.DialWriteTimeout(time.Second*3),
-			)
+			c, err := redis.Dial("tcp", redisURL,
+				redis.DialConnectTimeout(time.Duration(15000)*time.Millisecond),
+				redis.DialReadTimeout(time.Duration(15000)*time.Millisecond),
+				redis.DialWriteTimeout(time.Duration(15000)*time.Millisecond))
 			if err != nil {
-				log.Fatal("redis connection error: ", err)
+				return nil, err
 			}
-			c.Do("SELECT", 1)
-			return c, err
+			// if _, err := c.Do("AUTH", password); err != nil {
+			// 	c.Close()
+			// 	return nil, err
+			// }
+			if _, err := c.Do("SELECT", 1); err != nil {
+				c.Close()
+				return nil, err
+			}
+			return c, nil
 		},
 		TestOnBorrow: func(c redis.Conn, t time.Time) error {
 			if time.Now().Sub(t) < time.Minute {

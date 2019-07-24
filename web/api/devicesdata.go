@@ -56,7 +56,7 @@ func SaveDeviceInfos(c *gin.Context) {
 		return
 	}
 
-	errs, err := checkData(&deviceInfos, c.GetInt("id"))
+	errs, err := checkData(&deviceInfos, c.GetInt("id"), c.GetInt("vip"))
 	if err != nil {
 		retError(c, errs, err)
 		return
@@ -65,7 +65,7 @@ func SaveDeviceInfos(c *gin.Context) {
 }
 
 // 检测数据
-func checkData(deviceInfos *DeviceInfos, uid int) (int, error) {
+func checkData(deviceInfos *DeviceInfos, uid, vip int) (int, error) {
 	if len(deviceInfos.DevEUI) != 16 {
 		return 22, nil
 	}
@@ -87,6 +87,11 @@ func checkData(deviceInfos *DeviceInfos, uid int) (int, error) {
 		userInfo, err := s.CheckUserID(uid)
 		if err != nil {
 			return 7, err
+		}
+		// 检测设备数量是否达到上限
+		err = service.VipDevices(uid, userInfo.VIP)
+		if err != nil {
+			return 41, err
 		}
 		now := time.Now().Unix()
 		deviceinfo := db.Deviceinfo{
@@ -141,9 +146,16 @@ func checkData(deviceInfos *DeviceInfos, uid int) (int, error) {
 		return 0, nil
 	}
 	data := string(datas)
-	go service.GroupWrite(uid, data)
-	if uid != infos[1] {
-		go service.GroupWrite(infos[1], data)
+
+	// 发送实时数据  --检测是否有权限
+	err = service.VipReal(vip)
+	if err != nil {
+		log.Println(err)
+	} else {
+		go service.GroupWrite(uid, data)
+		if uid != infos[1] {
+			go service.GroupWrite(infos[1], data)
+		}
 	}
 	return 0, nil
 }
@@ -226,6 +238,14 @@ func GetDevicesDatas(c *gin.Context) {
 	if err != nil {
 		retError(c, 17, err)
 		return
+	}
+	if limit != 1 && permisson != 3 {
+		// 检测是否有查询轨迹的权限
+		err = service.VipOrbit(c.GetInt("vip"))
+		if err != nil {
+			retError(c, 42, err)
+			return
+		}
 	}
 	// 查数量
 	devicedata := make([]db.Devicedata, 0)

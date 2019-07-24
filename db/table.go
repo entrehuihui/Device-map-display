@@ -62,6 +62,7 @@ type Devicedata struct {
 type Logoinfo struct {
 	ID         int    `gorm:"primary_key;AUTO_INCREMENT;unique_index"`
 	UID        int    `gorm:"not null;index"`
+	Uname      string `gorm:"not null;default:''"`
 	Types      int    `gorm:"not null;index"` //种类 1背景 2登陆logo 3商标
 	URL        string `gorm:"not null;size:200"`
 	Createtime int64  `gorm:"not null;default:0"`
@@ -97,13 +98,12 @@ type Fencelists struct {
 
 // Permisson 权限
 type Permisson struct {
-	ID         int `gorm:"primary_key;AUTO_INCREMENT;unique_index"` //VIP等级--用户默认等级为1
-	Users      int `gorm:"not null;default:0"`                      //子用户数 最多1000
-	Devices    int `gorm:"not null;default:1"`                      //设备数 最多5000
-	Orbit      int `gorm:"not null;default:2"`                      //是否可以显示轨迹 1显示 2不显示
-	Fence      int `gorm:"not null;default:2"`                      //是否可以显示围栏 1显示 2不显示
-	FenceAlarm int `gorm:"not null;default:2"`                      //是否可以检测围栏报警 1检测 2不检测
-	Real       int `gorm:"not null;default:2"`                      //是否支持实时数据 1支持 2不支持
-	Logo       int `gorm:"not null;default:2"`                      //是否支持定制LOGO 1支持 2不支持
-	State      int `gorm:"not null;default:2"`                      //是否支持定制状态 1支持 2不支持
+	ID      int `gorm:"primary_key;AUTO_INCREMENT;unique_index"` //VIP等级--用户默认等级为1
+	Users   int `gorm:"not null;default:0"`                      //子用户数 最多50
+	Devices int `gorm:"not null;default:1"`                      //设备数 最多1000
+	Orbit   int `gorm:"not null;default:2"`                      //是否可以显示轨迹 1显示 2不显示
+	Fence   int `gorm:"not null;default:2"`                      //是否开启围栏功能 1显示 2不显示
+	Real    int `gorm:"not null;default:2"`                      //是否支持实时数据 1支持 2不支持
+	Logo    int `gorm:"not null;default:2"`                      //是否支持定制LOGO 1支持 2不支持
+	State   int `gorm:"not null;default:2"`                      //是否支持定制状态 1支持 2不支持
 }

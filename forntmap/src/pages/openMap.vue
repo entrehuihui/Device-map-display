@@ -1060,6 +1060,10 @@ export default {
     },
     // 设置围栏
     setFence: function(name, orbitList) {
+      if (name == "exec") {
+        this.$set(this.$refs.lmap.orbitLists, name, orbitList);
+        return;
+      }
       if (orbitList && this.fenceShow.select) {
         this.$set(this.$refs.lmap.orbitLists, name, orbitList);
       } else {

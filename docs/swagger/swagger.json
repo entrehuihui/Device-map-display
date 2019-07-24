@@ -1109,8 +1109,70 @@
                 }
             }
         },
+        "/login/logo/user": {
+            "get": {
+                "description": "获取用户LOGO图列表",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "logo"
+                ],
+                "summary": "获取用户LOGO图列表",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started JWT",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "用户ID",
+                        "name": "id",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "起始数",
+                        "name": "offset",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "description": "获取数",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "{\"Error\":\"Success\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "301": {
+                        "description": "{\"Error\":\"Re-login\",\"Data\": object}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "{\"Error\":\"error\",\"Data\": null}",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
         "/login/register": {
-            "put": {
+            "post": {
                 "description": "账号申请",
                 "consumes": [
                     "application/json"
@@ -2048,7 +2110,7 @@
             "type": "object",
             "properties": {
                 "devices": {
-                    "description": "设备数",
+                    "description": "设备数 最多1000",
                     "type": "integer"
                 },
                 "fence": {
@@ -2080,7 +2142,7 @@
                     "type": "integer"
                 },
                 "users": {
-                    "description": "子用户数",
+                    "description": "子用户数 最多50",
                     "type": "integer"
                 }
             }

@@ -1,11 +1,33 @@
+.logotitle{
+    width: 1000px;
+    height: 40px;
+}
+.logotitle1{
+    position: relative;
+    float: left;
+    height: 40px;
+    line-height: 40px;
+    width: 200px;
+    background: rgb(226, 226, 226);
+    text-align: center;
+    left: 300px;
+    cursor: pointer;
+}
+#logotitle1{
+    background: rgb(107, 255, 78);
+}
 .logoList{
-    position: absolute;
+    /* position: absolute; */
+    position: relative;
+    float: left;
     width: 800px;
     height: 420px;
     border: 1px solid rgb(184, 182, 182);
     overflow: hidden;
-    top: 100px;
     left: 100px;
+}
+#logoList{
+    margin-top: 50px;
 }
 .logoList1{
     position: relative;
@@ -17,6 +39,7 @@
 .logoList1:hover{
     background: rgb(241, 241, 241);
 }
+
 .logoList2{
     position: relative;
     float: left;
@@ -57,4 +80,84 @@
 }
 .logoerror1:hover{
     color: yellow;
+}
+.logoList4{
+    position: relative;
+    float: left;
+    height: 140px;
+    width: 140px;
+    text-align: center;
+}
+.logoList5{
+    position: relative;
+    float: left;
+    height: 140px;
+    width: 100px;
+    text-align: center;
+    cursor: pointer;
+}
+.logoList6{
+    position: relative;
+    height: 40px;
+    width: 80px;
+    border: 1px solid rgb(184, 182, 182);
+    border-radius: 5px;
+    top: 50px;
+    line-height: 40px;
+    background: rgb(188, 240, 140);
+}
+.logoList6:hover{
+    color: red;
+    background: rgb(168, 168, 168);
+}
+.logoList7{
+    position: relative;
+    float: right;
+    height: 30px;
+    min-width: 320px;
+    margin-top: 3px;
+    margin-right: 95px;
+}
+.logoList8{
+    position: relative;
+    float: left;
+    height: 35px;
+    width: 800px;
+    margin-top: 40px;
+    margin-left: 100px;
+    border: 1px solid rgb(184, 182, 182);
+    line-height: 30px;
+    text-align: center;
+}
+.logoList9{
+    position: relative;
+    float: left;
+    width: 150px;
+    padding-right: 10px;
+    padding-left: 10px;
+    height: 30px;
+    margin-top: 2px;
+}
+.logoList10{
+    position: relative;
+    float: left;
+    width: 60px;
+    height: 30px;
+    margin-top: 2px;
+    margin-left: 100px;
+}
+.logoList11{
+    position: relative;
+    float: right;
+    width: 60px;
+    height: 30px;
+    margin-top: 1px;
+    border: 1px solid rgb(168, 168, 168);
+    margin-right: 3px;
+    cursor: pointer;
+    background: rgb(188, 240, 140);
+}
+.logoList11:hover{
+    color: white;
+    background: rgb(168, 168, 168);
 }

@@ -2,7 +2,6 @@ package api
 
 import (
 	"encoding/json"
-	"strconv"
 	"time"
 
 	"github.com/jinzhu/gorm"
@@ -25,37 +24,40 @@ import (
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /fence [get]
 func GetFence(c *gin.Context) {
-	ids := c.Query("id")
-	id := 0
+	id, err := getID(c)
+	if err != nil {
+		retError(c, 12, err)
+		return
+	}
 	uid := c.GetInt("id")
-	var err error
-	if ids == "" {
+	if id == 0 {
 		id = uid
-	} else {
-		id, err = strconv.Atoi(ids)
-		if err != nil {
-			retError(c, 12, err)
-			return
-		}
-		if id == 0 {
-			retError(c, 12, nil)
-			return
-		}
 	}
 	s := service.GetServer()
 	permisson := c.GetInt("permisson")
-	if id != uid && permisson != 3 {
-		// 检测是否是子账户
-		user, err := s.CheckUserID(id)
-		if err != nil {
-			retError(c, 12, err)
-			return
+	if permisson != 3 {
+		vip := c.GetInt("vip")
+		if id != uid {
+			// 检测是否是子账户
+			user, err := s.CheckUserID(id)
+			if err != nil {
+				retError(c, 12, err)
+				return
+			}
+			if user.Ownid != uid {
+				retError(c, 12, nil)
+				return
+			}
+			vip = user.VIP
 		}
-		if user.Ownid != uid {
-			retError(c, 12, nil)
+		// 检测是否有围栏权限
+		err = service.VipFence(vip)
+		if err != nil {
+			retError(c, 43, err)
 			return
 		}
 	}
+
 	fencelists := db.Fencelists{}
 	err = s.Where("uid = ? and del = 0", id).Last(&fencelists).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
@@ -99,8 +101,14 @@ type Fenceinfo2 struct {
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /fence [post]
 func PostFence(c *gin.Context) {
+	// 检测是否有围栏权限
+	err := service.VipFence(c.GetInt("vip"))
+	if err != nil {
+		retError(c, 43, err)
+		return
+	}
 	fenceinfo := Fenceinfo{}
-	err := c.ShouldBind(&fenceinfo)
+	err = c.ShouldBind(&fenceinfo)
 	if err != nil {
 		retError(c, 7, err)
 		return

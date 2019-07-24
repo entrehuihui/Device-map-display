@@ -183,7 +183,7 @@ definitions:
   api.Permisson:
     properties:
       devices:
-        description: 设备数
+        description: 设备数 最多1000
         type: integer
       fence:
         description: 围栏权限 1启用 2禁止
@@ -207,7 +207,7 @@ definitions:
         description: 定制状态权限 1启用 2禁止
         type: integer
       users:
-        description: 子用户数
+        description: 子用户数 最多50
         type: integer
     type: object
   api.Registerinfo:
@@ -1001,8 +1001,49 @@ paths:
       summary: 获取logo
       tags:
       - logo
+  /login/logo/user:
+    get:
+      consumes:
+      - application/json
+      description: 获取用户LOGO图列表
+      parameters:
+      - description: With the bearer started JWT
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: 用户ID
+        in: query
+        name: id
+        type: integer
+      - description: 起始数
+        in: query
+        name: offset
+        type: string
+      - description: 获取数
+        in: query
+        name: limit
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: '{"Error":"Success","Data": object}'
+          schema:
+            type: string
+        "301":
+          description: '{"Error":"Re-login","Data": object}'
+          schema:
+            type: string
+        "500":
+          description: '{"Error":"error","Data": null}'
+          schema:
+            type: string
+      summary: 获取用户LOGO图列表
+      tags:
+      - logo
   /login/register:
-    put:
+    post:
       consumes:
       - application/json
       description: 账号申请

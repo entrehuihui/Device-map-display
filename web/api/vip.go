@@ -30,9 +30,9 @@ func GetVIP(c *gin.Context) {
 type Permisson struct {
 	// vipID
 	ID int
-	// 子用户数 最多1000
+	// 子用户数 最多50
 	Users int
-	// 设备数 最多5000
+	// 设备数 最多1000
 	Devices int
 	// 轨迹权限 1启用 2禁止
 	Orbit int
@@ -61,19 +61,19 @@ type Permisson struct {
 // @Failure  301 {string} json "{"Error":"Re-login","Data": object}"
 // @Router /vip [put]
 func PutVIP(c *gin.Context) {
-	permisson := Permisson{}
+	permisson := db.Permisson{}
 	err := c.ShouldBind(&permisson)
 	if err != nil {
 		retError(c, 1, err)
 		return
 	}
 	//
-	if permisson.Users < 0 || permisson.Users > 1000 {
+	if permisson.Users < 0 || permisson.Users > 50 {
 		retError(c, 1, nil)
 		return
 	}
 	//
-	if permisson.Devices < 1 || permisson.Devices > 5000 {
+	if permisson.Devices < 1 || permisson.Devices > 1000 {
 		retError(c, 1, nil)
 		return
 	}
@@ -84,11 +84,6 @@ func PutVIP(c *gin.Context) {
 	}
 	//
 	if permisson.Fence < 1 || permisson.Fence > 2 {
-		retError(c, 1, nil)
-		return
-	}
-	//
-	if permisson.FenceAlarm < 1 || permisson.FenceAlarm > 2 {
 		retError(c, 1, nil)
 		return
 	}
@@ -112,8 +107,22 @@ func PutVIP(c *gin.Context) {
 		retError(c, 1, nil)
 		return
 	}
-	//
-	err = service.GetServer().Save(&permisson).Error
+	// 事务提交
+	tx := service.GetServer().Begin()
+	err = tx.Save(&permisson).Error
+	if err != nil {
+		tx.Rollback()
+		retError(c, 7, err)
+		return
+	}
+	// 修改缓存
+	err = service.SetVipRedis(permisson)
+	if err != nil {
+		tx.Rollback()
+		retError(c, 7, err)
+		return
+	}
+	err = tx.Commit().Error
 	if err != nil {
 		retError(c, 7, err)
 		return
