@@ -1,6 +1,5 @@
 [Postgresql]
-host = "120.78.76.139"
-# host = "mymapp_sql"
+host = "mymapp_sql"
 port= "5432"
 username = "mapPlatform"
 password = "mapPlatform"
