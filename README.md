@@ -12,7 +12,7 @@
 
 ## 依赖
 ## rely
-    PostgreSQL, Redis
+    PostgreSQL, Redis, swag
 
 ## 包含 docker-compose.yml 文件, 支持在安装有docker的机器上一键启动
 ## Contains the docker-compose.yml file, which supports one-click launch on a machine with docker installed
@@ -36,3 +36,4 @@
 
 ## config.toml 配置数据差数
 ## config.toml Configuration data difference
+
