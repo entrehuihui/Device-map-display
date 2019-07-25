@@ -131,7 +131,6 @@ export default {
         Devices: parseInt(vip.Devices),
         Orbit: parseInt(vip.Orbit),
         Fence: parseInt(vip.Fence),
-        FenceAlarm: parseInt(vip.FenceAlarm),
         Real: parseInt(vip.Real),
         Logo: parseInt(vip.Logo),
         State: parseInt(vip.State)

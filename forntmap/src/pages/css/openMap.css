@@ -16,7 +16,7 @@
 }
 /* 设备菜单 */
 .openMapDevicesList{
-    position: relative;
+    position: absolute;
     float:right;
     height: 100%;
     width:360px;

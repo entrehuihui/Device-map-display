@@ -49,7 +49,9 @@ func SaveDeviceInfos(c *gin.Context) {
 		retError(c, 18, nil)
 		return
 	}
-	deviceInfos := DeviceInfos{}
+	deviceInfos := DeviceInfos{
+		Info: make(map[string]interface{}),
+	}
 	err := c.ShouldBind(&deviceInfos)
 	if err != nil {
 		retError(c, 1, err)
@@ -57,7 +59,7 @@ func SaveDeviceInfos(c *gin.Context) {
 	}
 
 	errs, err := checkData(&deviceInfos, c.GetInt("id"), c.GetInt("vip"))
-	if err != nil {
+	if err != nil || errs != 0 {
 		retError(c, errs, err)
 		return
 	}
@@ -118,12 +120,12 @@ func checkData(deviceInfos *DeviceInfos, uid, vip int) (int, error) {
 		deviceInfos.State = 7
 	}
 	// 保存数据
-	jsons, err := json.Marshal(deviceInfos.Info)
-	if err != nil {
-		return 1, err
-	}
-	if jsons == nil {
-		jsons = []byte("{}")
+	jsons := []byte("{}")
+	if deviceInfos.Info != nil {
+		// jsons, err = json.Marshal(deviceInfos.Info)
+		// if err != nil {
+		// 	return 1, err
+		// }
 	}
 	devicedata := &db.Devicedata{
 		Did:        infos[0],

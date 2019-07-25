@@ -1317,12 +1317,12 @@ export default {
     updateSreen: function() {
       var width = document.body.clientWidth;
       var v = this.devicesList;
-      if (v) {
-        width -= 360;
-        this.$refs.opeMapAllRight.style.width = width + "px";
-      } else {
-        this.$refs.opeMapAllRight.style.width = "100%";
-      }
+      // if (v) {
+      //   width -= 360;
+      //   this.$refs.opeMapAllRight.style.width = width + "px";
+      // } else {
+      //   this.$refs.opeMapAllRight.style.width = "100%";
+      // }
       this.$forceUpdate();
     },
     // 获取围栏

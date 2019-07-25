@@ -75,7 +75,8 @@
       </div>
       <!-- retMap -->
       <div class="userReturn">
-        <a href="/openMap#/openMap">返回地图监控</a>
+        <!-- <a href="/openMap#/openMap">返回地图监控</a> -->
+        <router-link to="/openMap">返回地图监控</router-link>
       </div>
     </div>
     <!-- 中部 -->

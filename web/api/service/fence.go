@@ -43,6 +43,7 @@ func polyOut(lat, lng float64, fenceinfo2 []Fenceinfo2) bool {
 		sy := fenceinfo2[i].Lat
 		tx := fenceinfo2[j].Lng
 		ty := fenceinfo2[j].Lat
+		j = i
 		// 点与多边形顶点重合
 		if (sx == lng && sy == lat) || (tx == lat && lng == lat) {
 			return false
@@ -61,7 +62,6 @@ func polyOut(lat, lng float64, fenceinfo2 []Fenceinfo2) bool {
 			}
 			// fmt.Println("=============", fenceinfo2[i].Lng, fenceinfo2[j].Lng, x, lng)
 		}
-		j = i
 	}
 	return motheds
 }
