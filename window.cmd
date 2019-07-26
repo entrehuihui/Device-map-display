@@ -1,3 +1,8 @@
+echo build front end
+cd forntmap
+npm run build
+
+cd ../
 echo Set up cross-compilation environment
 set GOOS=linux
 set GOARCH=amd64

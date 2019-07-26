@@ -1,6 +1,11 @@
 # Device-map-display
 # Equipment map display management system
 
+## 下载源码
+## Download source
+    go get github.com/entrehuihui/Device-map-display
+
+
 ## 通过特地的接口向服务器发送数据, 服务器对数据进行保存和处理并实时展示在地图页面上.
 ## The data is sent to the server through a special interface, and the server saves and processes the data and displays it on the map page in real time.
 

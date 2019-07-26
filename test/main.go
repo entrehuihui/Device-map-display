@@ -46,13 +46,13 @@ func main() {
 				log.Println(err)
 				return
 			}
-			req, err := http.NewRequest("POST", "http://127.0.0.1:8800/devicedata", bytes.NewReader(buf))
+			req, err := http.NewRequest("POST", "http://120.78.76.139:8800/devicedata", bytes.NewReader(buf))
 			if err != nil {
 				log.Println(err.Error())
 				return
 			}
 			req.Header.Add("Content-Type", "application/json")
-			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjI4MzU1ODUsImlkIjoiMiIsInlpIjoiMTAwMDIwMDk1MDczIn0.n6J8x4QiN74aIcK6zHAOBTeU89GJXkvYgs81DEQGVws")
+			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjQxMzQ2NDgsImlkIjoiMiIsInlpIjoiMTAwMTAzMjM1MTE3In0.lDP_RoLkDlc0odvcAR5gW7QGDuHu6QZNxD9eXLNQAcQ")
 			_, err = http.DefaultClient.Do(req)
 			if err != nil {
 				log.Println(err.Error())
