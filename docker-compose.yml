@@ -13,6 +13,7 @@ services:
       - $PWD:/mymapp
     working_dir: /mymapp
     command: ./mymapp
+    restart: always
 
   mymapp_sql:
     image: postgres:latest
@@ -24,8 +25,10 @@ services:
       - POSTGRES_DB=mp2
     volumes:
       - ./postgresqldb/:/var/lib/postgresql/data
+    restart: always
 
   mymapp_redis:
     ports:
       - 6379
     image: redis:latest
+    restart: always

@@ -21,8 +21,8 @@ password="admin"
 
 [Redis]
 # redis url like : url="rlocalhost:6379"
-url="localhost:6379"
-# url="mymapp_redis:6379"
+#url="localhost:6379"
+url="mymapp_redis:6379"
 # Whether to clear the redis cache: true is yes, false is no
 clearUp = true
 # Maximum number of idle connections in the pool.
