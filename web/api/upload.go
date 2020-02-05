@@ -11,7 +11,7 @@ import (
 	"strings"
 	"time"
 
-	"./service"
+	"mymap/web/api/service"
 	"github.com/gin-gonic/gin"
 	"github.com/nfnt/resize"
 )

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"testing"
 
-	"../../../db"
+	"mymap/db"
 )
 
 func Test_vipSetGet(t *testing.T) {

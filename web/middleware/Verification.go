@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"../api/service"
+	"mymap/web/api/service"
 	"github.com/gin-gonic/gin"
 )
 

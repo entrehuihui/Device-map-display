@@ -4,10 +4,11 @@ import (
 	"log"
 	"os"
 
-	"./db"
-	_ "./docs"
-	"./web"
-	"./web/api/service"
+	"mymap/db"
+	_ "mymap/docs"
+	"mymap/web"
+	"mymap/web/api/service"
+
 	"github.com/spf13/viper"
 )
 

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 
-	"../../../db"
+	"mymap/db"
 )
 
 // CheckDevicesInfo .

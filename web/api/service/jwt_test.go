@@ -5,7 +5,7 @@ import (
 	"log"
 	"testing"
 
-	"../service"
+	"mymap/web/api/service"
 	"github.com/spf13/viper"
 )
 

@@ -3,8 +3,9 @@ package api
 import (
 	"time"
 
-	"../../db"
-	"./service"
+	"mymap/db"
+	"mymap/web/api/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )

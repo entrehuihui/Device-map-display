@@ -6,8 +6,8 @@ import (
 
 	"github.com/jinzhu/gorm"
 
-	"../../db"
-	"./service"
+	"mymap/db"
+	"mymap/web/api/service"
 	"github.com/gin-gonic/gin"
 )
 

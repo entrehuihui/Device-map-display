@@ -10,7 +10,7 @@ import (
 
 	"github.com/gomodule/redigo/redis"
 
-	"../../../db"
+	"mymap/db"
 	"github.com/jinzhu/gorm"
 )
 

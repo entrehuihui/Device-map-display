@@ -1,6 +1,6 @@
 package service
 
-import "../../../db"
+import "mymap/db"
 
 // CheckUserName 按账号名查找账号
 func (s *Server) CheckUserName(name string) (db.Userinfo, error) {

@@ -9,7 +9,7 @@ import (
 	"github.com/gomodule/redigo/redis"
 	"github.com/jinzhu/gorm"
 
-	"../../../db"
+	"mymap/db"
 )
 
 // VipUsers 检测用户是否达到上限

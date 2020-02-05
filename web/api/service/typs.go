@@ -1,7 +1,7 @@
 package service
 
 import (
-	"../../../db"
+	"mymap/db"
 	"github.com/jinzhu/gorm"
 )
 

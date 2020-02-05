@@ -3,8 +3,9 @@ package web
 import (
 	"log"
 
-	"./api"
-	"./middleware"
+	"mymap/web/api"
+	"mymap/web/middleware"
+
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	ginSwagger "github.com/swaggo/gin-swagger"

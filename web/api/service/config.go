@@ -1,6 +1,6 @@
 package service
 
-import "../../../db"
+import "mymap/db"
 
 // CreateState ..
 func (s *Server) CreateState(uid int) error {
