@@ -20,7 +20,7 @@ var state = []
 
 var color = [
     "blueviolet",
-    "aqua",
+    "gray",
     "brown",
     "blueviolet",
     "cyan",

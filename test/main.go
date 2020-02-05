@@ -16,10 +16,12 @@ func main() {
 	b1 := 22.57089004328858
 	b2 := 113.9545858520508
 	for {
-		time.Sleep(time.Second * 2)
+		sleepnum := rand.Intn(5) + 2
+		time.Sleep(time.Second * time.Duration(sleepnum))
+		fmt.Println("休眠:", sleepnum)
 		a1 := rand.Float64()/100 - 0.005
 		a2 := rand.Float64()/100 - 0.005
-		s := rand.Int() % 10
+		s := rand.Intn(10)
 		fmt.Println(a1, a2)
 		if a1 < -0.005 || a2 < -0.005 {
 			continue
@@ -28,10 +30,10 @@ func main() {
 		b2 += a2
 		func() {
 			data := map[string]interface{}{
-				"devEUI":    "1231231231234123",
+				"devEUI":    "1231231231234124",
 				"latitude":  b1,
 				"longitude": b2,
-				"name":      "大蛇王19",
+				"name":      "大蛇王24",
 				"state":     s,
 				"times":     time.Now().Unix(),
 				"types":     2,
@@ -52,7 +54,7 @@ func main() {
 				return
 			}
 			req.Header.Add("Content-Type", "application/json")
-			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1NjQxMzQ2NDgsImlkIjoiMiIsInlpIjoiMTAwMTAzMjM1MTE3In0.lDP_RoLkDlc0odvcAR5gW7QGDuHu6QZNxD9eXLNQAcQ")
+			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5Mjk3MjcsImlkIjoiMiIsInlpIjoiMTAxMTc4MTIwMTczIn0.He2N-QtU0HwdeiAchjiSLYiYIpfkz3QxZ0xhZ7QijI0")
 			_, err = http.DefaultClient.Do(req)
 			if err != nil {
 				log.Println(err.Error())

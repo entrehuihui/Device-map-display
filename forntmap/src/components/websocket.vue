@@ -89,6 +89,9 @@ export default {
   },
   mounted() {
     var a = window.location.href;
+    if (this.req.localhost != "") {
+      a = this.req.localhost + "/"
+    }
     a = a.replace(/https{0,1}/, "ws");
     a = a.split("#")[0] + "ws?Authorization=";
     this.url = a;

@@ -8,6 +8,7 @@
         :mapindex="mapIndex.index"
         :devicesMarks="devicesMarks"
         :devicePloy="orbitDevices"
+        :devicePloyReturn="orbitDevicesReturn"
         v-on:LatLng="LatLng"
       ></lmap>
     </div>
@@ -255,6 +256,7 @@
             <!-- 检索按钮 -->
             <div>
               <div class="openMapdeviceOrbitSearch" @click="getOrbit()">搜索</div>
+              <div class="openMapdeviceOrbitReturn" @click="returnOrbit()">回放</div>
               <div class="openMapdeviceOrbitClear" @click="clearTime()">清除</div>
             </div>
             <!-- 轨迹点列表 -->
@@ -779,6 +781,7 @@
 import lmap from "@/components/lmap.vue";
 import times from "@/components/time.vue";
 import websocket from "@/components/websocket.vue";
+import orbitreturn from "@/global/orbitreturn.js";
 export default {
   components: {
     lmap,
@@ -787,6 +790,8 @@ export default {
   },
   data() {
     return {
+      // 定时器
+      timer:null, 
       logo: "",
       time1: "",
       time2: "",
@@ -819,6 +824,8 @@ export default {
       titleselect: 1, //设备菜单选择
       // ------------//
       orbitDevices: {}, //轨迹
+      orbitDevicesReturn: {}, //回放
+      orbitReturnList:null,//缓存回放轨迹
       devicesList: true,
       push: false,
       pushExpand: false,
@@ -880,6 +887,36 @@ export default {
       this.time1 = "";
       this.time2 = "";
     },
+    // 轨迹回放
+    returnOrbit:function(){
+      if (!this.orbitReturnList) {
+        this.orbitReturnList = orbitreturn.calculate(this.orbitDevices.Orbit)
+      }
+      console.log(this.orbitReturnList.length);
+      
+      let neworbitReturnList= orbitreturn.othenOrbit(this.orbitReturnList) 
+      
+      // 判断是否显示
+      this.$set(this.orbitDevicesReturn, "Show", !this.orbitDevicesReturn.Show);
+      // 定时器
+      if (this.timer == null&&this.orbitDevicesReturn.Show) {
+        this.timer = setInterval(() => {
+          this.$set(this.orbitDevicesReturn, "OrbitList",  neworbitReturnList);
+          neworbitReturnList.pop()
+          this.$forceUpdate()
+          if (neworbitReturnList.length == 0 || !this.orbitDevicesReturn.Show) {
+            clearInterval(this.timer);
+            this.timer = null
+          }
+        }, 100);
+      }
+      if (!this.orbitDevicesReturn.Show) {
+        clearInterval(this.timer);
+        this.timer = null
+      }
+      // 撤销定时器
+      // clearInterval(this.timer);
+    },
     getOrbit: function() {
       this.time1 = new Date(this.$refs.time1.minuteShortText).getTime() / 1000;
       this.time2 = new Date(this.$refs.time2.minuteShortText).getTime() / 1000;
@@ -928,6 +965,8 @@ export default {
     },
     // 获取设备轨迹
     getDevicesOrbit: function(v) {
+      this.orbitReturnList = null;
+      this.orbitDevicesReturn = {};
       this.orbitDevices = v;
       this.titleselect = 3;
       this.orbitShow.select = true;

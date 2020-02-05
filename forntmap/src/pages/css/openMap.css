@@ -400,7 +400,7 @@
     position: relative;
     float: left;
     height: 30px;
-    width: 200px;
+    width: 132px;
     background: rgb(41, 55, 255);
     margin-left: 40px;
     border-radius: 5px;
@@ -425,6 +425,21 @@
     cursor: pointer;
 }
 .openMapdeviceOrbitClear:hover{
+    color: #ececec;
+}
+.openMapdeviceOrbitReturn{
+    position: relative;
+    float: left;
+    height: 30px;
+    width: 68px;
+    background: rgb(138, 245, 76);
+    margin-left: 2px;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 30px;
+    cursor: pointer;
+}
+.openMapdeviceOrbitReturn:hover{
     color: #ececec;
 }
 .openMapdeviceOrbitList{

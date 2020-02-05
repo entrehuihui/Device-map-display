@@ -98,11 +98,17 @@
             :fillOpacity="0.05"
           ></LPolygon>
         </div>
-        <!-- 画线 -->
+        <!-- 画线 轨迹 -->
         <div v-if="devicePloy.OrbitList && devicePloy.OrbitList.length > 0 && devicePloy.Show">
           <LPolyline :lat-lngs="devicePloy.OrbitList" :color="global.color[4]"></LPolyline>
+          <!-- 标记起始点 -->
           <LMarker :lat-lng="devicePloy.OrbitList[0]" :icon="icons[9]"></LMarker>
+          <!-- 标记终点 -->
           <LMarker :lat-lng="devicePloy.OrbitList[devicePloy.OrbitList.length-1]" :icon="icons[10]"></LMarker>
+        </div>
+        <!-- 画线 回放 -->
+        <div v-if="devicePloyReturn.OrbitList && devicePloyReturn.OrbitList.length > 0 && devicePloyReturn.Show">
+          <LPolyline :lat-lngs="devicePloyReturn.OrbitList" :color="global.color[1]"></LPolyline>
         </div>
       </LMap>
     </div>
@@ -164,6 +170,10 @@ export default {
   },
   props: {
     devicePloy: {
+      type: Object,
+      default: () => {}
+    },
+    devicePloyReturn: {
       type: Object,
       default: () => {}
     },
