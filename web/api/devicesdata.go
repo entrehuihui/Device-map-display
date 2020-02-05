@@ -122,10 +122,10 @@ func checkData(deviceInfos *DeviceInfos, uid, vip int) (int, error) {
 	// 保存数据
 	jsons := []byte("{}")
 	if deviceInfos.Info != nil {
-		// jsons, err = json.Marshal(deviceInfos.Info)
-		// if err != nil {
-		// 	return 1, err
-		// }
+		jsons1, err := json.Marshal(deviceInfos.Info)
+		if err == nil {
+			jsons = jsons1
+		}
 	}
 	devicedata := &db.Devicedata{
 		Did:        infos[0],
