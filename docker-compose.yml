@@ -2,7 +2,6 @@ version: '2.0'
 services:
   mymapp_app:
     image: alpine:latest
-    build: .
     ports:
       - 8800:8800
       - 8801:8801
