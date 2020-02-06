@@ -1,6 +1,7 @@
 
 cd forntmap
-npm run build
+yarn install
+yarn build
 
 cd ../
 swag init
