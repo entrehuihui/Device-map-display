@@ -16,7 +16,7 @@ function calculate(orbitlist) {
     if (orbitlist.length < 2) {
         return []
     }
-    orbitlist.reverse()
+    // orbitlist.reverse()
     // 计算总时间 
     let averageTime = ( getTime(orbitlist[orbitlist.length -1]) - getTime(orbitlist[0]))/100
     let len = orbitlist.length -1

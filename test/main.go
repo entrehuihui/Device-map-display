@@ -54,7 +54,7 @@ func main() {
 				return
 			}
 			req.Header.Add("Content-Type", "application/json")
-			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5Mjk3MjcsImlkIjoiMiIsInlpIjoiMTAxMTc4MTIwMTczIn0.He2N-QtU0HwdeiAchjiSLYiYIpfkz3QxZ0xhZ7QijI0")
+			req.Header.Add("Authorization", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1ODA5OTYyOTAsImlkIjoiMiIsInlpIjoiMTAxMTgyMzgwMjA1In0.hRhiy3ED8OeA107jnl8RERHKPw7bn2gOIaq_d2ScsjQ")
 			_, err = http.DefaultClient.Do(req)
 			if err != nil {
 				log.Println(err.Error())

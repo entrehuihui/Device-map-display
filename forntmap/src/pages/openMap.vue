@@ -892,8 +892,6 @@ export default {
       if (!this.orbitReturnList) {
         this.orbitReturnList = orbitreturn.calculate(this.orbitDevices.Orbit)
       }
-      console.log(this.orbitReturnList.length);
-      
       let neworbitReturnList= orbitreturn.othenOrbit(this.orbitReturnList) 
       
       // 判断是否显示
@@ -907,7 +905,7 @@ export default {
           if (neworbitReturnList.length == 0 || !this.orbitDevicesReturn.Show) {
             clearInterval(this.timer);
             this.timer = null
-            this.$set(this.orbitDevicesReturn, "Show", !this.orbitDevicesReturn.Show);
+            this.orbitDevicesReturn = {}
           }
         }, 100);
       }
