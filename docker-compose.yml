@@ -28,6 +28,6 @@ services:
 
   mymapp_redis:
     ports:
-      - 6379
+      - 8803:6379
     image: redis:latest
     restart: always

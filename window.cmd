@@ -1,6 +1,7 @@
 echo build front end
 cd forntmap
-npm run build
+yarn install
+yarn build
 
 cd ../
 echo Set up cross-compilation environment
