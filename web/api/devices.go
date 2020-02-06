@@ -104,6 +104,7 @@ func GetDevices(c *gin.Context) {
 		name := getName(c)
 		if name != "" {
 			result = result.Where("name like ?", "%"+name+"%")
+			result = result.Where("dev_e_ui like ?", "%"+name+"%")
 		}
 		//
 		limit, err = getLimit(c)

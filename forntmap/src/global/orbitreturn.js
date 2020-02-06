@@ -28,7 +28,7 @@ function calculate(orbitlist) {
 }
 
 function calculateTwoOrbit(ti, orbit1, orbit2) {
-    let intervalTime =parseInt(( getTime(orbit2) - getTime(orbit1))/ti)+1
+    let intervalTime =parseInt(( getTime(orbit2) - getTime(orbit1))/ti)
     
     let info = getAverageOrbit(orbit1,orbit2)
     let Latitude = info[0]/intervalTime
@@ -48,7 +48,7 @@ function calculateTwoOrbit(ti, orbit1, orbit2) {
         orbitlist.push([startLatitude, startLongitude])
         intervalTime --
     }
-    orbitlist.push(end)
+    // orbitlist.push(end)
     return orbitlist
 }
 

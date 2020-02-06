@@ -907,6 +907,7 @@ export default {
           if (neworbitReturnList.length == 0 || !this.orbitDevicesReturn.Show) {
             clearInterval(this.timer);
             this.timer = null
+            this.$set(this.orbitDevicesReturn, "Show", !this.orbitDevicesReturn.Show);
           }
         }, 100);
       }
@@ -966,7 +967,7 @@ export default {
     // 获取设备轨迹
     getDevicesOrbit: function(v) {
       this.orbitReturnList = null;
-      this.orbitDevicesReturn = {};
+      this.orbitDevicesReturn = {}; 
       this.orbitDevices = v;
       this.titleselect = 3;
       this.orbitShow.select = true;

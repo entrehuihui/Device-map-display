@@ -51,7 +51,7 @@ func getOffset(c *gin.Context) (int, error) {
 func getLimit(c *gin.Context) (int, error) {
 	limits := c.Query("limit")
 	if limits == "" {
-		return 30, nil
+		return 0, nil
 	}
 	limit, err := strconv.Atoi(limits)
 	return limit, err
