@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"time"
 
 	"mymap/db"
@@ -37,7 +36,7 @@ func GetDevices(c *gin.Context) {
 	permisson := c.GetInt("permisson")
 	uid := c.GetInt("id")
 	result := &gorm.DB{}
-	limit := 30
+	var limit interface{}
 	offset := 0
 	if permisson == 3 {
 		result = s.DB
@@ -54,7 +53,6 @@ func GetDevices(c *gin.Context) {
 	}
 	if id != 0 {
 		result = result.Where("id = ?", id)
-		limit = 1
 	} else {
 		//
 		ownid, err := getUID(c)
@@ -113,7 +111,6 @@ func GetDevices(c *gin.Context) {
 			retError(c, 17, err)
 			return
 		}
-		fmt.Println(limit)
 		offset, err = getOffset(c)
 		if err != nil {
 			retError(c, 17, err)
@@ -130,7 +127,7 @@ func GetDevices(c *gin.Context) {
 	}
 	if all != 0 {
 		//查数据
-		err = result.Where("del != 1").Limit(nil).Offset(offset).Order("id").Find(&deviceinfo).Error
+		err = result.Where("del != 1").Limit(limit).Offset(offset).Order("id").Find(&deviceinfo).Error
 		if err != nil {
 			retError(c, 7, err)
 			return

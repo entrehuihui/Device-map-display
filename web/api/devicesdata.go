@@ -8,6 +8,7 @@ import (
 
 	"mymap/db"
 	"mymap/web/api/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"golang.org/x/net/websocket"
@@ -187,7 +188,7 @@ func GetDevicesDatas(c *gin.Context) {
 	permisson := c.GetInt("permisson")
 	uid := c.GetInt("id")
 	result := &gorm.DB{}
-	limit := 30
+	var limit interface{}
 	offset := 0
 	if permisson == 3 {
 		result = s.DB
@@ -241,7 +242,7 @@ func GetDevicesDatas(c *gin.Context) {
 		retError(c, 17, err)
 		return
 	}
-	if limit != 1 && permisson != 3 {
+	if permisson != 1 && permisson != 3 {
 		// 检测是否有查询轨迹的权限
 		err = service.VipOrbit(c.GetInt("vip"))
 		if err != nil {

@@ -7,6 +7,7 @@ import (
 
 	"mymap/db"
 	"mymap/web/api/service"
+
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 )
@@ -38,7 +39,7 @@ func GetUsers(c *gin.Context) {
 	permisson := c.GetInt("permisson")
 	uid := c.GetInt("id")
 	result := &gorm.DB{}
-	limit := 30
+	var limit interface{}
 	offset := 0
 	if permisson == 3 {
 		result = s.Where(" id != ?", uid)
@@ -53,7 +54,6 @@ func GetUsers(c *gin.Context) {
 	}
 	if id != 0 {
 		result = result.Where("id = ?", id)
-		limit = 1
 	} else {
 		//
 		ownid, err := getOwnid(c)
