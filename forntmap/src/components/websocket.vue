@@ -41,9 +41,6 @@ export default {
       // 正式地址;
       this.wsuri = this.url + this.global.jwt();
       // // 初始化websocket 调试用
-      // this.wsuri =
-      //   "ws://120.78.76.139:8999/ws?Authorization=" +
-      //   this.global.jwt()
       // this.wsuri = "ws://127.0.0.1:8800/ws?Authorization=" + this.global.jwt();
       if (this.websock) {
         this.websock.close;
